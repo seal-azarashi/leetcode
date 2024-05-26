@@ -21,7 +21,7 @@ ListNode のクラス定義は、 LeetCode のページで言語を Java にし�
 
 ## Recursive
 
-- [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解放です。
+- [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
 - 再帰関数を使った実装になります。 
 - Time Complexity: O(n), Space Complexity: O(1)
 
@@ -45,7 +45,7 @@ public class Solution {
 
 ## Iterative
 
-- 上記と同じく [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解放です。
+- 上記と同じく [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
 - 反復的なアプローチで実装しています。 
 - Time Complexity: O(n), Space Complexity: O(1)
 
