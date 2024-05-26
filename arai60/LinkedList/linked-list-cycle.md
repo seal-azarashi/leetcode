@@ -1,3 +1,7 @@
+この問題は Java で解いています。  
+ListNode のクラス定義は、 LeetCode のページで言語を Java にしたら出てくる次のコメントの通りです。
+
+```
 /**
  * Definition for singly-linked list.
  * class ListNode {
@@ -9,9 +13,14 @@
  *     }
  * }
  */
+```
 
-// Recursive: Floyd's tortoise and hare algorithm: https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/
-// Time Complexity: O(n), Space Complexity: O(1)
+## Recursive
+
+- Use Floyd's tortoise and hare algorithm: https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/
+- Time Complexity: O(n), Space Complexity: O(1)
+
+``` java
 public class Solution {
     public boolean hasCycle(ListNode head) {
         if (head == null) return false;
@@ -27,9 +36,14 @@ public class Solution {
         return recursive(slow.next, fast.next.next);
     }
 }
+```
 
-// Iterative: Floyd's tortoise and hare algorithm
-// Time Complexity: O(n), Space Complexity: O(1)
+## Iterative
+
+- Use Floyd's tortoise and hare algorithm: https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/
+- Time Complexity: O(n), Space Complexity: O(1)
+
+```java
 public class Solution {
     public boolean hasCycle(ListNode head) {
         ListNode slow = head;
@@ -45,9 +59,14 @@ public class Solution {
         return false;
     }
 }
+```
 
-// Store traversed Node in HashSet
-// Time Complexity: O(n), Space Complexity: O(n)
+## HashSet
+
+- Store traversed Node in HashSet
+- Time Complexity: O(n), Space Complexity: O(n)
+
+```java
 public class Solution {
     public boolean hasCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
@@ -64,3 +83,4 @@ public class Solution {
         return false;
     }
 }
+```
