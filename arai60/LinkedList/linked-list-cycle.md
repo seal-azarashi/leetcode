@@ -69,7 +69,7 @@ public class Solution {
 
 ## HashSet
 
-- 走査した Node を HashSet に格納し、既に格納されている (再度訪れているのでサイクルが発生している) ことを検知します。
+- HashSet に Node を格納し、走査中のものと同じ値が格納されていないか (サイクルが発生していないか) をチェックします。
 - Time Complexity: O(n), Space Complexity: O(n)
 
 ```java
