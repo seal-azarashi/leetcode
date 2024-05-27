@@ -27,32 +27,6 @@ LeetCode URL: https://leetcode.com/problems/linked-list-cycle/description/
 
 Time Complexity: O(n), Space Complexity: O(1)
 
-### Recursive
-
-再帰関数を使った実装になります。 
-
-``` java
-public class Solution {
-    public boolean hasCycle(ListNode head) {
-        if (head == null) return false;
-
-        return recursive(head, head.next);
-    }
-
-    private boolean recursive(ListNode slow, ListNode fast) {
-        if (fast == null || fast.next == null) return false;
-
-        if (slow == fast) return true;
-
-        return recursive(slow.next, fast.next.next);
-    }
-}
-```
-
-### Iterative
-
-反復的なアプローチで実装しています。 
-
 ```java
 public class Solution {
     public boolean hasCycle(ListNode head) {
@@ -77,33 +51,6 @@ HashSet に Node を格納し、走査中のものと同じ値が格納されて
 
 Time Complexity: O(n), Space Complexity: O(n)
 
-## HashSet: Recursive
-
-再帰関数を使った実装になります。 
-
-```java
-public class Solution {
-    public boolean hasCycle(ListNode head) {
-        Set<ListNode> set = new HashSet<>();
-
-        return recursive(set, head);
-    }
-
-    private boolean recursive(Set<ListNode> set, ListNode node) {
-        if (node == null) return false;
-
-        if (set.contains(node)) return true;
-
-        set.add(node);
-
-        return recursive(set, node.next);
-    }
-}
-```
-
-## Iterative
-
-反復的なアプローチで実装しています。
 
 ```java
 public class Solution {
