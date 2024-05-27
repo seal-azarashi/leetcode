@@ -54,37 +54,9 @@ public class Solution {
 ## HashSet
 
 HashSet に Node を格納し、走査中のものと同じ値が格納されていないか (サイクルが発生していないか) をチェックします。  
-最初に見つかった値がサイクルの始まりになるので、サイクルがある場合はそれを返します。
+最初に見つかった値がサイクルの始まりになるので、 (サイクルがある場合は) それを返します。
 
 Time Complexity: O(n), Space Complexity: O(n)
-
-### Recursive
-
-再帰関数を使った実装になります。 
-
-```java
-public class Solution {
-    public ListNode detectCycle(ListNode head) {
-        Set<ListNode> set = new HashSet<>();
-
-        return recursive(set, head);
-    }
-
-    private ListNode recursive(Set<ListNode> set, ListNode node) {
-        if (node == null) return null;
-
-        if (set.contains(node)) return node;
-
-        set.add(node);
-
-        return recursive(set, node.next);
-    }
-}
-```
-
-### Iterative
-
-反復的なアプローチで実装しています。
 
 ```java
 public class Solution {
