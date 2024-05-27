@@ -27,7 +27,7 @@ LeetCode URL: https://leetcode.com/problems/linked-list-cycle-ii/description/
 
 Time Complexity: O(n), Space Complexity: O(1)
 
-``` java
+```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
