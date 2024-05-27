@@ -19,11 +19,15 @@ ListNode のクラス定義は、 LeetCode のページで言語を Java にし�
  */
 ```
 
-## Recursive
+## Floyd's tortoise and hare algorithm
 
-- [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
-- 再帰関数を使った実装になります。 
-- Time Complexity: O(n), Space Complexity: O(1)
+[Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
+
+Time Complexity: O(n), Space Complexity: O(1)
+
+### Recursive
+
+再帰関数を使った実装になります。 
 
 ``` java
 public class Solution {
@@ -43,11 +47,9 @@ public class Solution {
 }
 ```
 
-## Iterative
+### Iterative
 
-- 上記と同じく [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
-- 反復的なアプローチで実装しています。 
-- Time Complexity: O(n), Space Complexity: O(1)
+反復的なアプローチで実装しています。 
 
 ```java
 public class Solution {
@@ -69,8 +71,37 @@ public class Solution {
 
 ## HashSet
 
-- HashSet に Node を格納し、走査中のものと同じ値が格納されていないか (サイクルが発生していないか) をチェックします。
-- Time Complexity: O(n), Space Complexity: O(n)
+HashSet に Node を格納し、走査中のものと同じ値が格納されていないか (サイクルが発生していないか) をチェックします。
+
+Time Complexity: O(n), Space Complexity: O(n)
+
+## HashSet: Recursive
+
+再帰関数を使った実装になります。 
+
+```java
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+
+        return recursive(set, head);
+    }
+
+    private boolean recursive(Set<ListNode> set, ListNode node) {
+        if (node == null) return false;
+
+        if (set.contains(node)) return true;
+
+        set.add(node);
+
+        return recursive(set, node.next);
+    }
+}
+```
+
+## Iterative
+
+反復的なアプローチで実装しています。
 
 ```java
 public class Solution {
