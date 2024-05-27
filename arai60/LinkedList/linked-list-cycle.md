@@ -3,7 +3,9 @@
 LeetCode URL: https://leetcode.com/problems/linked-list-cycle/description/
 
 この問題は Java で解いています。  
-ListNode のクラス定義は、 LeetCode のページで言語を Java にしたら出てくる次のコメントの通りです。
+各解法において、メソッドが属するクラスとして `Solution` を定義していますが、これは Java の言語仕様に従い、コードを実行可能にするために必要なものです。このクラス自体には特定の意味はなく、単にメソッドを組織化し、実行可能にするためのものです。
+
+尚、各設問で扱われる ListNode のクラス定義は、 LeetCode のページで言語を Java にしたら出てくる次のコメントの通りです。
 
 ```
 /**
