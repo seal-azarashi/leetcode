@@ -131,16 +131,17 @@ public class Solution {
 
 - ログを追加
 - 空行が多いとのしてきがあったので、それぞれ以下のように修正した
+- 直前に受けた模擬面接でされた関数名の指摘を思い出し、一部関数名も修正
 
 ```java
 // Time Complexity: O(n), Space Complexity: O(1)
 public class Solution {
     public boolean hasCycle(ListNode head) {
         if (head == null || head.next == null) return false;
-        return recursive(head, head.next);
+        return detectCycleRecursively(head, head.next);
     }
 
-    private boolean recursive(ListNode one, ListNode two) {
+    private boolean detectCycleRecursively(ListNode one, ListNode two) {
         if (one == null || two == null || two.next == null) return false;
         if (one == two) return true;
         return recursive(one.next, two.next.next);
