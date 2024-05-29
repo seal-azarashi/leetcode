@@ -58,19 +58,19 @@ public class Solution {
 
 ## Step 2
 
-既存のコードを整える
+既存のコードを整える (約5分)
 
 - recursive な書き方でもっときれいに出来ないか試行錯誤
 - 結局元の解答のままにすることに決める
 
-他の解法の調査
+他の解法の調査 (約2分)
 
 - HashMap を使った解法があるのは把握していたのでそれは書こうと思う
 - 他に何か知らないものがないか確認するため LeetCode の Solutions 欄を見る
 - 上記解答を iterative に書いてる例をみつける
 - 他に有力なものはなさそうだったので終わり
 
-最終的に書いた別解法:
+別解法を書く:
 
 ```java
 // Floyd's tortoise and hare algorithm を iterative に書く
@@ -123,7 +123,7 @@ public class Solution {
 
 ## Step 3 
 
-**上記全ての解法それぞれを**、連続で3回、10分以内に、ひとつもエラーを出さずにアクセプトされるまで繰り返し解く
+**上記全ての解法それぞれを**、連続で3回、10分以内に、ひとつもエラーを出さずにアクセプトされるまで繰り返し解いた。それぞれ数回エラーを出し、ひとつあたり10分以上かかった。
 
 ## Step 4
 
@@ -160,7 +160,7 @@ public class Solution {
             fast = fast.next.next;
             if (slow == fast) return true;
         }
-        
+
         return false;
     }
 }
