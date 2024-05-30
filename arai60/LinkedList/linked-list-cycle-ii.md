@@ -26,6 +26,7 @@ LeetCode URL: https://leetcode.com/problems/linked-list-cycle-ii/description/
 かかった時間: 7 m 37 s
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(n)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
@@ -63,6 +64,7 @@ public class Solution {
 - 一度再帰で書こうとするも見通しのいいコードが思いつかず、ループで次のように書いたら一度でパスした
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(1)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         if (head == null) return null;
@@ -91,6 +93,7 @@ public class Solution {
 - detectCycle() 一行目の null チェックが不要だと気づいて消す
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(1)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
@@ -121,6 +124,7 @@ public class Solution {
 - そういえば HashSet を用いてループで処理する解法を用意してなかったので、以下の通り書いて一回目の submission でパスさせた
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(n)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
@@ -150,6 +154,7 @@ public class Solution {
 - こチラの問題を解いた後に別のプルリクエストで受けたレビューを元に、上に挙げた3つの解法をそれぞれ次のように書き直した
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(n)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
@@ -166,6 +171,7 @@ public class Solution {
 ```
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(1)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
@@ -188,6 +194,7 @@ public class Solution {
 ```
 
 ```java
+// Time Complexity: O(n), Space Complexity: O(n)
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
