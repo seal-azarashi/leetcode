@@ -21,11 +21,74 @@ LeetCode URL: https://leetcode.com/problems/linked-list-cycle-ii/description/
  */
 ```
 
-## Floyd's tortoise and hare algorithm
+## Step 1
 
-[Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法です。
+かかった時間: 7 m 37 s
 
-Time Complexity: O(n), Space Complexity: O(1)
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+
+        return recursive(set, head);
+    }
+
+    private ListNode recursive(Set<ListNode> set, ListNode node) {
+        if (node == null) return null;
+
+        if (set.contains(node)) return node;
+
+        set.add(node);
+
+        return recursive(set, node.next);
+    }
+}
+```
+
+※[以前空行が多いこと等々指摘されました](https://discord.com/channels/1084280443945353267/1245404801177616394/1245412412123779113)が、これは指摘を受ける前に書いたものをそのまま乗せてますのでその指摘が反映されてません
+
+思考ログ:
+
+- HashSet を使った解法しか思いつかなかったのでそれで解くことを決める
+    - ノードを走査していって、初めて HashSet に格納済のノードに再訪したら、それをサイクルの始まりとみなす
+- なんとなく再帰の書き方に慣れてて、どうせ後でループで書き直すからとひとまず再帰で書き始める (この点は[以前のレビュー](https://discord.com/channels/1084280443945353267/1245404801177616394/1245560536335253504)で指摘された通り反省ポイント)
+- 特に詰まらずに最初の submission でパスした
+
+## Step 2
+
+- 他の解法を見ていて、 [Floyd's tortoise and hare algorithm](https://www.geeksforgeeks.org/floyds-cycle-finding-algorithm/) を用いた解法があることを知る
+    1. slow, fast pointer があるノードで出会うことをもってサイクルの検知をする
+    2. 先頭ノードにポインタを置き、上記のノードにあるポインタと共に1ずつ進めていく
+    3. 2 で動く両ポインタが出会ったノードがサイクルの始まり
+- 一度再帰で書こうとするも見通しのいいコードが思いつかず、ループで次のように書いたら一度でパスした
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        if (head == null) return null;
+
+        ListNode slow = head, fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast) break;
+        }
+
+        if (fast == null || fast.next == null) return null;
+
+        while (head != slow) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
+    }
+}
+```
+
+- detectCycle() 一行目の null チェックが不要だと気づいて消す
 
 ```java
 public class Solution {
@@ -51,12 +114,11 @@ public class Solution {
 }
 ```
 
-## HashSet
-
-HashSet に Node を格納し、走査中のものと同じ値が格納されていないか (サイクルが発生していないか) をチェックします。  
-最初に見つかった値がサイクルの始まりになるので、 (サイクルがある場合は) それを返します。
-
-Time Complexity: O(n), Space Complexity: O(n)
+- 再帰的な書き方で見通しのいい実装例がないか探すも特に見つけられない
+- 探している最中に、そもそも再帰で書くとスタック領域を使う分パフォーマンスが劣化すると気づく
+- 上記勘案して、ループと再帰両方で書けるようになる必要があるとは理解しつつも、この問題においては解法として再帰を選択することはないだろうと判断
+- Step 3 ではベストなソリューションである上記のループによる解法を扱うことに決める
+- そういえば HashSet を用いてループで処理する解法を用意してなかったので、以下の通り書いて一回目の submission でパスさせた
 
 ```java
 public class Solution {
@@ -68,6 +130,70 @@ public class Solution {
 
             set.add(head);
 
+            head = head.next;
+        }
+
+        return head;
+    }
+}
+```
+
+※ここまで約15分
+
+## Step 3
+
+上記の Floyd's ~ を用いたループによる解法を、ミスなしで3連続アクセプトさせた。  
+1回目と2回目は2分ほどでパスし、3回目はミスりたくないので慎重にやったら5分かかっていた。
+
+## Step 4
+
+- こチラの問題を解いた後に別のプルリクエストで受けたレビューを元に、上に挙げた3つの解法をそれぞれ次のように書き直した
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+        return recursive(set, head);
+    }
+
+    private ListNode recursive(Set<ListNode> set, ListNode node) {
+        if (node == null) return null;
+        if (set.contains(node)) return node;
+        set.add(node);
+        return recursive(set, node.next);
+    }
+}
+```
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) break;
+        }
+
+        if (fast == null || fast.next == null) return null;
+
+        while (head != slow) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
+    }
+}
+```
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+        while (head != null) {
+            if (set.contains(head)) return head;
+            set.add(head);
             head = head.next;
         }
 
