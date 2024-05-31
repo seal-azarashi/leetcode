@@ -208,3 +208,217 @@ public class Solution {
     }
 }
 ```
+
+ここまで書いた後、 oda さんから[追加レビュー](https://github.com/seal-azarashi/leetcode/pull/2/files#r1621223636)が来た。これにある通り、最初の while 文のあとに、実質その終了条件と同じことを書いていることに違和感を覚える。
+
+> いろいろな選択肢が見えたうえで、これを選んでいるならばいいのですが、そうでないならば、いろいろな選択肢があることを見ておいてください。
+> https://discord.com/channels/1084280443945353267/1221030192609493053/122567490144528386
+
+いろいろな選択肢を見たうえで選んでいなかったのを反省。添えられたリンクを読む。  
+これを踏まえ、この違和感、素直じゃない感じはどこから来るのかを考えていたら、上記リンクに引用される「[機械の使い方の説明](https://discord.com/channels/1084280443945353267/1192728121644945439/1194203372115464272)」を思い出した。
+
+> 「機械の使い方の説明です。まず、青いランプが5つついていることを確認してください。ランプがついていなかった場合は、直ちに使用を中止して事務所に連絡してください。…長い使い方の説明…。」  
+> のほうが素直ですよね。
+
+今回実装していた処理を日本語で説明するとして、上記と同じ順序で述べるなら次のようになるだろうか。
+
+```
+まず、 Floyd's ~ を使ってサイクルを探しましょう。見つからない場合は、 null を返します。
+slow, fast ポインタが出会ったノードと head ノードから、それぞれ1ずつポインタを進め、両者が出会うノードを返してください。
+```
+
+翻って、今の実装を説明すると次のようになるだろうか。
+
+```
+まず、 Floyd's ~ を使ってサイクルを探しましょう。 "サイクルを探す処理が終わったら、サイクルが見つかったのかどうか確認しましょう。" 見つからない場合は、 null を返します。
+slow, fast ポインタが出会ったノードと head ノードから、それぞれ1ずつポインタを進め、両者が出会うノードを返してください。
+```
+
+このダブルクオーテーションで囲った部分に素直じゃない感じがあるのではと思い、コードを次のように修正する。
+
+```
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (true) {
+            if (fast == null || fast.next == null) return null;
+
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) break;
+        }
+
+        while (head != slow) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
+    }
+}
+```
+
+これで上記太字部分がなくなり、素直になったように感じた。  
+
+さて、 [oda さんが添えていたリンク](https://discord.com/channels/1084280443945353267/1221030192609493053/1225674901445283860)では、「こういう構造のときには、Y を外に出したいです。いくつか手があります」とした上で、他の選択肢も挙げられていた。
+
+```
+> 1.関数化。  
+> while A:  
+>     短いX  
+>     if B:  
+>         Y()  
+>         return C  
+> 短いZ  
+> return D
+```
+
+これを Java で書くとこんな感じだろうか。
+
+```
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return findWhereTheCycleStarts(head, slow);
+        }
+
+        return null;
+    }
+
+    private ListNode findWhereTheCycleStarts(ListNode head, ListNode node) {
+        while (head != node) {
+            head = head.next;
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+この処理を日本語で書いてみるとこんな感じだろうか。
+
+```
+まず、 Floyd's ~ を使ってサイクルを探しましょう。slow, fast ポインタが出会ったノードと head ノードから、それぞれ1ずつポインタを進め、両者が出会うノードを返してください。
+見つからない場合は、 null を返します。
+```
+
+最初の修正案の方の日本語と比べると、若干素直さに欠けるような気がする。[oda さんの添えた](https://discord.com/channels/1084280443945353267/1192728121644945439/1194203372115464272)リンクにあった、比較的素直じゃない例として挙げられた次の文言に似ている。  
+「機械の使い方の説明です。まず、青いランプが5つついていることを確認してください。ついている場合、…使い方の説明…。ランプがついていなかった場合は、直ちに使用を中止して事務所に連絡してください。…機械の使い方の続き…。」
+
+次の選択肢を見よう。
+
+```
+> Python 独特の文法。
+> while A:
+>     短いX
+>     if B:
+>         break
+> else:
+>     短いZ
+>     return D
+> 長いY
+> return C
+```
+
+自分は Java で書くのでこれは一旦考慮から外すが、レビューを受ける前の解法に似ている気がする。
+
+次の選択肢はどうか。
+
+```
+> 無限ループを使う。
+> while 1:
+>   if not A:
+>       短いZ
+>       return D
+>   短いX
+>   if B:
+>       break
+> 長いY
+> return C
+```
+
+これは最初の修正案とほぼ同じだろうか。
+
+最後の選択肢を見る。
+
+```
+> 関数化
+> def F():
+>     while A:
+>         短いX
+>         if B:
+>             return True
+>     return False
+> 
+> if not F():
+>     短いZ
+>     return D
+> 長いY
+```
+
+Java で書くとこんな感じだろうか。
+
+```
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode whereSlowAndFastMeet = findWhereSlowAndFastMeet(head);
+        if (whereSlowAndFastMeet == null) return null;
+
+        while (head != whereSlowAndFastMeet) {
+            head = head.next;
+            whereSlowAndFastMeet = whereSlowAndFastMeet.next;
+        }
+        return head;
+    }
+
+    private ListNode findWhereSlowAndFastMeet(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return slow;
+        }
+
+        return null;
+    }
+}
+```
+
+切り出した関数の返り値を boolean にするとどうしても処理が冗長になるので、少しアレンジを加えている。  
+日本語にすると次のようになるので、レビューを受けた解法と同じになってしまったか。
+
+```
+まず、 Floyd's ~ を使ってサイクルを探しましょう。 "サイクルを探す処理が終わったら、サイクルが見つかったのかどうか確認しましょう。" 見つからない場合は、 null を返します。
+slow, fast ポインタが出会ったノードと head ノードから、それぞれ1ずつポインタを進め、両者が出会うノードを返してください。
+```
+
+さて、これでいろいろな選択肢を洗い出せただろうか。  
+最初に出した修正案がベストかと思うので、レビューに対する解答としてこれを提示したい。
+
+```
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (true) {
+            if (fast == null || fast.next == null) return null;
+
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) break;
+        }
+
+        while (head != slow) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
+    }
+}
+```
+
+ただ、最初の while 文内の null チェックが末尾に来たほうが良さそうだなとおもっている。しかしながら null pointer exception を回避しつつそのように書く方法が思いつかなかった。その点はまだ気持ち悪いので、いいやりかたを思いついたらアプライしたい。
