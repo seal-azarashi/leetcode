@@ -208,3 +208,28 @@ public class Solution {
         - https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html 
     - 前から見るようにしていたので今後もやっていく
     - もっと言うとわざわざノートにまとめるなんてこともやってたが、そこまでやる必要はないよな、と思い返した
+
+その後 nodchip さんから次のレビューを頂く。
+
+> recursive() という関数名に違和感を感じました。関数名には、関数が行う処理の内容を端的に表した英単語・英語句を付けることをお勧めします。また、関数名は命令形の単語または英語句とすることをお勧めします。
+> https://google.github.io/styleguide/javaguide.html#s5.2.3-method-names
+
+添えられている Google Java Style Guide を読み、関数名を `isCycleDetected` に修正した。
+
+```java
+// Time Complexity: O(n), Space Complexity: O(1)
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) return false;
+        return isCycleDetected(head, head.next);
+    }
+
+    private boolean isCycleDetected(ListNode one, ListNode two) {
+        if (one == null || two == null || two.next == null) return false;
+        if (one == two) return true;
+        return recursive(one.next, two.next.next);
+    }
+}
+```
+
+上記 Guide には "Method names are typically verbs or verb phrases" とあるものの、今回返り値の型が boolean なので、 prefix に `is` をつけた形にした ([参考](https://rules.sonarsource.com/java/tag/convention/RSPEC-2047/))。
