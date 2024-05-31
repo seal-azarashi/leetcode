@@ -227,7 +227,7 @@ public class Solution {
     private boolean isCycleDetected(ListNode one, ListNode two) {
         if (one == null || two == null || two.next == null) return false;
         if (one == two) return true;
-        return recursive(one.next, two.next.next);
+        return isCycleDetected(one.next, two.next.next);
     }
 }
 ```
