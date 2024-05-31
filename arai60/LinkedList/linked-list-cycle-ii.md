@@ -422,3 +422,65 @@ public class Solution {
 ```
 
 ただ、最初の while 文内の null チェックが末尾に来たほうが良さそうだなとおもっている。しかしながら null pointer exception を回避しつつそのように書く方法が思いつかなかった。その点はまだ気持ち悪いので、いいやりかたを思いついたらアプライしたい。
+
+その後、 hayashi-ay さんから次のレビューが来た。
+
+> 変数名はもう少しこだわっても良いかなと思います。犬に犬と名前をつけてる感覚です。seenNodesとかvisitedNodesとかでしょうか？
+
+仰る通りなので、頂いた候補の中から自分のイメージにより合致する `visitedNodes` を採用させて頂いた。加えて、変数名だけでなく関数名も `recursive` もよりこだわった方がいいと考え、 `findThBeginningOfCycle` 修正した。
+
+```java
+// Time Complexity: O(n), Space Complexity: O(n)
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> visitedNodes = new HashSet<>();
+        return findThBeginningOfCycle(visitedNodes, head);
+    }
+
+    private ListNode findThBeginningOfCycle(Set<ListNode> visitedNodes, ListNode node) {
+        if (node == null) return null;
+        if (visitedNodes.contains(node)) return node;
+        visitedNodes.add(node);
+        return findThBeginningOfCycle(visitedNodes, node.next);
+    }
+}
+```
+
+```java
+// Time Complexity: O(n), Space Complexity: O(1)
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) break;
+        }
+
+        if (fast == null || fast.next == null) return null;
+
+        while (head != slow) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
+    }
+}
+```
+
+```java
+// Time Complexity: O(n), Space Complexity: O(n)
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> visitedNodes = new HashSet<>();
+        while (head != null) {
+            if (visitedNodes.contains(head)) return head;
+            visitedNodes.add(head);
+            head = head.next;
+        }
+
+        return null;
+    }
+}
+```
