@@ -204,6 +204,24 @@ public class Solution {
             head = head.next;
         }
 
+        return head;
+    }
+}
+```
+
+HashSet を使ったループの解法について、返り値は null で良いと指摘があったので修正。
+
+```java
+// Time Complexity: O(n), Space Complexity: O(n)
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+        while (head != null) {
+            if (set.contains(head)) return head;
+            set.add(head);
+            head = head.next;
+        }
+
         return null;
     }
 }
