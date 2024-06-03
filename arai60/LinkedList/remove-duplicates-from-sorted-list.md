@@ -26,7 +26,6 @@ LeetCode URL: https://leetcode.com/problems/remove-duplicates-from-sorted-list/
 かかった時間: 4 m 58 s
 
 ```java
-// Time Complexity: O(n), Space Complexity: O(n)
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
@@ -78,7 +77,6 @@ class Solution {
 - テストケース失敗の原因となった上記の欠点がなく、かつ一回の iteration で重複する要素を全て除くよう、次のように修正した
 
 ```java
-// Time Complexity: O(n), Space Complexity: O(n)
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
@@ -127,7 +125,6 @@ class Solution {
 - やりたかったのは「ここで node.next が null になったら (もう走査対象がないため) 処理を中断する」ことなので、これに沿うような形に変えてみる
 
 ```java
-// Time Complexity: O(n), Space Complexity: O(n)
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         // (略)
