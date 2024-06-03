@@ -21,40 +21,21 @@ LeetCode URL: https://leetcode.com/problems/remove-duplicates-from-sorted-list/
  */
 ```
 
-## Recursive
+## Step 1
 
-再帰関数を用いた実装です。
-
-Time Complexity: O(n), Space Complexity: O(1)
+かかった時間: 4 m 58 s
 
 ```java
-class Solution {
-    public ListNode deleteDuplicates(ListNode head) {
-        if (head == null || head.next == null) return head;
-
-        head.next = deleteDuplicates(head.next);
-
-        return head.val == head.next.val ? head.next : head;
-    }
-}
-```
-
-## Iterative
-
-反復的なアプローチでの実装です。
-
-Time Complexity: O(n), Space Complexity: O(1)
-
-```java
+// Time Complexity: O(n), Space Complexity: O(n)
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
-        while (node != null && node.next != null) {
-            if (node.val == node.next.val) {
-                node.next = node.next.next;
-                continue;
-            }
+        while (true) {
+            if (node == null || node.next == null) break;
 
+            while (node.next != null && node.val == node.next.val) {
+                node.next = node.next.next;
+            }
             node = node.next;
         }
 
@@ -62,3 +43,63 @@ class Solution {
     }
 }
 ```
+
+思考ログ:
+
+- まず、次の解き方を思いついたのでループで実装を試みる:
+    - 各ノードの val が、その次のノードの val と等しければ、さらにその次のノードに連結する (node.next に node.next.next を代入する)
+    - もし node, node.next が null の場合、走査を終えて head を返す
+- 実装は次のようになった
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        while (true) {
+            if (node == null || node.next == null) break;
+
+            if (node.val == node.next.val) {
+                node.next = node.next.next;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+- ひとつテストケースが失敗したので原因を考える:
+    - head     = [1,1,1]
+    - Output   = [1,1]
+    - Expected = [1]
+- 最後のノードが連続する val の重複した node の一部だと、末尾の要素を排除できない欠点があることに気づく
+- 実装をどう修正するか考える上で既存の処理を全体的に見直したところ、一回の while 文の iteration で、ノードの走査を1ずつ進めていることに違和感を覚える
+- テストケース失敗の原因となった上記の欠点がなく、かつ一回の iteration で重複する要素を全て除くよう、次のように修正した
+
+```java
+// Time Complexity: O(n), Space Complexity: O(n)
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        while (true) {
+            if (node == null || node.next == null) break;
+
+            while (node.val == node.next.val) {
+                node.next = node.next.next;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+- 既存のテストケースを実行したら null pointer exception が発生
+- 2つめの while 文の実行時に null チェックをしていないことが原因だったので修正
+- このステップの最上部に書いた実装の通りに修正し、パスすることを確認した
+
+## Step 2
+
+
