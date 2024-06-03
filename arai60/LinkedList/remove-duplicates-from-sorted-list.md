@@ -183,3 +183,23 @@ class Solution {
 - 対象のノードは head かもしれないし tail かもしれないしそのどちらでもないかもしれないので、上記のように修正した
 - 末尾再帰最適化を試みようとするも、 Java で実現するには[どうにも大変そう](https://backpaper0.github.io/ghosts/optimized_tail_call_recursive_fibonacci_in_java.html#/)で時間内に書くような作業ではなさそうなので、今回も断念
 
+## Step 3
+
+Step 2 に書いたループと再帰のパターン両方で実施。どちらも大体2分弱で全 submission をミスなく完了。  
+再帰の方を書いてる最中、1つめの deleteDuplicatesRecursively の if 文にある判定条件 `node == null` は、リストの数が0のときに対応出来るようにするもので、毎回の走査に必要ではないと気づき、以下のように修正した。
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+        return deleteDuplicatesRecursively(head);
+    }
+
+    private ListNode deleteDuplicatesRecursively(ListNode node) {
+        if (node.next == null) return node;
+        node.next = deleteDuplicatesRecursively(node.next);
+        return node.val == node.next.val ? node.next : node;
+    }
+}
+```
+
