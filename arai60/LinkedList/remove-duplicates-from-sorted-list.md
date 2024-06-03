@@ -102,4 +102,49 @@ class Solution {
 
 ## Step 2
 
+### Step 1 で書いた実装の修正
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        while (node != null && node.next != null) {
+            while (node.val == node.next.val) {
+                node.next = node.next.next;
+                if (node.next == null) return head;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+思考ログ:
+
+- 2つめの while 文に `node.next != null` があるが、これは null ~ を防ぐためにつけたものだった
+- やりたかったのは「ここで node.next が null になったら (もう走査対象がないため) 処理を中断する」ことなので、これに沿うような形に変えてみる
+
+```java
+// Time Complexity: O(n), Space Complexity: O(n)
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        // (略)
+
+            while (node.val == node.next.val) {
+                node.next = node.next.next;
+                if (node.next == null) return head;
+            }
+
+        // (略)
+    }
+}
+```
+
+- 見通しが良くなった気がする
+- 1つめの while 文の終了条件の書き方も変えたくなったので、このステップ冒頭に示したコードのように修正した
+- 処理を口頭で説明するならば、次のようにするのが自然かなと考えるので、これで素直な処理になったように思う
+    - 先頭のノードから順に、その次のノードとペアで処理していきます。末尾にたどりついたら head を返します。
+    - 処理中、対象のノードの val が次のノードのものと等しかったら、さらにその次のノードを next に代入します。これを val と next が異なるものになるまで繰り返します。next が null になったらもう操作対象がないので、 head を return しましょう。
 
