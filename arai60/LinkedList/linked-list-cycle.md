@@ -233,3 +233,71 @@ public class Solution {
 ```
 
 上記 Guide には "Method names are typically verbs or verb phrases" とあるものの、今回返り値の型が boolean なので、 prefix に `is` をつけた形にした ([参考](https://rules.sonarsource.com/java/tag/convention/RSPEC-2047/))。
+
+## Step 5
+
+### 二度目の解答
+
+#### HashSet を用いた解答
+
+```java
+// Time taken: 2 m 11 s
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> visitedNodes = new HashSet<>();
+        ListNode node = head;
+        while (node != null) {
+            if (visitedNodes.contains(node)) return true;
+            visitedNodes.add(node);
+            node = node.next;
+        }
+
+        return false;
+    }
+}
+```
+
+前回とほぼ一緒だが、 HashSet の宣言時に変数名を意味のあるものにしている。  
+レビューで以前指摘された内容だったので、それを引き出せてよかった。
+
+#### ループを用いた Floyd's ~ の解法
+
+```java
+// Time taken: 2 m 13 s
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return true;
+        }
+
+        return false;
+    }
+}
+```
+
+slow と fast をワンライナーで定義した以外は同じ。
+
+#### 再帰を用いた Floyd's ~ の解法
+
+```java
+// Time taken: 6 m 49 s
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        return detectCycleRecursively(head, head);
+    }
+
+    private boolean detectCycleRecursively(ListNode slow, ListNode fast) {
+        if (fast == null || fast.next == null) return false;
+        
+        slow = slow.next;
+        fast = fast.next.next;
+        return slow == fast ? true : detectCycleRecursively(slow, fast);
+    }
+}
+```
+
+再帰関数の引数名が one, two から slow, fast になって読みやすくなった気がする。  
+不要だった slow ポインタのチェックをしなくなっていた。  
