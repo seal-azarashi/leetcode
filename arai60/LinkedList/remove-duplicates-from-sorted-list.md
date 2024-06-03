@@ -199,3 +199,24 @@ class Solution {
     }
 }
 ```
+
+これはループのパターンにも言えることなので、そちらも次のように修正した。
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+
+        ListNode node = head;
+        while (node.next != null) {
+            while (node.val == node.next.val) {
+                node.next = node.next.next;
+                if (node.next == null) return head;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
