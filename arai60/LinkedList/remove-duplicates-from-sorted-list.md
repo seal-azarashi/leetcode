@@ -148,3 +148,38 @@ class Solution {
     - 先頭のノードから順に、その次のノードとペアで処理していきます。末尾にたどりついたら head を返します。
     - 処理中、対象のノードの val が次のノードのものと等しかったら、さらにその次のノードを next に代入します。これを val と next が異なるものになるまで繰り返します。next が null になったらもう操作対象がないので、 head を return しましょう。
 
+### 再帰で実装するパターン
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        return deleteDuplicatesRecursively(head);
+    }
+
+    private ListNode deleteDuplicatesRecursively(ListNode node) {
+        if (node == null || node.next == null) return node;
+        node.next = deleteDuplicates(node.next);
+        return node.val == node.next.val ? node.next : node;
+    }
+}
+```
+
+思考ログ:
+
+- リストが大きいとスタックオーバーフローが発生するリスクがあるのはわかりつつ、再帰での実装も書けるようにしておこうと試みる
+- 良い書き方を思いつかなかったので、 LeetCode の Solution にあった解法を参考に、処理を書く
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) return head;
+        head.next = deleteDuplicates(head.next);
+        return head.val == head.next.val ? head.next : head;
+    }
+}
+```
+
+- 記述量が少ないのである種きれいにも見えるが、これだと走査対象のノードの名称が head であることに違和感を感じる
+- 対象のノードは head かもしれないし tail かもしれないしそのどちらでもないかもしれないので、上記のように修正した
+- 末尾再帰最適化を試みようとするも、 Java で実現するには[どうにも大変そう](https://backpaper0.github.io/ghosts/optimized_tail_call_recursive_fibonacci_in_java.html#/)で時間内に書くような作業ではなさそうなので、今回も断念
+
