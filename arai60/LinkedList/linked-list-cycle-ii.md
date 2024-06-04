@@ -502,3 +502,58 @@ public class Solution {
     }
 }
 ```
+
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+#### HashSet を用いたパターン
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> visitedNodes = new HashSet<>();
+        ListNode node = head;
+        while (node != null) {
+            if (visitedNodes.contains(node)) return node;
+            visitedNodes.add(node);
+            node = node.next;
+        }
+
+        return null;
+    }
+}
+```
+
+- 全く同じ答えがでた
+
+#### Floyd's ~ の応用パターン
+
+```java
+// Time taken: 7 m 12 s
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return findCycleStart(head, slow);
+        }
+
+        return null;
+    }
+
+    private ListNode findCycleStart(ListNode head, ListNode meetingPoint) {
+        while (true) {
+            if (head == meetingPoint) return head;
+            head = head.next;
+            meetingPoint = meetingPoint.next;
+        }
+    }
+}
+```
+
+- 関数名を `findCycleStart` とより短いものにした
+- その関数の第二引数を、 `node` ではなく `meetingPoint` に変え、 slow と fast ポインタが会う地点のノードであることを示すようにした
