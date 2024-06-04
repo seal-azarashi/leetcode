@@ -254,7 +254,7 @@ slow, fast ポインタが出会ったノードと head ノードから、それ
 
 このダブルクオーテーションで囲った部分に素直じゃない感じがあるのではと思い、コードを次のように修正する。
 
-```
+```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
@@ -293,7 +293,7 @@ public class Solution {
 
 これを Java で書くとこんな感じだろうか。
 
-```
+```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
@@ -380,7 +380,7 @@ public class Solution {
 
 Java で書くとこんな感じだろうか。
 
-```
+```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode whereSlowAndFastMeet = findWhereSlowAndFastMeet(head);
@@ -417,7 +417,7 @@ slow, fast ポインタが出会ったノードと head ノードから、それ
 さて、これでいろいろな選択肢を洗い出せただろうか。  
 最初に出した修正案がベストかと思うので、レビューに対する解答としてこれを提示したい。
 
-```
+```java
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head, fast = head;
