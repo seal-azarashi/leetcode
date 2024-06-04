@@ -227,3 +227,27 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+頂いた次のレビューを元に、ループのパターンについて、2つめの while 文を修正した: https://github.com/seal-azarashi/leetcode/pull/3#discussion_r1624688139
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+
+        ListNode node = head;
+        while (node != null) {
+            while (node.next != null && node.val == node.next.val) {
+                node.next = node.next.next;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+他にも上記の思考ログに書いてきたコードたちについてもレビューをもらい、指摘を取り入れている。詳しくは各レビューコメントを参照。
