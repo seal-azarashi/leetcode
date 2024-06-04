@@ -23,9 +23,10 @@ LeetCode URL: https://leetcode.com/problems/remove-duplicates-from-sorted-list/
 
 ## Step 1
 
-かかった時間: 4 m 58 s
+このステップで作成した実装は次の通りです。
 
 ```java
+// 実装にかかった時間: 4 m 58 s
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
@@ -43,14 +44,15 @@ class Solution {
 }
 ```
 
-思考ログ:
+以下、上記が完成するまでの試行錯誤の過程を、時系列順に思考ログとして書いていきます:
 
 - まず、次の解き方を思いついたのでループで実装を試みる:
     - 各ノードの val が、その次のノードの val と等しければ、さらにその次のノードに連結する (node.next に node.next.next を代入する)
     - もし node, node.next が null の場合、走査を終えて head を返す
-- 実装は次のようになった
+- 実装は次のようになったが...
 
 ```java
+// 一部テストケースで fail
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
@@ -74,9 +76,10 @@ class Solution {
     - Expected = [1]
 - 最後のノードが連続する val の重複した node の一部だと、末尾の要素を排除できない欠点があることに気づく
 - 実装をどう修正するか考える上で既存の処理を全体的に見直したところ、一回の while 文の iteration で、ノードの走査を1ずつ進めていることに違和感を覚える
-- テストケース失敗の原因となった上記の欠点がなく、かつ一回の iteration で重複する要素を全て除くよう、次のように修正した
+- テストケース失敗の原因となった上記の欠点がなく、かつ一回の iteration で重複する要素を全て除くよう、次のように修正したが...
 
 ```java
+// Null pointer exception 発生
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
@@ -102,6 +105,8 @@ class Solution {
 
 ### Step 1 で書いた実装の修正
 
+表題の通り、次のように Step 1 で書いた実装を修正しました。
+
 ```java
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
@@ -119,7 +124,7 @@ class Solution {
 }
 ```
 
-思考ログ:
+以下、上記が完成するまでの試行錯誤の過程を、時系列順に思考ログとして書いていきます:
 
 - 2つめの while 文に `node.next != null` があるが、これは null ~ を防ぐためにつけたものだった
 - やりたかったのは「ここで node.next が null になったら (もう走査対象がないため) 処理を中断する」ことなので、これに沿うような形に変えてみる
@@ -147,6 +152,8 @@ class Solution {
 
 ### 再帰で実装するパターン
 
+再帰での実装パターンを追加しました。
+
 ```java
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
@@ -161,7 +168,7 @@ class Solution {
 }
 ```
 
-思考ログ:
+以下、上記が完成するまでの試行錯誤の過程を、時系列順に思考ログとして書いていきます:
 
 - リストが大きいとスタックオーバーフローが発生するリスクがあるのはわかりつつ、再帰での実装も書けるようにしておこうと試みる
 - 良い書き方を思いつかなかったので、 LeetCode の Solution にあった解法を参考に、処理を書く
