@@ -259,6 +259,7 @@ class Solution {
 ### 3日後の再チャレンジ
 
 ```java
+// Time taken: 5 m 21 s
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode node = head;
