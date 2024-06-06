@@ -251,3 +251,28 @@ class Solution {
 ```
 
 他にも上記の思考ログに書いてきたコードたちについてもレビューをもらい、指摘を取り入れている。詳しくは各レビューコメントを参照。
+
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode node = head;
+        while (node != null) {
+            while (node.next != null && node.val == node.next.val) {
+                node.next = node.next.next;
+            }
+            node = node.next;
+        }
+
+        return head;
+    }
+}
+```
+
+メソッドの1行目に書いていた null チェックを書かなくなっていた。  
+これは while 文の判定を `node.next != null` としていた時に記述したもので、その後のレビューを受け入れた結果不要になったもの。なのでより良い解答が出せたと考えて良さそう。
