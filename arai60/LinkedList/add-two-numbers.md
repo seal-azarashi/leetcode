@@ -145,3 +145,36 @@ class Solution {
 ## Step 3
 
 ミスなく3回、それぞれ3分半ほどで実装しパスさせました。
+
+## Step 4
+
+SuperHotDogCat さんからのレビューを受け、 while の条件文を修正しました。  
+これで条件文がそのままノードの追加条件、つまり「対象の桁に対応する l1, l2 のノードもしくは carry が存在すること」そのものになり、 carry のみ存在する場合を考慮して入れていた一行を削除でき、より素直な実装になったと思います。
+
+```java
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummyHead = new ListNode();
+
+        ListNode node = dummyHead;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int sum = carry;
+            if (l1 != null) {
+                sum += l1.val;
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                sum += l2.val;
+                l2 = l2.next;
+            }
+
+            node.next = new ListNode(sum % 10);
+            node = node.next;
+            carry = sum / 10;
+        }
+
+        return dummyHead.next;
+    }
+}
+```
