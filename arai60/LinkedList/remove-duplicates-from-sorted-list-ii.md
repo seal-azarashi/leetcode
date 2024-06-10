@@ -210,3 +210,23 @@ class Solution {
 - 可読性向上のため、if else 文の if 節に、より認知不可の低い処理が記述されるようにした
 - 不要な変数の宣言を避けるため、無くても実装に支障のない、修正前の runner に相当するものを宣言しないようにした
 - 変数 dummy の名称を、よく見る sentinel に修正した ([参考](https://github.com/kagetora0924/leetcode-grind/pull/5#discussion_r1592157758))
+
+加えて、再帰の解答も追加しました。
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        if (head.val != head.next.val) {
+            head.next = deleteDuplicates(head.next);
+            return head;
+        }
+
+        while (head.next != null && head.val == head.next.val) {
+            head = head.next;
+        }
+        return deleteDuplicates(head.next);
+    }
+}
+```
