@@ -173,3 +173,40 @@ prev の後ろに2つ以上ノードがある限り走査を続けます。あ�
 Step 2 が終わった時点で、なぜこの実装がパスするのかについて理解の浅い点を認識できなかったことを反省。
 
 その後一回あたり約3分で解答し終了した。
+
+## Step 4
+
+sakupan102 さんに頂いた諸々のレビューや、その対応を通して確認した過去の解答を見て、次のように修正しました。
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode sentinel = new ListNode(0, head);
+        ListNode previous = sentinel;
+        while (previous.next != null && previous.next.next != null) {
+            if (previous.next.val != previous.next.next.val) {
+                previous = previous.next;
+            } else {
+                previous.next = skipNode(previous.next.next);
+            }
+        }
+
+        return sentinel.next;
+    }
+
+    private ListNode skipNode(ListNode node) {
+        while (node.next != null && node.val == node.next.val) {
+            node = node.next;
+        }
+        return node.next;
+    }
+}
+```
+
+修正のポイントは次の通りです:
+
+- ネストが深くなりすぎないように、一部処理をプライベートメソッドに切り出した
+    - 自クラス、つまるところ deleteDuplicates() 以外からは参照出来ないため、 null チェックはしなくていいと判断している
+- 可読性向上のため、if else 文の if 節に、より認知不可の低い処理が記述されるようにした
+- 不要な変数の宣言を避けるため、無くても実装に支障のない、修正前の runner に相当するものを宣言しないようにした
+- 変数 dummy の名称を、よく見る sentinel に修正した ([参考](https://github.com/kagetora0924/leetcode-grind/pull/5#discussion_r1592157758))
