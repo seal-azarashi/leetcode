@@ -176,18 +176,21 @@ Step 2 が終わった時点で、なぜこの実装がパスするのかにつ�
 
 ## Step 4
 
-sakupan102 さんに頂いた諸々のレビューや、その対応を通して確認した過去の解答を見て、次のように修正しました。
+sakupan102 さんや oda さんに頂いた諸々のレビューや、その対応を通して確認した過去の解答を見て、次のように修正しました。
 
 ```java
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
         ListNode sentinel = new ListNode(0, head);
+
         ListNode previous = sentinel;
-        while (previous.next != null && previous.next.next != null) {
-            if (previous.next.val != previous.next.next.val) {
-                previous = previous.next;
+        while (previous.next != null) {
+            ListNode node = previous.next;
+            if (node.next == null) break;
+            if (node.val != node.next.val) {
+                previous = node;
             } else {
-                previous.next = skipNode(previous.next.next);
+                previous.next = skipNode(node.next);
             }
         }
 
