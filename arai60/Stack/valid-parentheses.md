@@ -61,5 +61,47 @@ class Solution {
     - 同じく一度しか使われないものの、何をしているのかメソッド名が簡潔に表してくれるため、可読性が向上することを期待
     - 英語で「括弧の組み合わせがマッチしている」をなんと言うのか分からなかったので、ググって "balanced" という単語を見つけた (これは Step 2 でやるべきだった)
 - 上記2つのメソッド、記述が長く書くのに時間がかかってしまい、どうにかもっと簡潔に出来ないものか... と思いつつもひとまず書き上げる
+- 変数 leftBracket と rightBracket については無くても処理の実装は出来るが、次のように一行で書くと少し読みづらく感じるため残した: `if (bracketMap.get(leftBracketStack.pop()) != bracket) return false;`
+    - 引数としてメソッドの呼び出しが渡されている
+    - bracket に代入されている値が右括弧であることが、その行を見るだけでは読み取れない
 - 最初の実装では、右括弧の数が左括弧の数を超えたときの想定が出来ておらず失敗
 - 2度目の submit でパスした
+
+## Step 2
+
+Step 1 で作成した解答の修正を行いました。
+
+```java
+class Solution {
+    public boolean isValid(String s) {
+        // Key: left bracket, Value: right bracket
+        Map<Character, Character> bracketMap = new HashMap<>();
+        bracketMap.put('(', ')');
+        bracketMap.put('{', '}');
+        bracketMap.put('[', ']');
+
+        ArrayDeque<Character> leftBracketStack = new ArrayDeque<>();
+
+        for (char bracket : s.toCharArray()) {
+            if (bracketMap.containsKey(bracket)) {
+                leftBracketStack.push(bracket);
+                continue;
+            }
+
+            if (leftBracketStack.isEmpty()) return false;
+
+            char leftBracket = leftBracketStack.pop();
+            char rightBracket = bracket;
+            if (bracketMap.get(leftBracket) != rightBracket) return false;
+        }
+
+        return leftBracketStack.isEmpty();
+    }
+}
+```
+
+可読性向上のため、次の修正を実施しています:
+
+- ループを拡張 for 文にし、走査中の char 値を bracket と命名
+- 左括弧を格納するスタックの名称を stack から leftBracketStack に変更
+- 2つの private メソッドを消去し、 HashMap を用いて括弧の対応関係を表現
