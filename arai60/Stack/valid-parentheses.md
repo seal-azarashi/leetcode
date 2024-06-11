@@ -105,3 +105,7 @@ class Solution {
 - ループを拡張 for 文にし、走査中の char 値を bracket と命名
 - 左括弧を格納するスタックの名称を stack から leftBracketStack に変更
 - 2つの private メソッドを消去し、 HashMap を用いて括弧の対応関係を表現
+
+## Step 3
+
+一回目は5分半程度かかり、回を重ねるごとに早くなって三回目は4分半程度で実装できた。
