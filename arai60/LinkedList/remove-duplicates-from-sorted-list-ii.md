@@ -184,33 +184,28 @@ class Solution {
         ListNode sentinel = new ListNode(0, head);
 
         ListNode previous = sentinel;
-        while (previous.next != null) {
-            ListNode node = previous.next;
-            if (node.next == null) break;
-            if (node.val != node.next.val) {
+        ListNode node = previous.next;
+        while (node != null) {
+            if (node.next == null || node.val != node.next.val) {
                 previous = node;
-            } else {
-                previous.next = skipNode(node.next);
+                node = node.next;
+                continue;
             }
+
+            while (node.next != null && node.val == node.next.val) {
+                node = node.next;
+            }
+            previous.next = node.next;
+            node = previous.next;
         }
 
         return sentinel.next;
-    }
-
-    private ListNode skipNode(ListNode node) {
-        while (node.next != null && node.val == node.next.val) {
-            node = node.next;
-        }
-        return node.next;
     }
 }
 ```
 
 修正のポイントは次の通りです:
 
-- ネストが深くなりすぎないように、一部処理をプライベートメソッドに切り出した
-    - 自クラス、つまるところ deleteDuplicates() 以外からは参照出来ないため、 null チェックはしなくていいと判断している
-- 可読性向上のため、if else 文の if 節に、より認知不可の低い処理が記述されるようにした
 - 不要な変数の宣言を避けるため、無くても実装に支障のない、修正前の runner に相当するものを宣言しないようにした
 - 変数 dummy の名称を、よく見る sentinel に修正した ([参考](https://github.com/kagetora0924/leetcode-grind/pull/5#discussion_r1592157758))
 
