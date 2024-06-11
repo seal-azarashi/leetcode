@@ -44,7 +44,7 @@ class Solution {
 
             int val = 0;
             sum = isCarrying ? sum + 1 : sum;
-            if (sum > 9) {
+            if (sum >= 10) { // 9 は 10 よりも唐突な印象を与えるので修正済: https://github.com/seal-azarashi/leetcode/pull/5#discussion_r1633583829
                 val = sum % 10;
                 isCarrying = true;
             } else {
