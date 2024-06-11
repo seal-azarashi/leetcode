@@ -557,3 +557,52 @@ public class Solution {
 
 - 関数名を `findCycleStart` とより短いものにした
 - その関数の第二引数を、 `node` ではなく `meetingPoint` に変え、 slow と fast ポインタが会う地点のノードであることを示すようにした
+
+### 7日後の再チャレンジ
+
+#### HashSet を用いたパターン
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> visitedNodes = new HashSet<>();
+        while (head != null) {
+            if (visitedNodes.contains(head)) return head;
+            visitedNodes.add(head);
+            head = head.next;
+        }
+
+        return null;
+    }
+}
+```
+
+- node を宣言せず head をそのまま使ってた
+
+#### Floyd's ~ の応用パターン
+
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return findWhereCycleBegins(head, slow);
+        }
+
+        return null;
+    }
+
+    private ListNode findWhereCycleBegins(ListNode head, ListNode meetingPoint) {
+        while (head != meetingPoint) {
+            head = head.next;
+            meetingPoint = meetingPoint.next;
+        }
+        return head;
+    }
+}
+```
+
+- 解法思い出せずにこのファイルを見て解いてしまった (時間がなかったのもあるが、ちゃんと時間がある時にやってその場で考えた方がよかったと反省)
+- 前は関数名を `findCycleStart` とより短いものにしてたけど、また `findWhereCycleBegins` にしてた
