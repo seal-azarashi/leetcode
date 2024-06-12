@@ -214,3 +214,83 @@ class Solution {
     }
 }
 ```
+
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+```java
+// Time taken: 5 m 21 s
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+#### ループを用いた実装
+
+```java
+// Time taken: 測り忘れたけど多分6~7分
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummyHead = new ListNode();
+        ListNode node = dummyHead;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry > 0) {
+            int sum = carry;
+            if (l1 != null) {
+                sum += l1.val;
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                sum += l2.val;
+                l2 = l2.next;
+            }
+
+            node.next = new ListNode(sum % 10);
+            carry = sum / 10;
+            node = node.next;
+        }
+
+        return dummyHead.next;
+    }
+}
+```
+
+#### 再帰を用いた実装
+
+```java
+// 6分ぐらいで完了
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        return addTwoNumbersRecursively(l1, l2, 0);
+    }
+
+    private ListNode addTwoNumbersRecursively(ListNode l1, ListNode l2, int carry) {
+        if (l1 == null && l2 == null && carry == 0) return null;
+
+        int sum = carry;
+        if (l1 != null) {
+            sum += l1.val;
+            l1 = l1.next;
+        }
+        if (l2 != null) {
+            sum += l2.val;
+            l2 = l2.next;
+        }
+
+        ListNode node = new ListNode(
+            sum % 10,
+            addTwoNumbersRecursively(l1, l2, sum / 10)
+        );
+        return node;
+    }
+}
+```
+
+- ListNode の宣言をコンストラクタを使って行うようになった
+- addTwoNumbersRecursively 一行目にある terminate condition を考慮できず一度 fail 
+- 一行目に terminate condition を書いたからより再帰っぽい？感じが出てるかも？
+- 二度目でパス
