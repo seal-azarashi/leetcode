@@ -228,3 +228,38 @@ class Solution {
     }
 }
 ```
+
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+```java
+// Time taken: 測り忘れたけど多分5分かからないぐらい
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode dummyHead = new ListNode(0, head);
+        ListNode previous = dummyHead;
+        ListNode node = previous.next;
+        while (node != null && node.next != null) {
+            if (node.val != node.next.val) {
+                previous = previous.next;
+                node = node.next;
+                continue;
+            }
+
+            while (node.next != null && node.val == node.next.val) {
+                node = node.next;
+            }
+            previous.next = node.next;
+            node = previous.next;
+        }
+
+        return dummyHead.next;
+    }
+}
+```
+
+- 2つめの while 文に null チェックを入れて無くて一回 fail
+- 二度目の submit でパス
