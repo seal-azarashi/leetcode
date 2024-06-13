@@ -145,10 +145,11 @@ class Solution {
         node.next = previous;
         previous = node;
         head = nextNode;
-
         return reverseListRecursively(previous, node, head);
     }
 }
 ```
 
 - ポインタが3つあるのが煩雑に感じ、このステップで最初に示した形に修正した
+
+## Step 3
