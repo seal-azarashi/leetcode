@@ -5,6 +5,21 @@ LeetCode URL: https://leetcode.com/problems/reverse-linked-list/description/
 この問題は Java で解いています。  
 各解法において、メソッドが属するクラスとして `Solution` を定義していますが、これは Java の言語仕様に従い、コードを実行可能にするために必要なものです。このクラス自体には特定の意味はなく、単にメソッドを組織化し、実行可能にするためのものです。
 
+尚、各設問で扱われる ListNode のクラス定義は、 LeetCode のページで言語を Java にしたら出てくる次のコメントの通りです。
+
+```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+```
+
 ## Step 1
 
 このステップで作成した実装は次の通りです。
@@ -60,20 +75,15 @@ class Solution {
 // 時間計算量: O(n), 空間計算量: O(1)
 class Solution {
     public ListNode reverseList(ListNode head) {
-        ListNode previous = null, node = null;
-        while (head != null) {
-            ListNode nextNode = head.next;
-
-            // reverse node
-            node = head;
+        ListNode previous = null, node = head;
+        while (node != null) {
+            ListNode nextNode = node.next;
             node.next = previous;
-
-            // move the pointers
-            head = nextNode;
             previous = node;
+            node = nextNode;
         }
 
-        return node;
+        return previous;
     }
 }
 ```
@@ -84,19 +94,17 @@ class Solution {
 // 時間計算量: O(n), 空間計算量: O(n)
 class Solution {
     public ListNode reverseList(ListNode head) {
-        if (head == null || head.next == null) return head;
         return reverseListRecursively(null, head);
     }
 
-    private ListNode reverseListRecursively(ListNode previous, ListNode head) {
-        ListNode nextNode = head.next;
-        head.next = previous;
-        
-        if (nextNode == null) return head;
+    private ListNode reverseListRecursively(ListNode previous, ListNode node) {
+        if (node == null) return previous;
 
-        previous = head;
-        head = nextNode;
-        return reverseListRecursively(previous, head);
+        ListNode nextNode = node.next;
+        node.next = previous;
+        previous = node;
+        node = nextNode;
+        return reverseListRecursively(previous, node);
     }
 }
 ```
@@ -128,7 +136,9 @@ class Solution {
 ```
 
 - 一行目にエッジケースの処理が入っているのと、 while の条件式が (true) となっているのを読みづらいと感じる
-- while 終了時にリバースしたリスト先頭のノードのポインタを残せば条件設定がシンプルに出来そうだと判断し、このステップで最初に示した形に修正した
+- while 終了時にリバースしたリスト先頭のノードのポインタを返したいが、それをするには previous を返せばよいと気づく
+- そうなるともう head はリバースしたリストの先頭でもなんでもないので、感覚的に previous の後ろのノードは node とした方がいいと判断
+- 上記踏まえてこのステップで最初に示した形に修正した
 - 加えて、再帰での実装を行う
 
 ```java
@@ -150,6 +160,10 @@ class Solution {
 }
 ```
 
+- ポイントを3つ宣言してしまったが2つでよいはずと気づく
 - ポインタが3つあるのが煩雑に感じ、このステップで最初に示した形に修正した
 
 ## Step 3
+
+ループを用いた処理: 1回目は4分、2, 3回目は1分半ほどで完了。
+再帰を用いた処理: 約4分半、2,3回目は2分ほどで完了。
