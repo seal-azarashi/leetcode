@@ -277,3 +277,81 @@ class Solution {
 
 メソッドの1行目に書いていた null チェックを書かなくなっていた。  
 これは while 文の判定を `node.next != null` としていた時に記述したもので、その後のレビューを受け入れた結果不要になったもの。なのでより良い解答が出せたと考えて良さそう。
+
+### 7日後の再チャレンジ
+
+#### ループを用いた実装
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode dummyHead = new ListNode(0, head);
+
+        ListNode previous = head, node = head.next;
+        while (node != null) {
+            if (previous.val != node.val) {
+                previous = node;
+                node = node.next;
+            }
+
+            while (node != null && previous.val == node.val) {
+                node = node.next;
+            }
+            previous.next = node;
+        }
+
+        return dummyHead.next;
+    }
+}
+```
+
+- 前と違い、 `previous.val != node.val` の場合 early return してネストが深くならないようにしてた
+- 一行目でエッジケースを処理するようになり、脳内メモリが開放され、その後の実装がすごく楽になった気がした
+- 一方、 dummyNode がなくてもいいことに気づいたので、少し修正して次のようにした
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode previous = head, node = head.next;
+        while (node != null) {
+            if (previous.val != node.val) {
+                previous = node;
+                node = node.next;
+            }
+
+            while (node != null && previous.val == node.val) {
+                node = node.next;
+            }
+            previous.next = node;
+        }
+
+        return head;
+    }
+}
+```
+
+#### 再帰を用いた実装
+
+Step 3 でやってなかったからか解けなかった。
+Step 3 を再帰で解いて、最終的に次のアウトプットになった:
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        return deleteDuplicatesRecursively(head);
+    }
+
+    private ListNode deleteDuplicatesRecursively(ListNode node) {
+        if (node == null || node.next == null) return node;
+        node.next = deleteDuplicatesRecursively(node.next);
+        return node.val != node.next.val ? node : node.next;
+    }
+}
+```
+
+- deleteDuplicatesRecursively の return 文の三項演算子が逆になってる
+- 素直にノードをそのまま返す場合が前に来てたほうがわかりやすい気がするので、いい変化に思えた
