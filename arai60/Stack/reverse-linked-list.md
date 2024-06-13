@@ -11,6 +11,7 @@ LeetCode URL: https://leetcode.com/problems/reverse-linked-list/description/
 
 ```java
 // 実装にかかった時間: 約14分
+// 時間計算量: O(n), 空間計算量: O(1)
 class Solution {
     public ListNode reverseList(ListNode head) {
         if (head == null || head.next == null) return head;
@@ -42,6 +43,7 @@ class Solution {
         - node の向き先を previous に変える
         - previous, node を次に進める (previous には node を代入、 node には nextNode を代入)
 - 今回 head のポインタを保持し続ける必要がないと気づき、上記 node の代わりに head を使おうと考える
+    - 最終的に返されるリバース済のリストの先頭を指すので、 head という名前には違和感がないと判断
 - 一回目のイテレーションで previous には null が代入されている必要があるため、 while 文開始より前に previous を宣言
 - while 文の終了条件は、最後のイテレーションで head が previous を向いており、かつ nextNode が null であることだと判断
 - while 文条件式で上記を表現するより、処理中に判定した方が見通しが良くなりそうだと判断し、条件式は (true) とする
@@ -55,6 +57,7 @@ class Solution {
 まずは Step 1 で書いたメソッドの修正版です。
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(1)
 class Solution {
     public ListNode reverseList(ListNode head) {
         ListNode previous = null, node = null;
@@ -78,6 +81,7 @@ class Solution {
 再帰を用いた実装も用意しています。
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(n)
 class Solution {
     public ListNode reverseList(ListNode head) {
         if (head == null || head.next == null) return head;
