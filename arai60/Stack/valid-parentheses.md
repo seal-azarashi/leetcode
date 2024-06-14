@@ -109,3 +109,44 @@ class Solution {
 ## Step 3
 
 一回目は5分半程度かかり、回を重ねるごとに早くなって三回目は4分半程度で実装できた。
+
+## Step 4
+
+特に改善点を指摘するレビューがなかったのでスキップ。
+
+## Step 5
+
+[ahayashi さんの記事](https://hayapenguin.com/notes/Posts/2024/04/24/how-to-practice-coding-effectively#%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AA%E7%B7%B4%E7%BF%92%E6%96%B9%E6%B3%95)にならい、3, 7, 30日後に再度解いていきます。
+
+### 3日後の再チャレンジ
+
+```java
+// Time taken: 8 m 39 s
+class Solution {
+    public boolean isValid(String s) {
+        Map<Character, Character> braceMap = new HashMap<>();
+        braceMap.put('(', ')');
+        braceMap.put('{', '}');
+        braceMap.put('[', ']');
+
+        ArrayDeque<Character> leftBraceStack = new ArrayDeque<>();
+
+        for (char brace : s.toCharArray()) {
+            if (braceMap.containsKey(brace)) {
+                leftBraceStack.push(brace);
+                continue;
+            }
+
+            if (leftBraceStack.isEmpty()) return false;
+
+            char leftBrace = leftBraceStack.pop();
+            char rightBrace = brace;
+            if (braceMap.get(leftBrace) != rightBrace) return false;
+        }
+        
+        return leftBraceStack.isEmpty();
+    }
+}
+```
+
+bracket と書いてた map と stack の名前の一部が brace になってた。 ChatGPT 曰く bracket の方が自然らしいので、次からはそっちで書く。
