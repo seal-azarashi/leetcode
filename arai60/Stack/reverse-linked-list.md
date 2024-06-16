@@ -197,7 +197,7 @@ class Solution {
     public ListNode reverseList(ListNode head) {
         // こちらの判定は初回に一度実施すれば良いため、reverseListRecursively 内部ではなくここで実施
         if (head == null) return null;
-        
+
         return reverseListRecursively(head);
     }
 
@@ -208,6 +208,26 @@ class Solution {
         node.next.next = node;
         node.next = null;
         return reversedListHead;
+    }
+}
+```
+
+Step 2 で書いたままだが、後で見やすいようにここにも上記コメント 1 の方の実装を書いておく。
+
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        return reverseListRecursively(null, head);
+    }
+
+    private ListNode reverseListRecursively(ListNode previous, ListNode node) {
+        if (node == null) return previous;
+
+        ListNode nextNode = node.next;
+        node.next = previous;
+        previous = node;
+        node = nextNode;
+        return reverseListRecursively(previous, node);
     }
 }
 ```
