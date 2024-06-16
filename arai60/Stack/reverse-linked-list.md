@@ -167,3 +167,47 @@ class Solution {
 
 ループを用いた処理: 1回目は4分、2, 3回目は1分半ほどで完了。
 再帰を用いた処理: 約4分半、2,3回目は2分ほどで完了。
+
+## Step 4
+
+以下のレビューを参考に、ループを用いた実装を修正しました。
+
+- https://github.com/seal-azarashi/leetcode/pull/7#discussion_r1638023615
+
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode previous = null, node = head;
+        while (node != null) {
+            ListNode next = node.next;
+            node.next = previous;
+            previous = node;
+            node = next;
+        }
+
+        return previous;
+    }
+}
+```
+
+加えて、共有して頂いた[こちらのコメント](https://github.com/goto-untrapped/Arai60/pull/27/files/14646ec0859dd9411e6983bf6c63e6f15a1f9f32#r1638693522)における 2 の方の実装を追加しました。
+
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        // こちらの判定は初回に一度実施すれば良いため、reverseListRecursively 内部ではなくここで実施
+        if (head == null) return null;
+        
+        return reverseListRecursively(head);
+    }
+
+    private ListNode reverseListRecursively(ListNode node) {
+        if (node.next == null) return node;
+
+        ListNode reversedListHead = reverseListRecursively(node.next);
+        node.next.next = node;
+        node.next = null;
+        return reversedListHead;
+    }
+}
+```
