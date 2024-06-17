@@ -175,6 +175,7 @@ class Solution {
 - https://github.com/seal-azarashi/leetcode/pull/7#discussion_r1638023615
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(1)
 class Solution {
     public ListNode reverseList(ListNode head) {
         ListNode previous = null, node = head;
@@ -193,6 +194,7 @@ class Solution {
 加えて、共有して頂いた[こちらのコメント](https://github.com/goto-untrapped/Arai60/pull/27/files/14646ec0859dd9411e6983bf6c63e6f15a1f9f32#r1638693522)における 2 の方の実装を追加しました。
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(n)
 class Solution {
     public ListNode reverseList(ListNode head) {
         // こちらの判定は初回に一度実施すれば良いため、reverseListRecursively 内部ではなくここで実施
@@ -215,6 +217,7 @@ class Solution {
 Step 2 で書いたままだが、後で見やすいようにここにも上記コメント 1 の方の実装を書いておく。
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(n)
 class Solution {
     public ListNode reverseList(ListNode head) {
         return reverseListRecursively(null, head);
@@ -228,6 +231,51 @@ class Solution {
         previous = node;
         node = nextNode;
         return reverseListRecursively(previous, node);
+    }
+}
+```
+
+他の解答を見てたら Stack を使うアイデアもあったので、書いてみる
+
+```java
+// 時間計算量: O(n), 空間計算量: O(n)
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode node = head;
+
+        ArrayDeque<ListNode> listNodeStack = new ArrayDeque<>();
+        while (node != null) {
+            listNodeStack.push(node);
+            node = node.next;
+        }
+
+        ListNode dummyHead = new ListNode();
+        node = dummyHead;
+        while (!listNodeStack.isEmpty()) {
+            ListNode popped = listNodeStack.pop();
+            popped.next = null;
+            node.next = popped;
+            node = node.next;
+        }
+
+        return dummyHead.next;
+    }
+}
+```
+
+また、while loop 内で都度コンストラクタを呼び出すアイデアもあったのでこちらも書いてみる
+
+```java
+// 時間計算量: O(n), 空間計算量: O(n)
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode reversedList = null;
+        ListNode node = head;
+        while (node != null) {
+            reversedList = new ListNode(node.val, reversedList);
+            node = node.next;
+        }
+        return reversedList;
     }
 }
 ```
