@@ -79,3 +79,71 @@ class KthLargest {
 ## Step 3
 
 約1分半で3回パスした。
+
+## Step 4
+
+### 解法の列挙
+
+Step 1, 2 で実施出来ていなかった解法のリストアップを試みます。
+
+#### ソート済リストの使用
+
+リストがソートされている状態を保ちながら要素を追加し、k 番目の要素を返す。
+
+- 動的リスト (今回は Java を使うため Array List) を使う
+- 要素の追加手順 O(mn):
+    - binary search で挿入位置を特定 (O(log n))
+    - 指定した位置に挿入 (O(n))
+    - 上記を nums の要素数 m だけ実施する
+- binary search には [Collections.binariSearch](https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-) を使用
+    - 以下公式ドキュメント読んで面白いと思ったポイントのメモ:
+        - ちなみに検索対象の値がない場合、返り値は (-(検索対象の値より大きい最初の要素のインデックス) - 1)
+        - 負の値にされる理由は、検索対象が見つからなかったことを表すため
+        - 1減算されている理由は、検索対象の値より大きい最初の要素のインデックスが 0 だった場合でも負の値にするため
+- 各イテレーションにおける処理の手順は次の通り:
+    1. Collections.binariSearch を用いて挿入箇所を特定
+        - 返り値が正の値だった場合は返り値をそのまま挿入箇所として使う
+        - 返り値が負の値だった場合の挿入箇所: -(返り値) - 1
+    2. 挿入する
+
+尚、要素の追加方法として、末尾に値を挿入した後 Array List の sort メソッドを呼ぶ実装も考えたが、これは計算量がより多くなるため好ましくない。
+
+#### 最小ヒープ (priority queue) の使用
+
+Step 1, 2 で実装。
+
+#### 平衡二分探索木
+
+[kazukiii さんのプルリクエスト](https://github.com/kazukiii/leetcode/pull/9/files)で候補に挙がっていた。
+Java の標準ライブラリには要素の重複を許容する平衡二分探索木が無いため、[Guava の TreeMultiSet](https://guava.dev/releases/19.0/api/docs/com/google/common/collect/TreeMultiset.html) を使う等して実装するのが良さそう。
+TreeMap を使い、value に要素数を保持することで実装することも出来るか。
+
+#### Fenwick tree 上の二分探索
+
+[kazukiii さんのプルリクエスト](https://github.com/kazukiii/leetcode/pull/9/files)で知った解法。
+Fenwick tree (Binary Indexed Tree) は要素の更新と区間の和を行うクエリを高速に処理できるデータ構造。Java の標準ライブラリになく、またこの問題を解くために実装するのは too much ではあるが、こういったものがあるというのを知れて勉強になった。
+
+### Step 1 の解法の効率化
+
+oda さんからのレビューを受け、Step 1 で書いた処理の効率化を行った。
+元の実装では要素数が k 以上になった後、add メソッドが呼ばれる度必ず PriorityQueue の add と poll メソッドが呼ばれていたが、val が先頭要素よりも小さい場合これを実行しないようにした。
+
+```java
+class KthLargest {
+    int k;
+    PriorityQueue<Integer> kthLargestElements = new PriorityQueue<>();
+
+    public KthLargest(int k, int[] nums) {
+        this.k = k;
+        for (int num : nums) add(num);
+    }
+    
+    public int add(int val) {
+        if (kthLargestElements.size() >= this.k && val < kthLargestElements.peek()) return kthLargestElements.peek();
+
+        kthLargestElements.add(val);
+        if (kthLargestElements.size() > k) kthLargestElements.poll();
+        return kthLargestElements.peek();
+    }
+}
+```
