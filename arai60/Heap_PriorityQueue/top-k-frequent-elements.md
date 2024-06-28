@@ -62,3 +62,7 @@ class Solution {
 - PriorityQueue のメソッドの記憶が怪しかったので、公式ドキュメントを見て get, offer を使えばいいと確認
     - offer と同じ処理をする add もあるが、Queue 由来の offer を用いる方が PriorityQueue を使う上で適当だと思う
 - 計20分ほどで完了
+
+## Step 2
+
+バケットソート、クイックセレクトで実装してみたい
