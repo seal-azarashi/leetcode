@@ -123,6 +123,73 @@ TreeMap を使い、value に要素数を保持することで実装すること
 [kazukiii さんのプルリクエスト](https://github.com/kazukiii/leetcode/pull/9/files)で知った解法。
 Fenwick tree (Binary Indexed Tree) は要素の更新と区間の和を行うクエリを高速に処理できるデータ構造。Java の標準ライブラリになく、またこの問題を解くために実装するのは too much ではあるが、こういったものがあるというのを知れて勉強になった。
 
+#### Quick Select
+
+k 番目に大きい (or 小さい) 要素を効率的に探すアルゴリズム quick select を利用。
+参考動画: https://www.youtube.com/watch?v=AqMiMkPOutQ&t=8s
+
+選択された Pivot によっては計算量が最悪 O(n^2) になるが、場合によっては O(n) になることもある。
+ちょうど LeetCode に問題があったので解いてみたが、下の実装だとケースによっては time limit exceeded になった。
+https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+
+```java
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        if (nums.length == 1) {
+            return nums[0];
+        }
+
+        int left = 0;
+        int right = nums.length - 1;
+        int targetIndex = nums.length - k;
+
+        int pivot = 0;
+        while (left <= right) {
+            pivot = partition(nums, left, right);
+            if (pivot < targetIndex) {
+                left = pivot + 1;
+            } else if (pivot > targetIndex) {
+                right = pivot - 1;
+            } else {
+                break;
+            }
+        }
+
+        return nums[pivot];
+    }
+
+    /**
+     * ピボット要素を用いてパーティションを実施します。
+     * 左のパーティションにはピボット要素よりも小さい数が、右には大きい数が配置されます。
+     * 
+     * @param nums パーティション対象の配列
+     * @param left パーティション対象範囲の左端のインデックス
+     * @param right パーティション対象範囲の右端のインデックス
+     * @return パーティション終了後のピボット要素のインデックス
+     */
+    private int partition(int[] nums, int left, int right) {
+        int pivotValue = nums[right];
+        int leftmostIndex = left;
+        for (int i = left; i < right; i++) {
+            if (nums[i] < pivotValue) {
+                swapArrayElements(nums, leftmostIndex, i);
+                leftmostIndex++;
+            }
+        }
+        swapArrayElements(nums, leftmostIndex, right);
+        return leftmostIndex;
+    }
+
+    private void swapArrayElements(int[] nums, int left, int right) {
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
+}
+```
+
+中央値の三分割法を用いればなんとか accept された。
+
 ### Step 1 の解法の効率化
 
 oda さんからのレビューを受け、Step 1 で書いた処理の効率化を行った。
