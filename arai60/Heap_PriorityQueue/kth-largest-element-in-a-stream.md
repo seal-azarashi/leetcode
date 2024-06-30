@@ -136,14 +136,25 @@ class KthLargest {
     }
 }
 
+/**
+ * 整数型を扱う Min Heap
+ */
 class MinHeap {
     private ArrayList<Integer> array = new ArrayList<Integer>();
 
+    /**
+     * 要素を追加する
+     * 
+     * @param newElement 追加する要素
+     */
     void add(int newElement) {
         array.add(newElement);
         heapifyUp(array.size() - 1);
     }
 
+    /**
+     * 先頭要素を削除する
+     */
     void pop() {
         if (array.size() == 0) {
             return;
@@ -155,6 +166,12 @@ class MinHeap {
         heapifyDown(0);
     }
 
+    /**
+     * 指定したノードからルートノードに向かってヒープ化処理を再帰的に実行する。
+     * ヒープは二分木であり、上位階層の数だけ処理を行うため計算量は O(log n)
+     * 
+     * @param node ヒープ化処理の起点となるノード
+     */
     void heapifyUp(int node) {
         if (node == 0) {
             return;
@@ -170,6 +187,12 @@ class MinHeap {
         }
     }
 
+    /**
+     * 指定したノードからリーフノードに向かってヒープ化処理を再帰的に実行する。
+     * ヒープは二分木であり、下位階層の数だけ処理を行うため計算量は O(log n)
+     * 
+     * @param node ヒープ化処理の起点となるノード
+     */
     void heapifyDown(int node) {
         int minimum = node;
         int left = 2 * node + 1;
