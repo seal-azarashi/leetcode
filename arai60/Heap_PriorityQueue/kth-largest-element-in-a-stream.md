@@ -124,7 +124,7 @@ class KthLargest {
     }
     
     public int add(int val) {
-        if (kthLargestElements.size() >= this.k && val < kthLargestElements.peek()) {
+        if (kthLargestElements.size() == this.k && val < kthLargestElements.peek()) {
             return kthLargestElements.peek();
         }
 
