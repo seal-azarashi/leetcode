@@ -89,8 +89,8 @@ oda さんからのレビューを受け、Step 1 で書いた処理の効率化
 
 ```java
 class KthLargest {
-    int k;
-    PriorityQueue<Integer> kthLargestElements = new PriorityQueue<>();
+    private int k;
+    private PriorityQueue<Integer> kthLargestElements = new PriorityQueue<>();
 
     public KthLargest(int k, int[] nums) {
         this.k = k;
