@@ -229,7 +229,7 @@ k 番目に大きい (or 小さい) 要素を効率的に探すアルゴリズ�
 参考動画: https://www.youtube.com/watch?v=AqMiMkPOutQ&t=8s
 
 選択された Pivot によっては計算量が最悪 O(n^2) になるが、場合によっては O(n) になることもある。
-ちょうど LeetCode に問題があったので解いてみたが、下の実装だとケースによっては time limit exceeded になった。
+ちょうど LeetCode に問題があったので解いてみたが、下の実装だと attempt によっては time limit exceeded になることもあった。
 https://leetcode.com/problems/kth-largest-element-in-an-array/description/
 
 ```java
@@ -268,7 +268,9 @@ class Solution {
      * @return パーティション終了後のピボット要素のインデックス
      */
     private int partition(int[] nums, int left, int right) {
-        int pivotValue = nums[right];
+        int pivotIndex = medianOfThree(nums, left, right);
+        int pivotValue = nums[pivotIndex];
+        swapArrayElements(nums, pivotIndex, right);
         int leftmostIndex = left;
         for (int i = left; i < right; i++) {
             if (nums[i] < pivotValue) {
@@ -278,6 +280,31 @@ class Solution {
         }
         swapArrayElements(nums, leftmostIndex, right);
         return leftmostIndex;
+    }
+
+    /**
+     * 配列の左端、中間、右端の値の中央値を返す。
+     * 
+     * このメソッドは配列の要素を並べ替える副作用があります。
+     * 実行後、nums[left] <= nums[mid] <= nums[right] となります。
+     *
+     * @param nums 対象の配列
+     * @param left 左端のインデックス
+     * @param right 右端のインデックス
+     * @return 中央値のインデックス（通常は mid）
+     */
+    private int medianOfThree(int[] nums, int left, int right) {
+        int mid = left + (right - left) / 2;
+        if (nums[right] < nums[left]) {
+            swapArrayElements(nums, left, right);
+        }
+        if (nums[mid] < nums[left]) {
+            swapArrayElements(nums, mid, left);
+        }
+        if (nums[right] < nums[mid]) {
+            swapArrayElements(nums, right, mid);
+        }
+        return mid;
     }
 
     private void swapArrayElements(int[] nums, int left, int right) {
