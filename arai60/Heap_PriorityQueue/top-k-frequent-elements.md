@@ -18,20 +18,12 @@ class Solution {
     public int[] topKFrequent(int[] nums, int k) {
         HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
         for (int num : nums) {
-            numFrequencyMap.put(
-                num,
-                numFrequencyMap.getOrDefault(num, 0) + 1
-            );
+            numFrequencyMap.put(num, numFrequencyMap.getOrDefault(num, 0) + 1);
         }
 
         PriorityQueue<NumFrequency> frequentNums = new PriorityQueue<>((a, b) -> b.frequency - a.frequency);
         for (int num : numFrequencyMap.keySet()) {
-            frequentNums.offer(
-                new NumFrequency(
-                    num,
-                    numFrequencyMap.get(num)
-                )
-            );
+            frequentNums.offer(new NumFrequency(num, numFrequencyMap.get(num)));
         }
 
         int[] answer = new int[k];
@@ -65,4 +57,119 @@ class Solution {
 
 ## Step 2
 
-バケットソート、クイックセレクトで実装してみたい
+2つ新しい解法を追加しました。レビュワーの方は Step 1 の方も確認お願いします🙏
+
+### バケットソート
+
+[kagetora0924 さんの解答](https://github.com/kagetora0924/leetcode-grind/blob/5946807f887a54530df82f471d6fd422e8ba875f/Arai60/Heap_Priority_Queue/347/347_1-3.py)に時間計算量 O(n) のバケットソートを使ったものがあったので実装してみました。
+講師のお二人の反応見る限りそんなに重要そうでもなさそうだけど一応: https://github.com/kazukiii/leetcode/pull/10#discussion_r1639979474
+
+```java
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
+        for (int num : nums) {
+            numFrequencyMap.put(
+                num,
+                numFrequencyMap.getOrDefault(num, 0) + 1
+            );
+        }
+
+        List<Integer>[] buckets = new List[nums.length + 1];
+        for (int num : numFrequencyMap.keySet()) {
+            int frequency = numFrequencyMap.get(num);
+            if (buckets[frequency] == null) {
+                buckets[frequency] = new ArrayList<>();
+            }
+            buckets[frequency].add(num);
+        }
+
+        int[] answer = new int[k];
+        int answerIndex = 0;
+        for (int i = buckets.length - 1; i >= 0; i--) {
+            if (buckets[i] == null) {
+                continue;
+            }
+
+            for (int num : buckets[i]) {
+                if (answerIndex >= k) {
+                    break;
+                }
+
+                answer[answerIndex] = num;
+                answerIndex++;
+            }
+        }
+        return answer;
+    }
+}
+```
+
+時間計算量は優れていますが、空間計算量は固定で nums.length になってしまいますね。ステップ1の方の解法だと空間計算量はユニークな要素数でした。
+
+### クイックセレクト
+
+クイックセレクトの理解度チェックも兼ねて書いてみる。
+
+```java
+class Solution {
+    private record NumFrequency(int num, int frequency) {};
+
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
+        for (int num : nums) {
+            numFrequencyMap.put(num, numFrequencyMap.getOrDefault(num, 0) + 1);
+        }
+
+        NumFrequency[] numFrequencyArray = new NumFrequency[numFrequencyMap.size()];
+        int numFrequencyArrayIndex = 0;
+        for (int num : numFrequencyMap.keySet()) {
+            numFrequencyArray[numFrequencyArrayIndex] = new NumFrequency(num, numFrequencyMap.get(num));
+            numFrequencyArrayIndex++;
+        }
+        quickSelect(numFrequencyArray, k);
+
+        int[] answer = new int[k];
+        for (int i = 0; i < k; i++) {
+            answer[i] = numFrequencyArray[i].num;
+        }
+        return answer;
+    }
+
+    private void quickSelect(NumFrequency[] numFrequencyArray, int k) {
+        int left = 0;
+        int right = numFrequencyArray.length - 1;
+        while (left < right) {
+            int pivot = partition(numFrequencyArray, left, right);
+            if (pivot == k - 1) {
+                return;
+            } else if (pivot < k - 1) {
+                left = pivot + 1;
+            } else {
+                right = pivot - 1;
+            }
+        }
+    }
+
+    private int partition(NumFrequency[] numFrequencyArray, int left, int right) {
+        int pivotFrequency = numFrequencyArray[right].frequency;
+        int leftPartitionBoundary = left - 1;
+        for (int i = left; i < right; i++) {
+            if (numFrequencyArray[i].frequency >= pivotFrequency) {
+                leftPartitionBoundary++;
+                swapArrayElements(numFrequencyArray, leftPartitionBoundary, i);
+            }
+        }
+
+        int pivot = leftPartitionBoundary + 1;
+        swapArrayElements(numFrequencyArray, pivot, right);
+        return pivot;
+    }
+
+    private void swapArrayElements(NumFrequency[] numFrequencyArray, int left, int right) {
+        NumFrequency temp = numFrequencyArray[left];
+        numFrequencyArray[left] = numFrequencyArray[right];
+        numFrequencyArray[right] = temp;
+    }
+}
+```
