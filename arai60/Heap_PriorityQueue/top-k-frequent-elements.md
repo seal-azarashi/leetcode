@@ -65,6 +65,7 @@ class Solution {
 講師のお二人の反応見る限りそんなに重要そうでもなさそうだけど一応: https://github.com/kazukiii/leetcode/pull/10#discussion_r1639979474
 
 ```java
+// 時間計算量: O(n), 空間計算量: O(n)
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
         HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
@@ -112,6 +113,10 @@ class Solution {
 クイックセレクトの理解度チェックも兼ねて書いてみる。
 
 ```java
+// 時間計算量:
+//     - avg: O(n log n)
+//     - worst: O(n^2)
+// 空間計算量: O(n)
 class Solution {
     private record NumFrequency(int num, int frequency) {};
 
