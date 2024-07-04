@@ -178,3 +178,43 @@ class Solution {
     }
 }
 ```
+
+## Step 3
+
+TODO
+
+## Step 4
+
+[Yoshiki-Iwasa さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/9/files#r1665393659)を受け、PriorityQueue に入る要素数が k を超えないように変えました (厳密に言うと for 文の中で一時的に k + 1 になる可能性はあります)。  
+加えて、走査対象の frequency が PriorityQueue 内最小の要素のそれよりも小さい場合は PriorityQueue への挿入・削除は行わないようにしました。
+
+```java
+class Solution {
+    private record NumFrequency(int num, int frequency) {};
+
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> numFrequencyMap = new HashMap<>();
+        for (int num : nums) {
+            numFrequencyMap.put(num, numFrequencyMap.getOrDefault(num, 0) + 1);
+        }
+
+        PriorityQueue<NumFrequency> frequentNums = new PriorityQueue<>((a, b) -> a.frequency - b.frequency);
+        for (int num : numFrequencyMap.keySet()) {
+            if (frequentNums.size() == k && numFrequencyMap.get(num) <= frequentNums.peek().frequency) {
+                continue;
+            }
+
+            frequentNums.offer(new NumFrequency(num, numFrequencyMap.get(num)));
+            if (frequentNums.size() > k) {
+                frequentNums.poll();
+            }
+        }
+
+        int[] answer = new int[k];
+        for (int i = 0; i < k; i++) {
+            answer[i] = frequentNums.poll().num;
+        }
+        return answer;
+    }
+}
+```
