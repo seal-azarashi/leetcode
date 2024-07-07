@@ -53,32 +53,32 @@ class Solution {
     private record Pair(int nums1Index, int nums2Index) {};
 
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
-        PriorityQueue<Pair> kSmallestSumPairs = new PriorityQueue<>(
+        PriorityQueue<Pair> pairMinSumHeap = new PriorityQueue<>(
             (a, b) -> (nums1[a.nums1Index] + nums2[a.nums2Index]) - (nums1[b.nums1Index] + nums2[b.nums2Index])
         );
         for (int i = 0; i < nums1.length && i < k; i++) {
-            kSmallestSumPairs.offer(new Pair(i, 0));
+            pairMinSumHeap.offer(new Pair(i, 0));
         }
 
-        List<List<Integer>> answer = new ArrayList<>(k);
+        List<List<Integer>> result = new ArrayList<>(k);
         for (int i = 0; i < k; i++) {
-            Pair pair = kSmallestSumPairs.poll();
-            answer.add(List.of(nums1[pair.nums1Index], nums2[pair.nums2Index]));
+            Pair pair = pairMinSumHeap.poll();
+            result.add(List.of(nums1[pair.nums1Index], nums2[pair.nums2Index]));
             
             if (pair.nums2Index + 1 < nums2.length) {
-                kSmallestSumPairs.offer(new Pair(pair.nums1Index, pair.nums2Index + 1));
+                pairMinSumHeap.offer(new Pair(pair.nums1Index, pair.nums2Index + 1));
             }
         }
 
-        return answer;
+        return result;
     }
 }
 ```
 
 - 基底ロジックはそのままで、Step 1 で実施できていなかったいくつかの処理効率化を実施
     - PriorityQueue に k 個以上の要素はいらないので、最初の for 文の条件式を修正
-    - answer に対していたずらにメモリ再割り当てが行われないよう宣言時にサイズを指定
-    - answer の要素はミュータブルだったり null を許容をする必要がないので、Arrays.asList の代わりに List.of を使用 (副作用で 4ms ほど早くなった)
+    - result に対していたずらにメモリ再割り当てが行われないよう宣言時にサイズを指定
+    - result の要素はミュータブルだったり null を許容をする必要がないので、Arrays.asList の代わりに List.of を使用 (副作用で 4ms ほど早くなった)
 - 要素数2の配列だと意図が汲み取りづらいため、インデックスのペアを record Pair に格納
 - PriorityQueue の宣言行が長くなったので改行 (単純に見づらくなってしまったので好みで実施したが、仕事でやるならフォーマッターやチームのコーディングルールに従いたいところ)
 - 他の方の解答を見ると以下のようなアプローチのものもあったが、実装してみると Leetcode のジャッジ上では上記の実装が最も高速かつメモリ使用量も悪くなかったので、ロジックはそのままにした:
