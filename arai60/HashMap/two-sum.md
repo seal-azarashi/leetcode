@@ -79,6 +79,7 @@ class Solution {
 - Step 1 で出てこなかった他の解法を把握できて良かった:
     - ソートして対応する要素を探すために二分探索: TC: O(n log n), SC: O(n log n)
     - ソートして左端、右端に設置した 2 pointers を徐々に近づけていく: TC: O(n log n), SC: O(n)
+- 両方 Step 1 の段階で思い浮かべられるように思考していきたい
 
 ## Step 3
 
