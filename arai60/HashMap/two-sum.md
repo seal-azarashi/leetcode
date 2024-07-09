@@ -83,4 +83,20 @@ class Solution {
 
 ## Step 3
 
-特に新しい考えが出てこなかったので省略。
+Submit したコードは次のようになりました。
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer, Integer> complementMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (complementMap.containsKey(nums[i])) {
+                return new int[] {complementMap.get(nums[i]), i};
+            }
+            complementMap.put(target - nums[i], i);
+        }
+
+        throw new IllegalArgumentException("No two sum pair found.");
+    }
+}
+```
