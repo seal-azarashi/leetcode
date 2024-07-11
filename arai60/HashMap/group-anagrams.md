@@ -71,17 +71,17 @@ Step 1 の実装を次のように修正しました。
 ```java
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
-        Map<List<Integer>, List<String>> charrFrequencyMap = new HashMap<>();
+        Map<List<Integer>, List<String>> charFrequencyMap = new HashMap<>();
         for (String str : strs) {
             List<Integer> charFrequency = new ArrayList<>(Collections.nCopies(26, 0));
             for (char character : str.toCharArray()) {
                 int charIndex = character - 'a';
                 charFrequency.set(charIndex, charFrequency.get(charIndex) + 1);
             }
-            charrFrequencyMap.computeIfAbsent(charFrequency, _ -> new LinkedList<>()).add(str);
+            charFrequencyMap.computeIfAbsent(charFrequency, _ -> new LinkedList<>()).add(str);
         }
         
-        return new LinkedList<>(charrFrequencyMap.values());
+        return new LinkedList<>(charFrequencyMap.values());
     }
 }
 ```
