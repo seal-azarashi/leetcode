@@ -66,6 +66,8 @@ class Solution {
 
 ## Step 2
 
+### Step 1 の変化版
+
 Step 1 の実装を次のように修正しました。 
 
 ```java
@@ -94,6 +96,25 @@ class Solution {
     - メソッドチェーン呼び出しをする上でいくつか懸念点があったが、今回の実装は非常にシンプルなものなので、これらは無視できる程度だと判断:
         - チェーンの各ステップで一時的な中間オブジェクトが生成されるはずなので、その分のオーバーヘッドが処理時間を有意に遅くしないだろうか
         - 中間メソッドのデバッグが必要になったら、その実施が大変にならないだろうか
+
+### 文字をソートするアプローチ
+
+字をソートして key にするアプローチの方も書きました。
+
+```java
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> frequencyMap = new HashMap<>();
+        for (String str : strs) {
+            char[] strCharArray = str.toCharArray();
+            Arrays.sort(strCharArray);
+            frequencyMap.computeIfAbsent(Arrays.toString(strCharArray), _ -> new LinkedList<>()).add(str);
+        }
+
+        return new LinkedList<>(frequencyMap.values());
+    }
+}
+```
 
 ## Step 3
 
