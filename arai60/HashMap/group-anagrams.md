@@ -108,13 +108,16 @@ class Solution {
         for (String str : strs) {
             char[] strCharArray = str.toCharArray();
             Arrays.sort(strCharArray);
-            frequencyMap.computeIfAbsent(Arrays.toString(strCharArray), _ -> new LinkedList<>()).add(str);
+            frequencyMap.computeIfAbsent(String.valueOf(strCharArray), _ -> new LinkedList<>()).add(str);
         }
 
         return new LinkedList<>(frequencyMap.values());
     }
 }
 ```
+
+- String.valueOf() は余計な括弧等なしに char 配列を文字列にしてくれるので採用
+    - Arrays.toString() も使えるが、比較には不要な括弧等が入る
 
 ## Step 3
 
