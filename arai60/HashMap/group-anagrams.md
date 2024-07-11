@@ -75,6 +75,7 @@ class Solution {
         for (String str : strs) {
             List<Integer> charFrequency = new ArrayList<>(Collections.nCopies(26, 0));
             for (char character : str.toCharArray()) {
+                // On production code, handle exception if character is not a lowercase English letter.
                 int charIndex = character - 'a';
                 charFrequency.set(charIndex, charFrequency.get(charIndex) + 1);
             }
