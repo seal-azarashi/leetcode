@@ -61,6 +61,7 @@ class Solution {
             - なんかカーネギーメロン大の Confluence に書いてあるのを見つけた: https://wiki.sei.cmu.edu/confluence/display/java/EXP02-J.%2BDo%2Bnot%2Buse%2Bthe%2BObject.equals%28%29%2Bmethod%2Bto%2Bcompare%2Btwo%2Barrays
             - ちなみに比較を期待通りに行うこと自体は Arrays.equals() を使えばできる: https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#equals-boolean:A-boolean:A-
         - List クラスなら期待通りに動作するので、こちらを代わりに使う: https://docs.oracle.com/javase%2F9%2Fdocs%2Fapi%2F%2F/java/util/List.html#equals-java.lang.Object-
+        - 配列を String 値にする方法もあるが、String オブジェクトを生成する追加処理がオーバーヘッドとなるので今回は採用しない
     - ArrayList はサイズを引数に渡して宣言した際、配列とは異なり同数のゼロ値を持った要素を用意してはくれないので、その処理を簡潔に実装するのに使える Collections.nCopies() メソッドを見つける: https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#nCopies-int-T-
 - List の set() メソッドを書くべきところに add() を書いてしまっていたため期待通りでない挙動になり、デバッグにちょっと手間取った
 
