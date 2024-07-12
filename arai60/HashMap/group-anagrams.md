@@ -74,7 +74,7 @@ Step 1 の実装を次のように修正しました。
 ```java
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
-        Map<List<Integer>, List<String>> charFrequencyMap = new HashMap<>();
+        Map<List<Integer>, List<String>> frequencyToAnagrams = new HashMap<>();
         for (String str : strs) {
             List<Integer> charFrequency = new ArrayList<>(Collections.nCopies(26, 0));
             for (char character : str.toCharArray()) {
@@ -82,10 +82,10 @@ class Solution {
                 int charIndex = character - 'a';
                 charFrequency.set(charIndex, charFrequency.get(charIndex) + 1);
             }
-            charFrequencyMap.computeIfAbsent(charFrequency, _ -> new LinkedList<>()).add(str);
+            frequencyToAnagrams.computeIfAbsent(charFrequency, _ -> new LinkedList<>()).add(str);
         }
         
-        return new LinkedList<>(charFrequencyMap.values());
+        return new LinkedList<>(frequencyToAnagrams.values());
     }
 }
 ```
@@ -105,14 +105,14 @@ class Solution {
 ```java
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
-        Map<String, List<String>> frequencyMap = new HashMap<>();
+        Map<String, List<String>> frequencyToAnagrams = new HashMap<>();
         for (String str : strs) {
             char[] strCharArray = str.toCharArray();
             Arrays.sort(strCharArray);
-            frequencyMap.computeIfAbsent(String.valueOf(strCharArray), _ -> new LinkedList<>()).add(str);
+            frequencyToAnagrams.computeIfAbsent(String.valueOf(strCharArray), _ -> new LinkedList<>()).add(str);
         }
 
-        return new LinkedList<>(frequencyMap.values());
+        return new LinkedList<>(frequencyToAnagrams.values());
     }
 }
 ```
