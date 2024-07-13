@@ -11,7 +11,7 @@ LeetCode URL: https://leetcode.com/problems/intersection-of-two-arrays/descripti
 
 ```java
 // 解いた時間: 13分ぐらい
-// 時間計算量: O(n)
+// 時間計算量: O(n + m)
 // 空間計算量: O(n) 
 class Solution {
     public int[] intersection(int[] nums1, int[] nums2) {
@@ -50,8 +50,8 @@ class Solution {
 Step 1 のコードを少し改良しました。
 
 ```java
-// 時間計算量: O(n)
-// 空間計算量: O(n) 
+// 時間計算量: O(n + m)
+// 空間計算量: O(min(n, m))
 class Solution {
     public int[] intersection(int[] nums1, int[] nums2) {
         if (nums1.length > nums2.length) {
