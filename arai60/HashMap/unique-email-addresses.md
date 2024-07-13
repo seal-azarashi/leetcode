@@ -130,3 +130,34 @@ class Solution {
     - normalizeEmail が複雑になる場合は並列化したい... がまあこれに追加するにしても RFC に沿ってバリデーションするぐらいだからここではあまり効果を発揮しないかも
 - シンプルなのでデバッグしづらいとかもなさそう
 - ただ面接で書けって言われてスラスラは出てこないな... 一応書けるように訓練しておいた方がいいのだろうか？
+
+## Step 3
+
+```java
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        Set<String> uniqueEmails = new HashSet<>();
+        for (String email : emails) {
+            StringBuilder sb = new StringBuilder();
+            String[] emailComponents = email.split("@");
+            for (char c : emailComponents[0].toCharArray()) {
+                if (c == '+') {
+                    break;
+                }
+                if (c == '.') {
+                    continue;
+                }
+                sb.append(c);
+            }
+            sb.append('@').append(emailComponents[1]);
+            
+            uniqueEmails.add(sb.toString());
+        }
+
+        return uniqueEmails.size();
+    }
+}
+```
+
+- 面接官なしで LeetCode に submit する作業をしてたからか、面接官向けに残しておきたかった、元あったコードコメントが抜け落ちていた
+- Step 3 が単なる作業と化している感が拭えないので、ちょっと意識を改めたい
