@@ -49,8 +49,7 @@ class Solution {
 以下、上記が完成するまでの試行錯誤の過程を、時系列順に思考ログとして書いていきます:
 
 - 例外ハンドリングが複雑になりそうと思いきや、constraints がしっかりしているので、実装は割と単純に出来そう (Easy だし)
-    - 面接ではどこまでバリデーションして欲しいか面接官に聞くと思う
-    - 仕事でフルスクラッチで実装するなら RFC 見たりするが、面接の時間内ではそこまで求められることはなさそう？
+    - 面接ではどこまでバリデーションして欲しいか面接官に聞くと思う (仕事でフルスクラッチで実装するなら RFC 見たりするけど、ここではどこまでが求められてます？みたいな感じで)
 - local name を操作して、結果を set に入れ、そのサイズを返すようにしたい
 - String は immutable なので、StringBuilder を使う
 - @ で split して local name だけ抜き出して操作をする案を最初に思いついたけど、constraints を見る限り、頭から一文字ずつ操作をしていけば行けそう
@@ -61,4 +60,73 @@ class Solution {
 
 ## Step 2
 
+### Step 1 のアップグレード
 
+```java
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        Set<String> uniqueEmails = new HashSet<>();
+        for (String email : emails) {
+            // Constraints を侵害しない値のみ来ることを想定
+            String[] emailComponents = email.split("@");
+            StringBuilder sb = new StringBuilder();
+            for (char c : emailComponents[0].toCharArray()) {
+                if (c == '+') {
+                    break;
+                }
+                if (c == '.') {
+                    continue;
+                }
+                sb.append(c);
+            }
+            sb.append('@').append(emailComponents[1]);
+
+            uniqueEmails.add(sb.toString());
+        }
+
+        return uniqueEmails.size();
+    }
+}
+```
+
+- local 部分にだけ着目すれば処理が簡潔に出来る
+    - Yoshiki-iwasa さんの実装を参考にした: https://github.com/Yoshiki-Iwasa/Arai60/blob/db7c57a810f86268bf5c1d60bebac586f0fefe2d/problems/src/unique_email_addresses/step3.rs
+    - emailComponents を宣言することになるが、それによって使用されるメモリ量の増加を、可読性の向上のメリットが上回ると判断
+    - あとそもそも @ 以降はそのまま append すればよく、char array にしてひとつずつ走査する必要はないので、無駄に計算量が増えていた
+- ローカル変数の割に冗長だった名前のものを、慣習に沿った sb と c に修正
+- email のバリデーションが含まれないことに違和感を感じるので、Constraints を侵害しない値のみ来ることを想定していると追記
+
+### Stream API の使用
+
+```java
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        return (int) Arrays.stream(emails)
+            .map(this::normalizeEmail)
+            .distinct()
+            .count();
+    }
+
+    private String normalizeEmail(String email) {
+        // Constraints を侵害しない値のみ来ることを想定
+        String[] emailComponents = email.split("@");
+        StringBuilder sb = new StringBuilder();
+        for (char c : emailComponents[0].toCharArray()) {
+            if (c == '+') {
+                break;
+            }
+            if (c != '.') {
+                sb.append(c);
+            }
+        }
+        return sb.append('@').append(emailComponents[1]).toString();
+    }
+}
+```
+
+- 読みやすい
+- この場合ボクシングも必要ないので、そのオーバーヘッドがない
+- 並列化が必要な際は .parallel() をチェイニングするだけで実装だけは完了するのが素晴らしい
+    - normalizeEmail が複雑になる場合は並列化したい... がまあこれに追加するにしても RFC に沿ってバリデーションするぐらいだからここではあまり効果を発揮しないかも
+- シンプルなのでデバッグしづらいとかもなさそう
+- ただ面接で書けって言われてスラスラは出てこないな... 一応書けるように訓練しておいた方がいいのだろうか？
