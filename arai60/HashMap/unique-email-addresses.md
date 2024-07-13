@@ -119,7 +119,9 @@ class Solution {
                 sb.append(c);
             }
         }
-        return sb.append('@').append(emailComponents[1]).toString();
+        sb.append('@').append(emailComponents[1]);
+
+        return sb.toString();
     }
 }
 ```
