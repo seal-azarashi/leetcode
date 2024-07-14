@@ -94,7 +94,7 @@ class Solution {
 - local 部分にだけ着目すれば処理が簡潔に出来る
     - Yoshiki-iwasa さんの実装を参考にした: https://github.com/Yoshiki-Iwasa/Arai60/blob/db7c57a810f86268bf5c1d60bebac586f0fefe2d/problems/src/unique_email_addresses/step3.rs
     - emailComponents を宣言することになるが、それによって使用されるメモリ量の増加を、可読性の向上のメリットが上回ると判断
-    - あとそもそも @ 以降はそのまま append すればよく、char array にしてひとつずつ走査する必要はないので、無駄に計算量が増えていた
+    - あとそもそも @ 以降はそのまま append すればよく、char array にしてひとつずつ走査する必要はないので、そのようにすれば実行時の操作回数が削減されるのも良い
 - ローカル変数の割に冗長だった名前のものを、慣習に沿った sb と c に修正
 - email のバリデーションが含まれないことに違和感を感じるので、Constraints を侵害しない値のみ来ることを想定していると追記
 
