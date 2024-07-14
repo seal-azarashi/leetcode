@@ -168,12 +168,34 @@ class Solution {
 
 ## Step 4
 
-※まだ途中です
-
 ```java
-// 修正案を書く予定
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        Set<String> uniqueEmails = new HashSet<>();
+        for (String email : emails) {
+            // 実際に稼働しているアプリケーションに組み込むのなら、以下の処理を実施する前に email に対してバリデーションを行うことは必須です
+            StringBuilder formattedEmail = new StringBuilder();
+            String[] emailComponents = email.split("@");
+            for (char c : emailComponents[0].toCharArray()) {
+                if (c == '+') {
+                    break;
+                }
+                if (c == '.') {
+                    continue;
+                }
+                formattedEmail.append(c);
+            }
+            formattedEmail.append('@').append(emailComponents[1]);
+            
+            uniqueEmails.add(formattedEmail.toString());
+        }
+
+        return uniqueEmails.size();
+    }
+}
 ```
 
+- Ryotaro25 さんのレビューを受けてなるほどなと思い、変数名を修正した
 - Oda さんの指摘から String のメソッドのみで実装することを考えた: `email.replaceAll("\\.(?=.*@)", "").replaceAll("\\+.*(?=@)", "")`
 - この関数のユースケースが考慮出来ていなかったので考える:
     - まず、email はユーザーによって入力されるものがほとんどであるはずなので、不正な値は入るものだとして処理を書かなかればならない
