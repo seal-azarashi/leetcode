@@ -125,3 +125,33 @@ class Solution {
 
 - 順序を持つ LinkedHashMap を使う案があったが、走査回数は変わらない & 2回目の走査を行う for 文の記述に情報量が増え、見づらくなる印象があったので採用を見送った
 - [平衡木を使うアプローチ](https://github.com/nittoco/leetcode/pull/20#discussion_r1642843424)もあるが、この問題に関しては step 1, 2 に記載の解法よりも計算量において劣るため採用を見送った
+
+## Step 3
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(1) 
+class Solution {
+    private final int ALPHABET_SIZE = 26;
+    private final char ALPHABET_OFFSET = 'a';
+    private final int NOT_FOUND = -1;
+
+    public int firstUniqChar(String s) {
+        int[] alphabetFrequency = new int[ALPHABET_SIZE];
+        for (char c : s.toCharArray()) {
+            alphabetFrequency[c - ALPHABET_OFFSET]++;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (alphabetFrequency[s.charAt(i) - ALPHABET_OFFSET] == 1) {
+                return i;
+            }
+        }
+
+        return NOT_FOUND;
+    }
+}
+```
+
+- Step 2 の要素数26の配列を使う解法とほぼ同じ
+- 定数の並び順だけ、firstUniqChar() で登場する順に変わった
+    - 特に読みやすさに変化があるとは思えないが、書いていて自然とこうなったので、書く際に脳に負荷がかかりづらい順番になったのかなという印象
