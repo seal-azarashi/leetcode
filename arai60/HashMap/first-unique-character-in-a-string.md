@@ -63,6 +63,8 @@ class Solution {
 他の方の解法を見てて、そもそも HashMap のカテゴリの問題だったことを思い出して書きました。こちらの方が全然見通しいいですね。
 
 ```java
+// 時間計算量: O(n)
+// 空間計算量: O(n) 
 class Solution {
     private static final int NOT_FOUND = -1;
 
@@ -88,6 +90,8 @@ class Solution {
 ### 要素数26の配列を使う解法
 
 ```java
+// 時間計算量: O(n)
+// 空間計算量: O(1) 
 class Solution {
     private static final int NOT_FOUND = -1;
 
@@ -114,15 +118,9 @@ class Solution {
     - 要素数26の配列である alphabetFrequency はオーバーヘッドを含めなければ100バイト程度の大きさしかないので、これを扱う際には、L1 データキャッシュが活用されていると思われる
     - ハッシュ計算、ハッシュ衝突時の走査といった処理がなくなり、代わりにずっと単純な `s.charAt(i) - 'a'` が実行されるようになった
     - 単純になったので多分 JVM の JIT コンパイラにとってもより最適化しやすくなっているかもしれない
-- ちなみにメモリ効率はほぼ変わらず
-
-
-### 平衡木を使う方法
-
-TODO
-
-from: https://github.com/nittoco/leetcode/pull/20#discussion_r1642843424
+- そういえば空間計算量は O(1) に改善されるので、最初からこちらを選んでもよかったなと振り返って思う
 
 ### その他メモ
 
 - 順序を持つ LinkedHashMap を使う案があったが、走査回数は変わらない & 2回目の走査を行う for 文の記述に情報量が増え、見づらくなる印象があったので採用を見送った
+- [平衡木を使うアプローチ](https://github.com/nittoco/leetcode/pull/20#discussion_r1642843424)もあるが、この問題に関しては step 1, 2 に記載の解法よりも計算量において劣るため採用を見送った
