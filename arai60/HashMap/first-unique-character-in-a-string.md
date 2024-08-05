@@ -92,7 +92,9 @@ class Solution {
     private static final int NOT_FOUND = -1;
 
     public int firstUniqChar(String s) {
+        // a~z をそれぞれ 0~25 のインデックスに対応させた配列で、要素は対応したアルファベットの出現回数
         int[] alphabetFrequency = new int[26];
+
         for (char c : s.toCharArray()) {
             alphabetFrequency[c - 'a']++;
         }
