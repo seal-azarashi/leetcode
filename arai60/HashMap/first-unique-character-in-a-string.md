@@ -93,17 +93,17 @@ class Solution {
 // 時間計算量: O(n)
 // 空間計算量: O(1) 
 class Solution {
-    private static final int NOT_FOUND = -1;
+    private final int NOT_FOUND = -1;
+    private final char ALPHABET_OFFSET = 'a';
+    private final int ALPHABET_SIZE = 26;
 
     public int firstUniqChar(String s) {
-        // a~z をそれぞれ 0~25 のインデックスに対応させた配列で、要素は対応したアルファベットの出現回数
-        int[] alphabetFrequency = new int[26];
-
+        int[] alphabetFrequency = new int[ALPHABET_SIZE];
         for (char c : s.toCharArray()) {
-            alphabetFrequency[c - 'a']++;
+            alphabetFrequency[c - ALPHABET_OFFSET]++;
         }
         for(int i = 0; i < s.length(); i++) {
-            if (alphabetFrequency[s.charAt(i) - 'a'] == 1) {
+            if (alphabetFrequency[s.charAt(i) - ALPHABET_OFFSET] == 1) {
                 return i;
             }
         }
@@ -119,6 +119,7 @@ class Solution {
     - ハッシュ計算、ハッシュ衝突時の走査といった処理がなくなり、代わりにずっと単純な `s.charAt(i) - 'a'` が実行されるようになった
     - 単純になったので多分 JVM の JIT コンパイラにとってもより最適化しやすくなっているかもしれない
 - そういえば空間計算量は O(1) に改善されるので、最初からこちらを選んでもよかったなと振り返って思う
+    - 一方で lower case english letter 以外は扱えない、ユースケースを想像すると中々ピーキーな実装になるので、面接官に対しては、過度なチューニングをいきなりし始めるような印象を与えないように気をつけたい
 
 ### その他メモ
 
