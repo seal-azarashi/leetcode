@@ -163,8 +163,8 @@ class Solution {
 // 時間計算量: O(n)
 // 空間計算量: O(1) 
 class Solution {
-    private final int ALPHABET_SIZE = 26;
-    private final char ALPHABET_OFFSET = 'a';
+    private static final int ALPHABET_SIZE = 26;
+    private static final char ALPHABET_OFFSET = 'a';
     public static final int NOT_FOUND = -1;
 
     public int firstUniqChar(String s) {
@@ -183,4 +183,4 @@ class Solution {
 }
 ```
 
-- [fhiyo さんの指摘](https://github.com/seal-azarashi/leetcode/pull/15#discussion_r1704435525)を受け、firstUniqChar() の呼び出し元等から参照される可能性のある NOT_FOUND の修飾子を `public static final` に修正した
+- [fhiyo さんの指摘](https://github.com/seal-azarashi/leetcode/pull/15#discussion_r1704435525)を受け、firstUniqChar() の呼び出し元等から参照される可能性のある NOT_FOUND の修飾子を `public static final` に、また他のメンバも static になるよう修正した
