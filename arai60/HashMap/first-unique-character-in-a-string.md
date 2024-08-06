@@ -156,3 +156,31 @@ class Solution {
 - Step 2 の要素数26の配列を使う解法とほぼ同じ
 - 定数の並び順だけ、firstUniqChar() で登場する順に変わった
     - 特に読みやすさに変化があるとは思えないが、書いていて自然とこうなったので、書く際に脳に負荷がかかりづらい順番になったのかなという印象
+
+## Step 4
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(1) 
+class Solution {
+    private final int ALPHABET_SIZE = 26;
+    private final char ALPHABET_OFFSET = 'a';
+    public static final int NOT_FOUND = -1;
+
+    public int firstUniqChar(String s) {
+        int[] alphabetFrequency = new int[ALPHABET_SIZE];
+        for (char c : s.toCharArray()) {
+            alphabetFrequency[c - ALPHABET_OFFSET]++;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (alphabetFrequency[s.charAt(i) - ALPHABET_OFFSET] == 1) {
+                return i;
+            }
+        }
+
+        return NOT_FOUND;
+    }
+}
+```
+
+- [fhiyo さんの指摘](https://github.com/seal-azarashi/leetcode/pull/15#discussion_r1704435525)を受け、firstUniqChar() の呼び出し元等から参照される可能性のある NOT_FOUND の修飾子を `public static final` に修正した
