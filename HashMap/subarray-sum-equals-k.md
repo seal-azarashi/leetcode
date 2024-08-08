@@ -83,7 +83,7 @@ class Solution {
 
 ## Step 2
 
-### 累積和を使った解法
+### 累積和を使った解法の修正
 
 Step 1 の累積和を使った方の解答に、他の方のプルリクエストを参考にしていくつか修正を加えました。
 
@@ -124,15 +124,38 @@ class Solution {
     - containsKey() と get() を代わりに使うのが読みやすさに寄与しない気がしたのが理由です (自分が Java のライブラリ活用に慣れてしまっているだけかもしれませんが...)
 - put() の呼び出しをしている行が長かったので改行を入れました (実際の開発では formatter がやってくれるので、あくまで今見やすくするためにやっているんですよ、というのは面接の場では伝えたいところです)
 
-### TODO
+### Brute force なアプローチの修正
 
-- ひとつめの計算量って本当に正しい？げんみつにはいくら？参考: https://github.com/goto-untrapped/Arai60/pull/28/files#r1641923067
+Step 1 で最初に思いついた brute force なアプローチの実装の修正案です。
+
+```java
+// 時間計算量: O(n^2)
+// 空間計算量: O(1)
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        for (int start = 0; start < nums.length; start++) {
+            int sum = 0;
+            for (int end = start; end < nums.length; end++) {
+                sum += nums[end];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+```
+
+- 複雑で計算量の多かったのをシンプルで計算量の改善された (とはいえ O(n^2) ですが) ものに修正
+- [goto さんのコメント](https://github.com/goto-untrapped/Arai60/pull/28#discussion_r1642960547)を参考に、loop counter の名前を start, end として多少読みやすくした
+- ちなみに TLE にはならなかった (けど実行時間は約45倍)
+
+### その他メモ
+
 - 累積和の理解度を深めてくれそうな oda さんのメモ: https://github.com/kazukiii/leetcode/pull/17/files#r1649125989
-- やっぱ brute force な書き方も復習するか
-    - 三重ループじゃなくて二重ループにできるらしい: https://github.com/Mike0121/LeetCode/pull/33/files#diff-b46377e322184ae9a85cc56e120560a4f00c8d761c58a4b284f09bfec7143428
-    - i, j じゃなくて begin, end とかがいい: https://github.com/goto-untrapped/Arai60/pull/28#discussion_r1642960547
-    - 
-- この類題、累積和の理解度チェックにいいかも: https://github.com/SuperHotDogCat/coding-interview/pull/29#issuecomment-2169284348
+- この類題は累積和の理解度チェックにいいかも: https://github.com/SuperHotDogCat/coding-interview/pull/29#issuecomment-2169284348
 
 ## Step 3
 
