@@ -101,7 +101,7 @@ class Solution {
         for (int num : nums) {
             cumulativeSum += num;
 
-            // sum(nums[0:j]) - sum(nums[0:i]) = k となる i (0 <= i < j) が x 個存在すれば
+            // sum(nums[0:j]) - k = sum(nums[0:i]) となる i (0 <= i < j) が x 個存在すれば
             // k と等しい部分配列 sum(nums[i:j]) も x 個存在する
             count += cumulativeSumFrequency.getOrDefault(cumulativeSum - k, 0);
 
