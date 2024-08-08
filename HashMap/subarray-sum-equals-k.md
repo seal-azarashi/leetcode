@@ -83,6 +83,57 @@ class Solution {
 
 ## Step 2
 
+### 累積和を使った解法
+
+Step 1 の累積和を使った方の解答に、他の方のプルリクエストを参考にしていくつか修正を加えました。
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(n) 
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        // 再ハッシュが起こらないように想定し得る最大 capacity を宣言時に指定
+        Map<Integer, Integer> cumulativeSumFrequency = new HashMap<>(nums.length + 1);
+        cumulativeSumFrequency.put(0, 1);
+
+        int cumulativeSum = 0;
+        int count = 0;
+        for (int num : nums) {
+            cumulativeSum += num;
+
+            // sum(nums[0:j]) - sum(nums[0:i]) = k となる i (0 <= i < j) が x 個存在すれば
+            // k と等しい部分配列 sum(nums[i:j]) も x 個存在する
+            count += cumulativeSumFrequency.getOrDefault(cumulativeSum - k, 0);
+
+            cumulativeSumFrequency.put(
+                cumulativeSum,
+                cumulativeSumFrequency.getOrDefault(cumulativeSum, 0) + 1
+            );
+        }
+        return count;
+    }
+}
+```
+
+- 変数宣言の順序や空白行の挿入箇所を若干修正しました
+- [Iwasa さんの実装](https://github.com/Yoshiki-Iwasa/Arai60/pull/15/files)を参考に再ハッシュが起こらないように想定し得る最大 capacity (nums の要素数 + 空の部分配列の和を表す1要素) を宣言時に指定するようにしました
+    - 十分なメモリ容量があることを前提にしていますが、そうでない場合には考慮してほしいので、この指定が目に留まりやすいようコメントを付けています
+    - Load factor も指定できるので何か性能向上に活用出来ないかと考えましたが、initial capacity の指定により再ハッシュが発生しなくなるので、活用の余地はなかったです
+- fhiyo さんが以前書いたアルゴリズムを解説するコメントが素晴らしかったので拝借しました: https://github.com/fhiyo/leetcode/pull/19#discussion_r1708148290
+- Step 1 で葛藤していた count のアップデート処理の書き方ですが、結局 getOrDefault() を使って一行で記述するように修正しました
+    - containsKey() と get() を代わりに使うのが読みやすさに寄与しない気がしたのが理由です (自分が Java のライブラリ活用に慣れてしまっているだけかもしれませんが...)
+- put() の呼び出しをしている行が長かったので改行を入れました (実際の開発では formatter がやってくれるので、あくまで今見やすくするためにやっているんですよ、というのは面接の場では伝えたいところです)
+
+### TODO
+
+- ひとつめの計算量って本当に正しい？げんみつにはいくら？参考: https://github.com/goto-untrapped/Arai60/pull/28/files#r1641923067
+- 累積和の理解度を深めてくれそうな oda さんのメモ: https://github.com/kazukiii/leetcode/pull/17/files#r1649125989
+- やっぱ brute force な書き方も復習するか
+    - 三重ループじゃなくて二重ループにできるらしい: https://github.com/Mike0121/LeetCode/pull/33/files#diff-b46377e322184ae9a85cc56e120560a4f00c8d761c58a4b284f09bfec7143428
+    - i, j じゃなくて begin, end とかがいい: https://github.com/goto-untrapped/Arai60/pull/28#discussion_r1642960547
+    - 
+- この類題、累積和の理解度チェックにいいかも: https://github.com/SuperHotDogCat/coding-interview/pull/29#issuecomment-2169284348
+
 ## Step 3
 
 ## Step 4
