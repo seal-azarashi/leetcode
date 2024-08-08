@@ -160,4 +160,34 @@ class Solution {
 
 ## Step 3
 
-## Step 4
+次の実装をしました。
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(n) 
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        Map<Integer, Integer> cumulativeSumFrequency = new HashMap<>();
+        cumulativeSumFrequency.put(0, 1);
+
+        int count = 0;
+        int cumulativeSum = 0;
+        for (int num : nums) {
+            cumulativeSum += num;
+            count += cumulativeSumFrequency.getOrDefault(cumulativeSum - k, 0);
+            cumulativeSumFrequency.put(
+                cumulativeSum,
+                cumulativeSumFrequency.getOrDefault(cumulativeSum, 0) + 1
+            );
+        }
+        return count;
+    }
+}
+```
+
+- 大体3-5分ぐらいで書けた
+- Step 2 と比較すると、initial capacity の設定とアルゴリズムの詳細に関するコメントが抜けている
+    - Initial capacity の設定については「もっと効率化できないか」といった追加質問が来れば追加すればいいぐらいの認識
+    - アルゴリズムの詳細に関するコメントは、現実的な時間内であれぐらいのクオリティのものが書けるとは思えないのであえて省略した
+        - 「この関数をより読みやすくするには？」と質問されたら追加しようと試みると思う
+            - その際には、コードコメントとして残す以外にも、javadoc として書くことも検討したい
