@@ -151,6 +151,7 @@ class Solution {
 - 複雑で計算量の多かったのをシンプルで計算量の改善された (とはいえ O(n^2) ですが) ものに修正
 - [goto さんのコメント](https://github.com/goto-untrapped/Arai60/pull/28#discussion_r1642960547)を参考に、loop counter の名前を start, end として多少読みやすくした
 - ちなみに TLE にはならなかった (けど実行時間は約45倍)
+- メモリ使用量が累積和を用いた解法より若干多くなっているのが興味深い
 
 ### その他メモ
 
