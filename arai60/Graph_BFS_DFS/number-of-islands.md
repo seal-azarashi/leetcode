@@ -58,3 +58,47 @@ class Solution {
 - 細かいが次のようなことも考えていた:
     - `traversed[i][j] == true` は `traversed[i][j]` とも書けるが、traversed という名前から boolean 値が格納されている値だというのは推測し辛いので、この行を読んでいる時点で traversed の型を忘れちゃってたら、若干読みやすくなるだろうなと思ってこれにした (そんなことも覚えられないぐらい疲れているなら休んだ方がいいとは思うけれど)
     - grid の領域外であることを判定するのには4つの判定が必要だが、文字数の割にあまり読む価値があると思えなかったので isOutOfBounds という変数に結果を入れてしまうことにした
+
+# Step 2
+
+```java
+class Solution {
+    public int numIslands(char[][] grid) {
+        int numberOfIslands = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] landsTraversed = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '0' || landsTraversed[i][j] == true) {
+                    continue;
+                }
+
+                traverseAdjacentLands(grid, landsTraversed, m, n, i, j);
+                numberOfIslands++;
+            }
+        }
+
+        return numberOfIslands;
+    }
+
+    private void traverseAdjacentLands(char[][] grid, boolean[][] landsTraversed, int m, int n, int i, int j) {
+        boolean isOutOfBounds = i < 0 || i >= m || j < 0 || j >= n;
+        if (isOutOfBounds || grid[i][j] == '0' || landsTraversed[i][j] == true) {
+            return;
+        }
+
+        landsTraversed[i][j] = true;
+
+        traverseAdjacentLands(grid, landsTraversed, m, n, i + 1, j);
+        traverseAdjacentLands(grid, landsTraversed, m, n, i - 1, j);
+        traverseAdjacentLands(grid, landsTraversed, m, n, i, j - 1);
+        traverseAdjacentLands(grid, landsTraversed, m, n, i, j + 1);
+    }
+}
+```
+
+- 操作対象は陸地だけであることを表すため変数、関数名を修正:
+    - traversed -> landsTraversed
+    - traverseAdjacentCells -> traverseAdjacentLands
+- landsTraversed の capacity 指定に m, n を使用
