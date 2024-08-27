@@ -112,7 +112,7 @@ class Solution {
 
 ## 再帰関数の代わりにスタックを使う
 
-(Leetcode の constraints ではそうならないとは書いてあるものの) 大きな grid が渡されたらスタックオーバーフローになる可能性があるため、スタックを用いたより安全な実装にしてみる。
+~~(Leetcode の constraints ではそうならないとは書いてあるものの) 大きな grid が渡されたらスタックオーバーフローになる可能性があるため、スタックを用いたより安全な実装にしてみる。~~ 👈 誤りです ([参考](https://github.com/seal-azarashi/leetcode/pull/17#discussion_r1733611615))
 
 ```java
 // 時間計算量: O(m * n)
@@ -225,7 +225,7 @@ class Solution {
 次の理由で再帰と走査済 boolean 配列を用いた実装を選びました:
 
 - 処理が速い
-- Leetcode の constraints 上スタックオーバーフローが起きる可能性は極めて低い
+- ~~Leetcode の constraints 上スタックオーバーフローが起きる可能性は極めて低い~~ 👈 誤りです ([参考](https://github.com/seal-azarashi/leetcode/pull/17#discussion_r1733611615))
 - 副作用を生まない
 
 ```java
