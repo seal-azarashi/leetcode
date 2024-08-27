@@ -267,3 +267,56 @@ class Solution {
     }
 }
 ```
+
+# Step 4
+
+```java
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    private record Cell(int row, int column) {};
+
+    public int numIslands(char[][] grid) {
+        int islandCount = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        boolean[][] traversedLands = new boolean[rowCount][columnCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0' || traversedLands[row][column] == true) {
+                    continue;
+                }
+
+                traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column);
+                islandCount++;
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void traverseAdjacentLands(char[][] grid, boolean[][] traversedLands, int rowCount, int columnCount, int row, int column) {
+        Deque<Cell> traversingCells = new ArrayDeque<>();
+        traversingCells.add(new Cell(row, column));
+        while (!traversingCells.isEmpty()) {
+            Cell cell = traversingCells.removeFirst();
+            boolean isInsideGrid = 0 <= cell.row && cell.row < rowCount && 0 <= cell.column && cell.column < columnCount;
+            if (!isInsideGrid || grid[cell.row][cell.column] == '0' || traversedLands[cell.row][cell.column] == true) {
+                continue;
+            }
+
+            traversedLands[cell.row][cell.column] = true;
+
+            traversingCells.add(new Cell(cell.row + 1, cell.column));
+            traversingCells.add(new Cell(cell.row - 1, cell.column));
+            traversingCells.add(new Cell(cell.row, cell.column + 1));
+            traversingCells.add(new Cell(cell.row, cell.column - 1));
+        }
+    }
+}
+```
+
+- [nodchip さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/17#discussion_r1732478049)で再帰関数を用いた実装だとスタックオーバーフローになる可能性があることに気づいたため、スタックを用いた解法を第一の選択肢にした
+- 同じく [nodchip さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/17#discussion_r1732474947)を参考に traverseAdjacentLands() 内のにある条件判定をリファクタリングした
+    - 肯定的な意味合いの boolean 値にし、判定時に否定演算子を付けて用いるようにした
+    - 数直線上に一直線上に並べるような並びにした
