@@ -61,39 +61,43 @@ class Solution {
 
 # Step 2
 
+## Step 1 の改善版
+
 ```java
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
 class Solution {
     public int numIslands(char[][] grid) {
-        int numberOfIslands = 0;
-        int m = grid.length;
-        int n = grid[0].length;
-        boolean[][] traversedLands = new boolean[m][n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == '0' || traversedLands[i][j] == true) {
+        int islandCount = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        boolean[][] traversedLands = new boolean[rowCount][columnCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0' || traversedLands[row][column] == true) {
                     continue;
                 }
 
-                traverseAdjacentLands(grid, traversedLands, m, n, i, j);
-                numberOfIslands++;
+                traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column);
+                islandCount++;
             }
         }
 
-        return numberOfIslands;
+        return islandCount;
     }
 
-    private void traverseAdjacentLands(char[][] grid, boolean[][] traversedLands, int m, int n, int i, int j) {
-        boolean isOutOfBounds = i < 0 || i >= m || j < 0 || j >= n;
-        if (isOutOfBounds || grid[i][j] == '0' || traversedLands[i][j] == true) {
+    private void traverseAdjacentLands(char[][] grid, boolean[][] traversedLands, int rowCount, int columnCount, int row, int column) {
+        boolean isOutOfBounds = !(row >= 0 && row < rowCount && column >= 0 && column < columnCount);
+        if (isOutOfBounds || grid[row][column] == '0' || traversedLands[row][column] == true) {
             return;
         }
 
-        traversedLands[i][j] = true;
+        traversedLands[row][column] = true;
 
-        traverseAdjacentLands(grid, traversedLands, m, n, i + 1, j);
-        traverseAdjacentLands(grid, traversedLands, m, n, i - 1, j);
-        traverseAdjacentLands(grid, traversedLands, m, n, i, j - 1);
-        traverseAdjacentLands(grid, traversedLands, m, n, i, j + 1);
+        traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row + 1, column);
+        traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row - 1, column);
+        traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column - 1);
+        traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column + 1);
     }
 }
 ```
@@ -101,4 +105,117 @@ class Solution {
 - 操作対象は陸地だけであることを表すため変数、関数名を修正:
     - traversed -> traversedLands
     - traverseAdjacentCells -> traverseAdjacentLands
+- 各所で話されていた命名に関する議論を参考に、m, n, i, j を rowCount, columnCount, row, column に修正
+- oda さんがどこかで指摘されてたように isOutOfBounds の定義を修正
+- 引数 i, j を row, column に修正 ([参考](https://github.com/nittoco/leetcode/pull/23#discussion_r1667241892))
 - traversedLands の capacity 指定に m, n を使用
+
+## 再帰関数の代わりにスタックを使う
+
+(Leetcode の constraints ではそうならないとは書いてあるものの) 大きな grid が渡されたらスタックオーバーフローになる可能性があるため、スタックを用いたより安全な実装にしてみる。
+
+```java
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    private record Cell(int row, int column) {};
+
+    public int numIslands(char[][] grid) {
+        int islandCount = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        boolean[][] traversedLands = new boolean[rowCount][columnCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0' || traversedLands[row][column] == true) {
+                    continue;
+                }
+
+                traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column);
+                islandCount++;
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void traverseAdjacentLands(char[][] grid, boolean[][] traversedLands, int rowCount, int columnCount, int row, int column) {
+        Deque<Cell> traversingCells = new ArrayDeque<>();
+        traversingCells.add(new Cell(row, column));
+        while (!traversingCells.isEmpty()) {
+            Cell cell = traversingCells.removeFirst();
+            boolean isOutOfBounds = !(cell.row >= 0 && cell.row < rowCount && cell.column >= 0 && cell.column < columnCount);
+            if (isOutOfBounds || grid[cell.row][cell.column] == '0' || traversedLands[cell.row][cell.column] == true) {
+                continue;
+            }
+
+            traversedLands[cell.row][cell.column] = true;
+
+            traversingCells.add(new Cell(cell.row + 1, cell.column));
+            traversingCells.add(new Cell(cell.row - 1, cell.column));
+            traversingCells.add(new Cell(cell.row, cell.column + 1));
+            traversingCells.add(new Cell(cell.row, cell.column - 1));
+        }
+    }
+}
+```
+
+- "This class is likely to be faster than Stack when used as a stack" とある ArrayDeque を Stack クラスの代わりに使ってみた
+    - nodachip さんも言及されてた: https://github.com/goto-untrapped/Arai60/pull/38#discussion_r1683649014
+        - リングバッファ (Circular Buffer とも言うのね) だったのか
+- ArrayDeque に initial capacity を設定すると、ケースによっては劇的に遅くなった (処理時間が7倍ほどになった) ことが興味深かった
+    - CPU キャッシュに乗らなくなるためだろうか？
+    - しかしメモリ消費量は1~2割ほど削減される
+- 再帰関数を使った場合と比べおよそ2倍の処理時間がかかっている
+    - スタック的な役割のオブジェクトの利用よりも、スタックフレームの利用の方がよっぽど最適化されているということなのだろうか？
+    - 他に致命的な要因が無いかと record の代わりに整数型配列を使ったりもしたが、それほど大きな影響はなかった
+
+## 走査時に grid の値を書き換える解法
+
+[nodachip さんのコメント](https://github.com/thonda28/leetcode/pull/15#discussion_r1685703323)を見て、なるほど面白いなと思って書いてみました。実行速度が最も速い。  
+Leetcode の submission 時に計測される Runtime と Memory も良くなっていました。しかしコメントにも違和感として指摘されていますが、入力値を書き換えてしまう副作用を許容できるのかについては、ちゃんと確認を取りながら実装した方がいいかなと思います。
+
+```java
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    public int numIslands(char[][] grid) {
+        int islandCount = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0') {
+                    continue;
+                }
+
+                traverseAdjacentLands(grid, rowCount, columnCount, row, column);
+                islandCount++;
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void traverseAdjacentLands(char[][] grid, int rowCount, int columnCount, int row, int column) {
+        boolean isOutOfBounds = !(row >= 0 && row < rowCount && column >= 0 && column < columnCount);
+        if (isOutOfBounds || grid[row][column] == '0') {
+            return;
+        }
+
+        grid[row][column] = '0';
+
+        traverseAdjacentLands(grid, rowCount, columnCount, row + 1, column);
+        traverseAdjacentLands(grid, rowCount, columnCount, row - 1, column);
+        traverseAdjacentLands(grid, rowCount, columnCount, row, column - 1);
+        traverseAdjacentLands(grid, rowCount, columnCount, row, column + 1);
+    }
+}
+```
+
+## 他の人のプルリクエストを見て
+
+- TODO: Union-find で書く:
+    - https://github.com/goto-untrapped/Arai60/pull/38#issuecomment-2228590814
+    - https://github.com/fhiyo/leetcode/pull/20#discussion_r1635719450
+    - https://github.com/fhiyo/leetcode/pull/20#discussion_r1638661461
