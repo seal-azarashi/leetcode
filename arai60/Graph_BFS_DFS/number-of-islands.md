@@ -161,7 +161,7 @@ class Solution {
 ```
 
 - "This class is likely to be faster than Stack when used as a stack" とある ArrayDeque を Stack クラスの代わりに使ってみた
-    - nodachip さんも言及されてた: https://github.com/goto-untrapped/Arai60/pull/38#discussion_r1683649014
+    - nodchip さんも言及されてた: https://github.com/goto-untrapped/Arai60/pull/38#discussion_r1683649014
         - リングバッファ (Circular Buffer とも言うのね) だったのか
 - ArrayDeque に initial capacity を設定すると、ケースによっては劇的に遅くなった (処理時間が7倍ほどになった) ことが興味深かった
     - CPU キャッシュに乗らなくなるためだろうか？
@@ -172,7 +172,7 @@ class Solution {
 
 ## 走査時に grid の値を書き換える解法
 
-[nodachip さんのコメント](https://github.com/thonda28/leetcode/pull/15#discussion_r1685703323)を見て、なるほど面白いなと思って書いてみました。実行速度が最も速い。  
+[nodchip さんのコメント](https://github.com/thonda28/leetcode/pull/15#discussion_r1685703323)を見て、なるほど面白いなと思って書いてみました。実行速度が最も速い。  
 Leetcode の submission 時に計測される Runtime と Memory も良くなっていました。しかしコメントにも違和感として指摘されていますが、入力値を書き換えてしまう副作用を許容できるのかについては、ちゃんと確認を取りながら実装した方がいいかなと思います。
 
 ```java
