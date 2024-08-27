@@ -219,3 +219,51 @@ class Solution {
     - https://github.com/goto-untrapped/Arai60/pull/38#issuecomment-2228590814
     - https://github.com/fhiyo/leetcode/pull/20#discussion_r1635719450
     - https://github.com/fhiyo/leetcode/pull/20#discussion_r1638661461
+
+# Step 3
+
+次の理由で再帰と走査済 boolean 配列を用いた実装を選びました:
+
+- 処理が速い
+- Leetcode の constraints 上スタックオーバーフローが起きる可能性は極めて低い
+- 副作用を生まない
+
+```java
+// 解いた時間: 8分ぐらい
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    public int numIslands(char[][] grid) {
+        int islandCount = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        boolean[][] traversedLands = new boolean[rowCount][columnCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0' || traversedLands[row][column] == true) {
+                    continue;
+                }
+
+                traverseLands(grid, rowCount, columnCount, traversedLands, row, column);
+                islandCount++;
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void traverseLands(char[][] grid, int rowCount, int columnCount, boolean[][] traversedLands, int row, int column) {
+        boolean isOutOfBounds = !(row >= 0 && row < rowCount && column >= 0 && column < columnCount);
+        if (isOutOfBounds || grid[row][column] == '0' || traversedLands[row][column] == true) {
+            return;
+        }
+
+        traversedLands[row][column] = true;
+
+        traverseLands(grid, rowCount, columnCount, traversedLands, row + 1, column);
+        traverseLands(grid, rowCount, columnCount, traversedLands, row - 1, column);
+        traverseLands(grid, rowCount, columnCount, traversedLands, row, column + 1);
+        traverseLands(grid, rowCount, columnCount, traversedLands, row, column - 1);
+    }
+}
+```
