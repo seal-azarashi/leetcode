@@ -213,12 +213,102 @@ class Solution {
 }
 ```
 
-## 他の人のプルリクエストを見て
+## Union-find を用いた解法
 
-- TODO: Union-find で書く:
-    - https://github.com/goto-untrapped/Arai60/pull/38#issuecomment-2228590814
-    - https://github.com/fhiyo/leetcode/pull/20#discussion_r1635719450
-    - https://github.com/fhiyo/leetcode/pull/20#discussion_r1638661461
+他の方々が Union-find を使っていたので私もやってみました。
+
+```java
+// 時間計算量 (union 操作は定数時間とみなす): O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    private class UnionFindIslands {
+        private int[] parent;
+        private int[] rank;
+        private int count;
+
+        private UnionFindIslands(char[][] grid) {
+            int rowCount = grid.length;
+            int columnCount = grid[0].length;
+            parent = new int[rowCount * columnCount];
+            rank = new int[rowCount * columnCount];
+            count = 0;
+            for (int row = 0; row < rowCount; row++) {
+                for (int column = 0; column < columnCount; column++) {
+                    if (grid[row][column] == '0') {
+                        continue;
+                    }
+
+                    int cell = row * columnCount + column;
+                    parent[cell] = cell;
+                    count++;
+                }
+            }
+        }
+
+        private void union(int x, int y) {
+            int xRoot = find(x);
+            int yRoot = find(y);
+
+            if (xRoot == yRoot) {
+                return;
+            }
+
+            if (rank[xRoot] < rank[yRoot]) {
+                parent[xRoot] = yRoot;
+            } else if (rank[xRoot] > rank[yRoot]) {
+                parent[yRoot] = xRoot;
+            } else {
+                parent[yRoot] = xRoot;
+                rank[xRoot]++;
+            }
+            count--;
+        }
+
+        private int find(int i) {
+            if (parent[i] != i) {
+                return find(parent[i]);
+            }
+            return parent[i];
+        }
+
+        private int getCount() {
+            return count;
+        }
+    }
+
+    public int numIslands(char[][] grid) {
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        UnionFindIslands unionFindIslands = new UnionFindIslands(grid);
+
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == '0') {
+                    continue;
+                }
+
+                grid[row][column] = '0';
+                if (row - 1 >= 0 && grid[row - 1][column] == '1') {
+                    unionFindIslands.union(row * columnCount + column, (row - 1) * columnCount + column);
+                }
+                if (row + 1 < rowCount && grid[row + 1][column] == '1') {
+                    unionFindIslands.union(row * columnCount + column, (row + 1) * columnCount + column);
+                }
+                if (column - 1 >= 0 && grid[row][column - 1] == '1') {
+                    unionFindIslands.union(row * columnCount + column, row * columnCount + column - 1);
+                }
+                if (column + 1 < columnCount && grid[row][column + 1] == '1') {
+                    unionFindIslands.union(row * columnCount + column, row * columnCount + column + 1);
+                }
+            }
+        }
+
+        return unionFindIslands.getCount();
+    }
+}
+```
+
+- parent, rank は二次元配列にも出来るが、連続したメモリ領域が使用されるため処理の効率化が見込める一次元配列を採用した
 
 # Step 3
 
