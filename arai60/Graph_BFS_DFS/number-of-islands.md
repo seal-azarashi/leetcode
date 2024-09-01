@@ -360,24 +360,27 @@ class Solution {
 
 # Step 4
 
+## 再帰関数の代わりにスタックを使う
+
 ```java
 // 時間計算量: O(m * n)
 // 空間計算量: O(m * n)
 class Solution {
+    private char WATER = '0';
     private record Cell(int row, int column) {};
 
     public int numIslands(char[][] grid) {
         int islandCount = 0;
         int rowCount = grid.length;
         int columnCount = grid[0].length;
-        boolean[][] traversedLands = new boolean[rowCount][columnCount];
+        boolean[][] isVisited = new boolean[rowCount][columnCount];
         for (int row = 0; row < rowCount; row++) {
             for (int column = 0; column < columnCount; column++) {
-                if (grid[row][column] == '0' || traversedLands[row][column] == true) {
+                if (grid[row][column] == WATER || isVisited[row][column] == true) {
                     continue;
                 }
 
-                traverseAdjacentLands(grid, traversedLands, rowCount, columnCount, row, column);
+                traverseAdjacentLands(grid, isVisited, rowCount, columnCount, row, column);
                 islandCount++;
             }
         }
@@ -385,17 +388,17 @@ class Solution {
         return islandCount;
     }
 
-    private void traverseAdjacentLands(char[][] grid, boolean[][] traversedLands, int rowCount, int columnCount, int row, int column) {
+    private void traverseAdjacentLands(char[][] grid, boolean[][] isVisited, int rowCount, int columnCount, int row, int column) {
         Deque<Cell> traversingCells = new ArrayDeque<>();
         traversingCells.add(new Cell(row, column));
         while (!traversingCells.isEmpty()) {
             Cell cell = traversingCells.removeFirst();
             boolean isInsideGrid = 0 <= cell.row && cell.row < rowCount && 0 <= cell.column && cell.column < columnCount;
-            if (!isInsideGrid || grid[cell.row][cell.column] == '0' || traversedLands[cell.row][cell.column] == true) {
+            if (!isInsideGrid || grid[cell.row][cell.column] == WATER || isVisited[cell.row][cell.column] == true) {
                 continue;
             }
 
-            traversedLands[cell.row][cell.column] = true;
+            isVisited[cell.row][cell.column] = true;
 
             traversingCells.add(new Cell(cell.row + 1, cell.column));
             traversingCells.add(new Cell(cell.row - 1, cell.column));
