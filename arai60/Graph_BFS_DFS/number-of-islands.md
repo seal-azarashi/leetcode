@@ -392,7 +392,7 @@ class Solution {
 
     private void traverseAdjacentLands(char[][] grid, boolean[][] isVisited, int rowCount, int columnCount, int row, int column) {
         Deque<Cell> traversingCells = new ArrayDeque<>();
-        traversingCells.add(new Cell(row, column));
+        traversingCells.addLast(new Cell(row, column));
         while (!traversingCells.isEmpty()) {
             Cell cell = traversingCells.removeFirst();
             boolean isInsideGrid = 0 <= cell.row && cell.row < rowCount && 0 <= cell.column && cell.column < columnCount;
@@ -402,10 +402,10 @@ class Solution {
 
             isVisited[cell.row][cell.column] = true;
 
-            traversingCells.add(new Cell(cell.row + 1, cell.column));
-            traversingCells.add(new Cell(cell.row - 1, cell.column));
-            traversingCells.add(new Cell(cell.row, cell.column + 1));
-            traversingCells.add(new Cell(cell.row, cell.column - 1));
+            traversingCells.addLast(new Cell(cell.row + 1, cell.column));
+            traversingCells.addLast(new Cell(cell.row - 1, cell.column));
+            traversingCells.addLast(new Cell(cell.row, cell.column + 1));
+            traversingCells.addLast(new Cell(cell.row, cell.column - 1));
         }
     }
 }
