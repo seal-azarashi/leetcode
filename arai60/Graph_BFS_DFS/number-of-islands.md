@@ -289,18 +289,12 @@ class Solution {
 
                 grid[row][column] = '0';
 
-                int root = row * columnCount + column;
-                if (row - 1 >= 0 && grid[row - 1][column] == '1') {
-                    unionFindIslands.union(root, (row - 1) * columnCount + column);
-                }
+                int coordinate = row * columnCount + column;
                 if (row + 1 < rowCount && grid[row + 1][column] == '1') {
-                    unionFindIslands.union(root, (row + 1) * columnCount + column);
-                }
-                if (column - 1 >= 0 && grid[row][column - 1] == '1') {
-                    unionFindIslands.union(root, row * columnCount + column - 1);
+                    unionFindIslands.union(coordinate, (row + 1) * columnCount + column);
                 }
                 if (column + 1 < columnCount && grid[row][column + 1] == '1') {
-                    unionFindIslands.union(root, root + 1);
+                    unionFindIslands.union(coordinate, coordinate + 1);
                 }
             }
         }
