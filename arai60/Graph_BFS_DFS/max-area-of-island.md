@@ -77,6 +77,8 @@ class Solution {
 ## Step 1 の解法の修正版
 
 ```java
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
 class Solution {
     private static final int WATER = 0;
     private record Cell(int row, int column) {};
@@ -140,3 +142,62 @@ class Solution {
 
 - 講師陣の皆さんがどのぐらい時間を書けて解かれていたのかを知れて勉強になった: https://github.com/TORUS0818/leetcode/pull/20/files#r1657723196
 - Java は1万回ぐらいなら再帰できる、それはなぜか？と聞かれて自分なら答えられるだろうか?: https://github.com/goto-untrapped/Arai60/pull/31#discussion_r1650006241
+
+# Step 3
+
+```java
+// 解いた時間: 13分ぐらい
+// 時間計算量: O(m * n)
+// 空間計算量: O(m * n)
+class Solution {
+    private static final int WATER = 0;
+    private record Cell(int row, int column) {};
+
+    public int maxAreaOfIsland(int[][] grid) {
+        int maxAreaOfIsland = 0;
+        int rowCount = grid.length;
+        int columnCount = grid[0].length;
+        boolean[][] isVisited = new boolean[rowCount][columnCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int column = 0; column < columnCount; column++) {
+                if (grid[row][column] == WATER || isVisited[row][column]) {
+                    continue;
+                }
+
+                int areaOfIsland = calculateAreaOfIsland(grid, isVisited, row, column);
+                if (areaOfIsland > maxAreaOfIsland) {
+                    maxAreaOfIsland = areaOfIsland;
+                }
+            }
+        }
+
+        return maxAreaOfIsland;
+    }
+
+    private int calculateAreaOfIsland(int[][] grid, boolean[][] isVisited, int row, int column) {
+        int areaOfIsland = 0;
+        Deque<Cell> cells = new ArrayDeque<>();
+        cells.push(new Cell(row, column));
+        while (!cells.isEmpty()) {
+            Cell cell = cells.pop();
+            boolean isInsideGrid = 0 <= cell.row && cell.row < grid.length && 0 <= cell.column && cell.column < grid[0].length;
+            if (!isInsideGrid || grid[cell.row][cell.column] == WATER || isVisited[cell.row][cell.column]) {
+                continue;
+            }
+
+            isVisited[cell.row][cell.column] = true;
+            areaOfIsland++;
+
+            cells.push(new Cell(cell.row + 1, cell.column));
+            cells.push(new Cell(cell.row - 1, cell.column));
+            cells.push(new Cell(cell.row, cell.column + 1));
+            cells.push(new Cell(cell.row, cell.column - 1));
+        }
+
+        return areaOfIsland;
+    }
+}
+```
+
+- 無意識で関数 traverseIsland() を calculateAreaOfIsland() と名付けていた
+    - こちらのほうが役割をより明確に表していて良いと思った
