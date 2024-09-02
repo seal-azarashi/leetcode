@@ -265,10 +265,10 @@ class Solution {
         }
 
         private int find(int i) {
-            if (parent[i] != i) {
-                return find(parent[i]);
+            if (parent[i] == i) {
+                return parent[i];
             }
-            return parent[i];
+            return find(parent[i]);
         }
 
         private int getCount() {
