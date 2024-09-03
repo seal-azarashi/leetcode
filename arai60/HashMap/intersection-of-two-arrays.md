@@ -80,7 +80,6 @@ class Solution {
 }
 ```
 
-
 - set を一つにする方法として新たにリストを導入することを思いついたが、空間計算量の節約にはならない (むしろインデックス等のデータ量が増えるのでマイナスになる見込み) ので採用を見送った
 - 空間計算量を書き出してみたら O(n + 2 * min(n, m)) で、n を min(n, m) にする余地があると気付いき、最初の分岐を追加した
     - 両配列の要素数の差がほとんどなければスタックフレームが一つ増えた分よりメモリ空間が圧迫されてしまう懸念はあるものの、スタックフレーム一つの増加がクリティカルな影響を与えることは基本ないはずなので採用
@@ -130,3 +129,39 @@ class Solution {
 
 - uniqueValues は set と言い換えて差し支えないと判断して set の変数名を num1Set に変奥
 - 最初の if 文がなんのためにあるのかは、上から順にまず読むだけだと理解しづらいかもと思いコメントを追加
+
+## Step 4
+
+レビューを受けて修正しました。
+
+```java
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        // 空間計算量削減を期待し、要素数が少ない方の配列を第一引数にして処理する
+        if (nums1.length > nums2.length) {
+            return intersection(nums2, nums1);
+        }
+
+        Set<Integer> nums1Set = new HashSet<>();
+        for (int num : nums1) {
+            nums1Set.add(num);
+        }
+
+        Set<Integer> intersection = new HashSet<>();
+        for (int num : nums2) {
+            if (nums1Set.contains(num)) {
+                intersection.add(num);
+            }
+        }
+
+        int[] result = new int[intersection.size()];
+        int resultIndex = 0;
+        for (int num : intersection) {
+            result[resultIndex++] = num;
+        }
+        return result;
+    }
+}
+```
+
+- [ryoooooory さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/13#discussion_r1742232256)で関数内最初の行のコードコメントが適切でなかったことに気づき書き換え
