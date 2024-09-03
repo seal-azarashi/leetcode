@@ -11,8 +11,8 @@ LeetCode URL: https://leetcode.com/problems/word-ladder/description/
 アルゴリズムだけでなく変数の命名等についても課題が多いままですが、一応最初の解答ということで記載しておきます。
 
 ```java
-// 時間計算量: ?
-// 空間計算量: ?
+// 時間計算量: O(n^2)
+// 空間計算量: O(n^2)
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         int ladderLength = 0;
@@ -84,9 +84,10 @@ class Solution {
 - endWord から beginWord の adjacent pair に到れるかどうかを確認し、到った中で最短 transformation sequence を返す実装にすれば良さそう
 - キャッシュしてあげないと TLE になりそうだが、その実装は一旦処理が完成してからにした方が順序としては望ましいかな
 - 可読性を考えると再帰関数にするのが良い気がする
-    - 再帰の深さは wordList.length の最大値 5000 が上限となるはずなので、 Java なら恐らくスタックオーバーフローにはならないだろう
-- 必要な関数は色々考えて次の3つになった:
+    - 再帰の深さは wordList の最大要素数 5000 が上限となるはずなので、 Java なら恐らくスタックオーバーフローにはならないだろう
+- 必要な関数は次の3つになるだろうか:
     - 再帰関数 getShortestTransformationSequence()
     - 2つの word が adjacent pair であるかどうかを判定する isTransformable()
     - 対象の word を除いたリストを作成する createNewWordList()
-- ...
+- いくつかケースが通るようになったがやはり要素数が多いと TLE になった
+- ここで確保してた2時間が経ったので終了
