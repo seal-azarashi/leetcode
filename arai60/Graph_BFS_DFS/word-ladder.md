@@ -7,12 +7,72 @@ LeetCode URL: https://leetcode.com/problems/word-ladder/description/
 
 ## Step 1
 
-なんとなくいける気がしたので2時間だけ頑張ってみました。残念ながらあるテストケースで TLE となりました。  
-アルゴリズムだけでなく変数の命名等についても課題が多いままですが、一応最初の解答ということで記載しておきます。
+### 答えを見て解いたときの実装
 
 ```java
 // 時間計算量: O(n^2)
-// 空間計算量: O(n^2)
+// 空間計算量: O(n)
+class Solution {
+    private static final char MATCHES_SINGLE_CHARACTER = '?';
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        wordList.add(beginWord);
+        Map<String, List<String>> globWordsMap = new HashMap<>();
+        for (String word : wordList) {
+            for (int i = 0; i < word.length(); i++) {
+                StringBuilder wordStringBuilder = new StringBuilder(word);
+                wordStringBuilder.setCharAt(i, MATCHES_SINGLE_CHARACTER);
+                String glob = wordStringBuilder.toString();
+                List<String> list = globWordsMap.getOrDefault(glob, new ArrayList<>());
+                list.add(word);
+                globWordsMap.put(glob, list);
+            }
+        }
+        Queue<String> wordQueue = new LinkedList<>();
+        wordQueue.offer(beginWord);
+        Set<String> visitedWords = new HashSet<>();
+        visitedWords.add(beginWord);
+
+        int step = 1;
+        while (!wordQueue.isEmpty()) {
+            step++;
+
+            int wordQueueSizeSnapShot = wordQueue.size();
+            for (int wordQueueIndex = 0; wordQueueIndex < wordQueueSizeSnapShot; wordQueueIndex++) {
+                String word = wordQueue.poll();
+                for (int i = 0; i < word.length(); i++) {
+                    StringBuilder wordStringBuilder = new StringBuilder(word);
+                    wordStringBuilder.setCharAt(i, MATCHES_SINGLE_CHARACTER);
+                    String glob = wordStringBuilder.toString();
+                    for (String adjacentWord : globWordsMap.get(glob)) {
+                        if (adjacentWord.equals(endWord)) {
+                            return step;
+                        }
+                        if (visitedWords.contains(adjacentWord)) {
+                            continue;
+                        }
+
+                        wordQueue.offer(adjacentWord);
+                        visitedWords.add(adjacentWord);
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+}
+```
+
+### 答えを見ずに解こうとした記録
+
+なんとなくいける気がしたので、答えを見る前に2時間だけ頑張ってみました。残念ながらあるテストケースで TLE となりました。  
+アルゴリズムだけでなく変数の命名等についても課題が多いままですが、一応最初の解答ということで記載しておきます。
+
+```java
+// 使った時間: 2時間
+// 時間計算量: O(n^2)
+// 空間計算量: O(n)
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         int ladderLength = 0;
