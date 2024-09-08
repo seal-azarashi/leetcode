@@ -274,3 +274,64 @@ class Solution {
 
 - 自分も自然に思いつきそうだなという印象を持った
 - パターンと文字列の対応を用いた実装と比べ実行時間は1桁多かった
+
+## Step 3
+
+パターンと文字列の対応を用いた実装にしました。
+
+```java
+// 解いた時間: 20分ぐらい
+// 時間計算量: O(N^2)
+// 空間計算量: O(N)
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        wordList.add(beginWord);
+        Map<String, List<String>> adjacencyMap = new HashMap<>();
+        for (String word : wordList) {
+            for (int i = 0; i < word.length(); i++) {
+                String globPattern = createGlobPattern(i, word);
+                List<String> list = adjacencyMap.getOrDefault(globPattern, new ArrayList<>());
+                list.add(word);
+                adjacencyMap.put(globPattern, list);
+            }
+        }
+
+        Deque<String> wordQueue = new ArrayDeque<>();
+        wordQueue.addLast(beginWord);
+        Set<String> visitedWords = new HashSet<>();
+        visitedWords.add(beginWord);
+
+        int distance = 1;
+        while(!wordQueue.isEmpty()) {
+            distance++;
+            int wordQueueSizeSnapshot = wordQueue.size();
+            for (int wordQueueIndex = 0; wordQueueIndex < wordQueueSizeSnapshot; wordQueueIndex++) {
+                String word = wordQueue.removeFirst();
+                for (int i = 0; i < word.length(); i++) {
+                    String globPattern = createGlobPattern(i, word);
+                    for (String adjacentWord : adjacencyMap.get(globPattern)) {
+                        if (adjacentWord.equals(endWord)) {
+                            return distance;
+                        }
+                        if (visitedWords.contains(adjacentWord)) {
+                            continue;
+                        }
+                        wordQueue.addLast(adjacentWord);
+                        visitedWords.add(adjacentWord);
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    private String createGlobPattern(int index, String word) {
+        StringBuilder globPatternBuilder = new StringBuilder(word);
+        globPatternBuilder.setCharAt(index, '?');
+        return globPatternBuilder.toString();
+    }
+}
+```
+
+- 書く量が多く大変だったからか、 0 を定数化したりコメントを書くのが抜けていた
