@@ -53,6 +53,8 @@ class Solution {
 ### 再帰関数による DFS
 
 ```java
+// 時間計算量: O(n)
+// 空間計算量: O(n)
 class Solution {
     public int maxDepth(TreeNode root) {
         if (root == null) {
@@ -87,6 +89,8 @@ class Solution {
 ### 深さを付与した node とスタックを用いた DFS
 
 ```java
+// 時間計算量: O(n)
+// 空間計算量: O(n)
 class Solution {
     private record TreeNodeDepth(TreeNode node, int depth) {};
 
