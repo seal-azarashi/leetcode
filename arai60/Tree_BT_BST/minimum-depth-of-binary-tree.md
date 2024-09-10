@@ -81,7 +81,6 @@ class Solution {
         while (!treeNodeDepths.isEmpty()) {
             TreeNodeDepth nodeDepth = treeNodeDepths.pop();
             if (nodeDepth.node.left == null && nodeDepth.node.right == null) {
-                System.out.println(nodeDepth.node.val);
                 minDepth = Math.min(minDepth, nodeDepth.depth);
             }
             if (nodeDepth.node.left != null) {
