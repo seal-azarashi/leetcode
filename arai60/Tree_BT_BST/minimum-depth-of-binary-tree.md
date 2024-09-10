@@ -127,3 +127,42 @@ class Solution {
     }
 }
 ```
+
+## Step 3
+
+```java
+// 解いた時間: 5分ぐらい
+// 時間計算量: O(n)
+// 空間計算量: O(n)
+class Solution {
+    private static final int MIN_DEPTH_NOT_CALCULATED = -1;
+    
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        Queue<TreeNode> treeNodes = new ArrayDeque<>();
+        treeNodes.offer(root);
+        int minDepth = 1;
+        while (!treeNodes.isEmpty()) {
+            int currentLevelNodeCount = treeNodes.size();
+            for (int i = 0; i < currentLevelNodeCount; i++) {
+                TreeNode node = treeNodes.poll();
+                if (node.left == null && node.right == null) {
+                    return minDepth;
+                }
+                if (node.left != null) {
+                    treeNodes.offer(node.left);
+                }
+                if (node.right != null) {
+                    treeNodes.offer(node.right);
+                }
+            }
+            minDepth++;
+        }
+
+        return MIN_DEPTH_NOT_CALCULATED;
+    }
+}
+```
