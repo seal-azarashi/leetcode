@@ -119,3 +119,39 @@ class Solution {
 
 - そういえば最初に解いたときにスタックで DFS をする方法は思いつかなかった
 - 上記の方法は多くの方が実装されてたので、自分もやってみた
+
+## Step 3
+
+```java
+// 解いた時間: 4分ぐらい
+// 時間計算量: O(n)
+// 空間計算量: O(n)
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        Queue<TreeNode> treeNodes = new ArrayDeque<>();
+        treeNodes.offer(root);
+        int maxDepth = 0;
+        while (!treeNodes.isEmpty()) {
+            int currentLevelNodesCount = treeNodes.size();
+            for (int i = 0; i < currentLevelNodesCount; i++) {
+                TreeNode node = treeNodes.poll();
+                if (node.left != null) {
+                    treeNodes.offer(node.left);
+                }
+                if (node.right != null) {
+                    treeNodes.offer(node.right);
+                }
+            }
+            maxDepth++;
+        }
+        return maxDepth;
+    }
+}
+```
+
+- 読み手にとって処理のイメージが掴みやすくなるように treeNodes のインターフェースを Queue に変える
+- levelNodeCountSnapshot を currentLevelNodesCount に修正
