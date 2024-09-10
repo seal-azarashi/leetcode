@@ -62,7 +62,7 @@ class Solution {
 
 ## Step 2
 
-### 再帰関数による DFS
+### スタックによる DFS
 
 ```java
 // 時間計算量: O(n)
@@ -95,7 +95,7 @@ class Solution {
 }
 ```
 
-### スタックによる DFS
+### 再帰関数による DFS
 
 ```java
 // 時間計算量: O(n)
