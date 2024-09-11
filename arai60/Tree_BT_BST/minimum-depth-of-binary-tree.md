@@ -165,3 +165,76 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### キューによる BFS
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(n)
+class Solution {
+    private static final int MIN_DEPTH_NOT_FOUND = -1;
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        Queue<TreeNode> treeNodes = new ArrayDeque<>();
+        treeNodes.offer(root);
+        int depth = 1;
+        while (!treeNodes.isEmpty()) {
+            int currentLevelNodesCount = treeNodes.size();
+            for (int i = 0; i < currentLevelNodesCount; i++) {
+                TreeNode node = treeNodes.poll();
+                if (node.left == null && node.right == null) {
+                    return depth;
+                }
+                if (node.left != null) {
+                    treeNodes.offer(node.left);
+                }
+                if (node.right != null) {
+                    treeNodes.offer(node.right);
+                }
+            }
+
+            depth++;
+        }
+
+        // 処理に異常が無い限りここには到達しません。
+        return MIN_DEPTH_NOT_FOUND;
+    }
+}
+```
+
+### 再帰関数による DFS
+
+```java
+// 時間計算量: O(n)
+// 空間計算量: O(n)
+class Solution {
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        return findMinDepthRecursively(root);
+    }
+
+    private int findMinDepthRecursively(TreeNode node) {
+        if (node.left == null && node.right == null) {
+            return 1;
+        }
+
+        int minDepth = Integer.MAX_VALUE;
+        if (node.left != null) {
+            minDepth = Math.min(minDepth , findMinDepthRecursively(node.left));
+        }
+        if (node.right != null) {
+            minDepth = Math.min(minDepth , findMinDepthRecursively(node.right));
+        }
+        return minDepth + 1;
+    }
+}
+```
