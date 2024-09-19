@@ -139,7 +139,7 @@ class Solution {
 
 ```java
 // 時間計算量: O(n): 配列の各要素に対して一回ずつ操作を実施
-// 空間計算量: O(n): 配列の要素と同じ数のノードを持つツリーを生成
+// 空間計算量: O(n): 配列の要素と同じ数のノードを持つツリーを生成 + スタックの容量
 class Solution {
     private static final int DUMMY_VAL = 0;
     private record NodeWithRange(TreeNode node, int left, int right) {}
@@ -172,6 +172,37 @@ class Solution {
         }
 
         return root;
+    }
+}
+```
+
+## Step 3
+
+最も直感的に思えて、かつ計算量に優れる閉区間インデックスを用いた二分探索的アプローチを選びました。
+
+```java
+// 解いた時間: 約4分
+// 時間計算量: O(n): 配列の各要素に対して一回ずつ操作を実施
+// 空間計算量: O(n): 配列の要素と同じ数のノードを持つツリーを生成
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        
+        return sortedArrayToBSTRecursively(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode sortedArrayToBSTRecursively(int[] nums, int left, int right) {
+        if (right < left) {
+            return null;
+        }
+
+        int middle = left + (right - left) / 2;
+        TreeNode node = new TreeNode(nums[middle]);
+        node.left = sortedArrayToBSTRecursively(nums, left, middle - 1);
+        node.right = sortedArrayToBSTRecursively(nums, middle + 1, right);
+        return node;
     }
 }
 ```
