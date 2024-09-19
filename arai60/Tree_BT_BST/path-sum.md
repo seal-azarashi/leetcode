@@ -47,7 +47,31 @@ class Solution {
 次のようなことを考えながら実装していました:
 
 - DFS アプローチで解くのが適切に思える
-    - もっと効率よく出来ないか考えるも、全ノードを順に見ていくのは避けられないと判断
+    - もっと効率よく出来ないか考えるも、全ノードを順にリーフノードまで見ていくのは避けられないと判断
     - 値が0以上しか入り得ないなら途中で打ち切る処理も書けるが、負の数が入り得るのは constraints にも明記されてる
-    - 明記されてなくても、面接官に合意を取らない限りは打ち切るような処理は勝手に入れないほうがよさそう (型システムによる保証とかもないので)
+    - 明記されてなくても、面接官に合意を取らない限りは打ち切るような処理は勝手に入れないほうがよさそう
+        - 値が0以上であるかどうかについては型システムによって保証されてるわけでもないので
 - スタックオーバーフローのリスクを回避するためスタックで実装したい
+
+## Step 2
+
+### 再帰で DFS
+
+スタックオーバーフローのリスクがあるので最適解にはならないと思いますが、一応練習も兼ねて書いてみます。
+
+```java
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        boolean isLeafNode = root.left == null && root.right == null;
+        if (isLeafNode && root.val == targetSum) {
+            return true;
+        }
+        return
+            hasPathSum(root.left, targetSum - root.val) ||
+            hasPathSum(root.right, targetSum - root.val);
+    }
+}
+```
