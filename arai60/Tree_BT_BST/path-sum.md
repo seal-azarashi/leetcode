@@ -60,6 +60,8 @@ class Solution {
 スタックオーバーフローのリスクがあるので最適解にはならないと思いますが、一応練習も兼ねて書いてみます。
 
 ```java
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): 最大で全ノードがスタックフレームに積まれる
 class Solution {
     public boolean hasPathSum(TreeNode root, int targetSum) {
         if (root == null) {
@@ -72,6 +74,47 @@ class Solution {
         return
             hasPathSum(root.left, targetSum - root.val) ||
             hasPathSum(root.right, targetSum - root.val);
+    }
+}
+```
+
+## Step 3
+
+Step 1 と同じです。
+
+```java
+// 解いた時間: 5分ぐらい
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): 最大で全ノードがスタックに入る
+class Solution {
+    private record NodeWithPathSum(TreeNode node, int pathSum) {};
+
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+
+        Deque<NodeWithPathSum> nodeStack = new ArrayDeque<>();
+        nodeStack.push(new NodeWithPathSum(root, 0));
+        while (!nodeStack.isEmpty()) {
+            NodeWithPathSum nodeWithPathSum = nodeStack.pop();
+            TreeNode node = nodeWithPathSum.node;
+            int currentPathSum = node.val + nodeWithPathSum.pathSum;
+
+            boolean isLeafNode = node.left == null && node.right == null;
+            if (isLeafNode && currentPathSum == targetSum) {
+                return true;
+            }
+
+            if (node.right != null) {
+                nodeStack.push(new NodeWithPathSum(node.right, currentPathSum));
+            }
+            if (node.left != null) {
+                nodeStack.push(new NodeWithPathSum(node.left, currentPathSum));
+            }
+        }
+
+        return false;
     }
 }
 ```
