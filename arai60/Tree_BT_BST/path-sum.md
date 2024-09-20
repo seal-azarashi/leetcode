@@ -118,3 +118,68 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### イテレーティブな DFS
+
+```java
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): 最大で全ノードがスタックに入る
+class Solution {
+    private record NodeWithPathSum(TreeNode node, int pathSum) {};
+
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+
+        Deque<NodeWithPathSum> nodeStack = new ArrayDeque<>();
+        nodeStack.push(new NodeWithPathSum(root, 0));
+        while (!nodeStack.isEmpty()) {
+            NodeWithPathSum nodeWithPathSum = nodeStack.pop();
+            TreeNode node = nodeWithPathSum.node;
+            int currentPathSum = node.val + nodeWithPathSum.pathSum;
+
+            boolean isLeafNode = node.left == null && node.right == null;
+            if (isLeafNode) {
+                if (currentPathSum == targetSum) {
+                    return true;
+                }
+                
+                continue;
+            }
+
+            if (node.right != null) {
+                nodeStack.push(new NodeWithPathSum(node.right, currentPathSum));
+            }
+            if (node.left != null) {
+                nodeStack.push(new NodeWithPathSum(node.left, currentPathSum));
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+### 再帰で DFS
+
+```java
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): 最大で全ノードがスタックフレームに積まれる
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        boolean isLeafNode = root.left == null && root.right == null;
+        if (isLeafNode) {
+            return  root.val == targetSum;
+        }
+        return
+            hasPathSum(root.left, targetSum - root.val) ||
+            hasPathSum(root.right, targetSum - root.val);
+    }
+}
+```
