@@ -132,7 +132,7 @@ class Solution {
             }
 
             if (isReversed) {
-                valsInCurrentLevel = valsInCurrentLevel.isReversed();
+                valsInCurrentLevel = valsInCurrentLevel.reversed();
             }
             isReversed = !isReversed;
 
@@ -173,7 +173,7 @@ class Solution {
             }
 
             if (isReversed) {
-                valsInCurrentLevel = valsInCurrentLevel.isReversed();
+                valsInCurrentLevel = valsInCurrentLevel.reversed();
             }
             isReversed = !isReversed;
 
