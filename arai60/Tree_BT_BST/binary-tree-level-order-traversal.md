@@ -124,3 +124,37 @@ class Solution {
     }
 }
 ```
+
+## Step 3
+
+Step 1 と同じです。
+
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new LinkedList<>();
+        }
+
+        List<List<Integer>> valsInEachLevel = new LinkedList<>();
+        Queue<TreeNode> nodes = new ArrayDeque<>();
+        nodes.offer(root);
+        while (!nodes.isEmpty()) {
+            int currentLevelNodeCount = nodes.size();
+            List<Integer> valsInCurrentLevel = new LinkedList<>();
+            for (int i = 0; i < currentLevelNodeCount; i++) {
+                TreeNode node = nodes.poll();
+                valsInCurrentLevel.add(node.val);
+                if (node.left != null) {
+                    nodes.offer(node.left);
+                }
+                if (node.right != null) {
+                    nodes.offer(node.right);
+                }
+            }
+            valsInEachLevel.add(valsInCurrentLevel);
+        }
+        return valsInEachLevel;
+    }
+}
+```
