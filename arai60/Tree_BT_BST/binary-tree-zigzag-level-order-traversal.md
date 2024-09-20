@@ -64,6 +64,8 @@ class Solution {
 スタックオーバーフローのリスクはありますが、練習で書いてみました。
 
 ```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、最大でノードの数だけスタックが生成される
 class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         if (root == null) {
