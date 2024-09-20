@@ -63,6 +63,8 @@ Step 1 の解法から、一部変数名だけ修正しています。
 - nodesSizeSnapshot -> currentLevelNodeCount
 
 ```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、キューが必要
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
@@ -97,6 +99,8 @@ class Solution {
 スタックオーバーフローのリスクはありますが、練習で書いてみました。
 
 ```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、最大でノードの数だけスタックが生成される
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
@@ -130,6 +134,8 @@ class Solution {
 Step 1 と同じです。
 
 ```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、キューが必要
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
