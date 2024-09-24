@@ -63,7 +63,7 @@ class Solution {
     }
 
     private TreeNode buildBSTRecursively(int[] nums, int left, int right) {
-        if (right < left) {
+        if (left > right) {
             return null;
         }
 
@@ -100,7 +100,7 @@ class Solution {
     }
 
     private TreeNode buildBSTRecursively(int[] nums, int left, int right) {
-        if (right <= left) {
+        if (left >= right) {
             return null;
         }
 
@@ -194,7 +194,7 @@ class Solution {
     }
 
     private TreeNode sortedArrayToBSTRecursively(int[] nums, int left, int right) {
-        if (right < left) {
+        if (left > right) {
             return null;
         }
 
