@@ -119,3 +119,39 @@ class Solution {
     - 最終的な実装に至るまでに書いた古いバージョンについても今後は残しておいて思考ログを書けるようにしておこう
 - BFS でも書いたが、 (引数に何が来るのか予測出来ない限り) DFS と計算量に違いはない上、実装もスタックをキューに変えるだけで既存実装とほぼ変わらないので割愛
 - TODO: 常識範囲外とのことで一旦飛ばした Morris in-order を Arai 60 が一通り終わったら見てみる: https://github.com/nittoco/leetcode/pull/35/files
+
+## Step 3
+
+In-order traversal が最終的に分かりやすくていいなと思いました。  
+Step 2 で書いたものに空白行が足され、処理のまとまりが出来て個人的には少し読みやすくなった印象です。
+
+```java
+// かかった時間: 約3分半
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): Balanced binary tree とは限らないので、最大で全ノードがスタックに格納される
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        Deque<TreeNode> nodeStack = new ArrayDeque<>();
+        TreeNode node = root;
+        long previousVal = Long.MIN_VALUE;
+        while (true) {
+            while (node != null) {
+                nodeStack.push(node);
+                node = node.left;
+            }
+            if (nodeStack.isEmpty()) {
+                break;
+            }
+            node = nodeStack.pop();
+            boolean isValid = previousVal < node.val;
+            if (!isValid) {
+                return false;
+            }
+
+            previousVal = node.val;
+            node = node.right;
+        }
+        return true;
+    }
+}
+```
