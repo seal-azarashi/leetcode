@@ -77,7 +77,7 @@ class Solution {
 }
 ```
 
-### In-order traversal (スタック)
+### In-order traversal
 
 自分では思いつかなかったが他の方が書かれていたこちらも実装してみた。特に読みやすく感じた [ahayashi さんの実装](https://github.com/hayashi-ay/leetcode/pull/38)をおおいに参考にしています。  
 Valid なツリーに対して in-order traversal をすると non-decreasing order にソートされた値が得られることが分かっていればすんなり頭に入ってくるのでこっちの方が好みかも。
