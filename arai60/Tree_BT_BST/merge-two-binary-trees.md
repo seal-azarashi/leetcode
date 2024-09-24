@@ -167,6 +167,36 @@ class Solution {
 
 これで破壊的な動作はなくなりましたが、どちらも root1, root2 をそのまま返す可能性があるのが気がかりです。問題文には "You need to merge the two trees into a new binary tree" とあるので、これを満たさないと判断されるようでしたらやはり deep copy を実施する関数を自前で実装するなり、そういった関数がある前提で処理を書くことになるのかなと考えました。
 
+### Deep copy
+
+Deep copy が必要なときにはこのような実装にするイメージです
+
+```java
+class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if (root1 == null) {
+            return deepCopyTree(root2);
+        }
+        if (root2 == null) {
+            return deepCopyTree(root1);
+        }
+
+        // (省略)
+    }
+
+    private TreeNode deepCopyTree(TreeNode node) {
+        if (node == null) {
+            return null;
+        }
+
+        TreeNode nodeCopy = new TreeNode(node.val);
+        nodeCopy.left = deepCopyTree(node.left);
+        nodeCopy.right = deepCopyTree(node.right);
+        return nodeCopy;
+    }
+}
+```
+
 ## Step 3
 
 面接では速度が求められるので、比較的シンプルかつ破壊的操作のない再帰処理を用いた実装を選びました。
