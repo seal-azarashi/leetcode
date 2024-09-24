@@ -23,10 +23,10 @@ class Solution {
         while (!nodeStack.isEmpty()) {
             NodeMinMax nodeMinMax = nodeStack.pop();
             TreeNode node = nodeMinMax.node;
-            long min = nodeMinMax.min, max = nodeMinMax.max;
             if (node == null) {
                 continue;
             }
+            long min = nodeMinMax.min, max = nodeMinMax.max;
             boolean isValid = min < node.val && node.val < max;
             if (!isValid) {
                 return false;
