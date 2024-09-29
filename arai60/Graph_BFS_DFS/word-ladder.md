@@ -13,11 +13,11 @@ LeetCode URL: https://leetcode.com/problems/word-ladder/description/
 /**
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
  *     - O(n): wordListClone
- *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
  */
@@ -175,11 +175,11 @@ class Solution {
 /**
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
  *     - O(n): wordListClone
- *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
  */
@@ -302,11 +302,11 @@ class Solution {
  * 解いた時間: 20分ぐらい
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
  *     - O(n): wordListClone
- *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
  */
@@ -362,3 +362,89 @@ class Solution {
 ```
 
 - 書く量が多く大変だったからか、 0 を定数化したりコメントを書くのが抜けていた
+
+## Step 4
+
+以下の指摘に対応:
+
+- パターン文字列を一般的な String 値に含まれない null 文字に修正: https://github.com/seal-azarashi/leetcode/pull/19#discussion_r1750175006
+- 返り値の変数名を numberOfWordsInSequence に修正: https://github.com/seal-azarashi/leetcode/pull/19#discussion_r1750182576
+- 引数に破壊的な変更が行われないようにクローンオブジェクトを利用: https://github.com/seal-azarashi/leetcode/pull/19#discussion_r1753902722
+- ネストが深い部分を関数化: https://github.com/seal-azarashi/leetcode/pull/19#discussion_r1777273058
+- ループごとにキューを生成: https://github.com/seal-azarashi/leetcode/pull/19#discussion_r1777280979
+
+```java
+/**
+ * 時間計算量: O(n * m^2):
+ *     - O(n): wordList のクローン (n は wordList の要素数)
+ *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
+ * 空間計算量: O(n * m)
+ *     - O(n): wordListClone
+ *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
+ *     - O(n): wordQueue
+ *     - O(n): visitedWords
+ */
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        List<String> wordListClone = new ArrayList(wordList);
+        wordListClone.add(beginWord);
+        Map<String, List<String>> globPatternToWords = new HashMap();
+        for (String word : wordListClone) {
+            for (int i = 0; i < word.length(); i++) {
+                String globPattern = createGlobPattern(i, word);
+                List<String> words = globPatternToWords.getOrDefault(globPattern, new ArrayList());
+                words.add(word);
+                globPatternToWords.put(globPattern, words);
+            }
+        }
+
+        Deque<String> wordQueue = new ArrayDeque();
+        wordQueue.offer(beginWord);
+        Set<String> visitedWords = new HashSet();
+        int numberOfWordsInSequence = 1;
+        while (!wordQueue.isEmpty()) {
+            numberOfWordsInSequence++;
+            Deque<String> nextWordQueue = new ArrayDeque();
+            for (String word : wordQueue) {
+                boolean isSequenceFound = evaluateWord(word, endWord, globPatternToWords, nextWordQueue, visitedWords);
+                if (isSequenceFound) {
+                    return numberOfWordsInSequence;
+                }
+            }
+            wordQueue = nextWordQueue;
+        }
+        return 0;
+    }
+
+    private String createGlobPattern(int replaceCharIndex, String word) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < word.length(); i++) {
+            if (i == replaceCharIndex) {
+                sb.append('\0');
+            } else {
+                sb.append(word.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+
+    private boolean evaluateWord(String word, String endWord, Map<String, List<String>> globPatternToWords, Deque<String> nextWordQueue, Set<String> visitedWords) {
+        for (int i = 0; i < word.length(); i++) {
+            String globPattern = createGlobPattern(i, word);
+            List<String> nextWords = globPatternToWords.getOrDefault(globPattern, new ArrayList());
+            for (String nextWord : nextWords) {
+                if (nextWord.equals(endWord)) {
+                    return true;
+                }
+                if (visitedWords.contains(nextWord)) {
+                    continue;
+                }
+                nextWordQueue.offer(nextWord);
+                visitedWords.add(nextWord);
+            }
+        }
+        return false;
+    }
+}
+```
