@@ -10,8 +10,17 @@ LeetCode URL: https://leetcode.com/problems/word-ladder/description/
 ### 答えを見て解いたときの実装 (パターンと文字列の対応を用いた実装)
 
 ```java
-// 時間計算量: O(N^2)
-// 空間計算量: O(N)
+/**
+ * 時間計算量: O(n * m^2):
+ *     - O(n): wordList のクローン (n は wordList の要素数)
+ *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
+ * 空間計算量: O(n * m)
+ *     - O(n): wordListClone
+ *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n): wordQueue
+ *     - O(n): visitedWords
+ */
 class Solution {
     private static final char MATCHES_ANY_SINGLE_CHARACTER = '?';
 
@@ -163,8 +172,17 @@ class Solution {
 ### パターンと文字列の対応を用いた実装 (Step 1 の解法の修正)
 
 ```java
-// 時間計算量: O(N^2)
-// 空間計算量: O(N)
+/**
+ * 時間計算量: O(n * m^2):
+ *     - O(n): wordList のクローン (n は wordList の要素数)
+ *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
+ * 空間計算量: O(n * m)
+ *     - O(n): wordListClone
+ *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n): wordQueue
+ *     - O(n): visitedWords
+ */
 class Solution {
     private static final int NO_SEQUENCE_FOUND = 0;
 
@@ -280,9 +298,18 @@ class Solution {
 パターンと文字列の対応を用いた実装にしました。
 
 ```java
-// 解いた時間: 20分ぐらい
-// 時間計算量: O(N^2)
-// 空間計算量: O(N)
+/**
+ * 解いた時間: 20分ぐらい
+ * 時間計算量: O(n * m^2):
+ *     - O(n): wordList のクローン (n は wordList の要素数)
+ *     - O(n * m^2): globPatternToWords の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
+ * 空間計算量: O(n * m)
+ *     - O(n): wordListClone
+ *     - O(n * m): globPatternToWords (n は Map の要素数、 m は value の要素数)
+ *     - O(n): wordQueue
+ *     - O(n): visitedWords
+ */
 class Solution {
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         wordList.add(beginWord);
