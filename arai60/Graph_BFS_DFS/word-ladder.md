@@ -13,10 +13,10 @@ LeetCode URL: https://leetcode.com/problems/word-ladder/description/
 /**
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordList の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
- *     - O(n): wordListClone
+ *     - O(n): wordList
  *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
@@ -175,10 +175,9 @@ class Solution {
 /**
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordList の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
- *     - O(n): wordListClone
  *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
@@ -302,10 +301,9 @@ class Solution {
  * 解いた時間: 20分ぐらい
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordList の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
- *     - O(n): wordListClone
  *     - O(n * m): Map (n は Map の要素数、 m は value の要素数)
  *     - O(n): wordQueue
  *     - O(n): visitedWords
@@ -377,7 +375,7 @@ class Solution {
 /**
  * 時間計算量: O(n * m^2):
  *     - O(n): wordList のクローン (n は wordList の要素数)
- *     - O(n * m^2): Map の生成 (n は wordListClone の要素数、 m は要素の文字数)
+ *     - O(n * m^2): Map の生成 (n は wordList の要素数、 m は要素の文字数)
  *     - O(n * m^2): wordQueue の要素の走査 (n は wordQueue の最大要素数、 m は要素の文字数)
  * 空間計算量: O(n * m)
  *     - O(n): wordListClone
