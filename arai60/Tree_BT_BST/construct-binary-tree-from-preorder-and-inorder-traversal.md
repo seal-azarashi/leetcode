@@ -21,7 +21,7 @@ LeetCode URL: https://leetcode.com/problems/construct-binary-tree-from-preorder-
 // 時間計算量: O(n^2):
 //     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
 //     - O(n^2): 各イテレーションで、新規配列を作成するため、引数に渡された配列の合計要素数 (配列の要素数 - 1) * 2 と同じ回数のコピー処理を行う
-// 空間計算量: O(n): 配列が複数作成され、それら要素数の合計は引数に渡される配列たちの合計要素数と等しい
+// 空間計算量: O(n): 配列が複数作成され、それら要素数の合計は引数に渡される配列たちの合計要素数より少ない
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         if (preorder.length == 0 || inorder.length == 0) {
@@ -68,7 +68,7 @@ class Solution {
 // 時間計算量: O(n^2):
 //     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
 //     - O(n^2): 各イテレーションで、新規配列を作成するため、引数に渡された配列の合計要素数 (配列の要素数 - 1) * 2 と同じ回数のコピー処理を行う
-// 空間計算量: O(n): 配列が複数作成され、それら要素数の合計は引数に渡される配列たちの合計要素数と等しい
+// 空間計算量: O(n): 配列が複数作成され、それら要素数の合計は引数に渡される配列たちの合計要素数より少ない
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         // The length of preorder and inorder should be the same
@@ -100,17 +100,13 @@ class Solution {
 
 - 配列のコピーを作成する代わりにインデックスを使うことで計算量を削減する
 - イテレーションごとに inorder の要素を線形探索せずに済むように map を使っている
-- preorder の特徴から？ preorderIndex は 1 ずつ increment すればいいことが分かってればわかりやすい
-- レビュワーの方に、プライベート変数を使うのは評価としてどうなのか聞いてみたい
-    - 個人的には、クラスを拡張する際に意図しない使い方がされてしまわないか心配
-    - そもそも leetcode が用意した関数内でしか使わないので、スコープは狭いほうがいい
-    - けど int 型で良いものを配列にするといった気持ち悪いことをしなければならないケースがあるのが気になる
+- preorderIndex は 1 ずつ increment すればいいことが分かってれば理解しやすい印象
 
 ```java
 // 時間計算量: O(n):
 //     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
 //     - O(n): inorder の値とインデックスのマップを作成
-//     - O(n): イテレーションごとにマップにアクセス
+//     - O(1): イテレーションごとに実行されるマップへのアクセス
 // 空間計算量: O(n):
 //     - O(n): 引数に渡される配列の合計要素と同じ数のツリーを生成
 //     - O(n): inorder の値とインデックスのマップを作成
@@ -142,3 +138,58 @@ class Solution {
     }
 }
 ```
+
+- 可読性向上のためにメンバー変数を使ったパターンも書いてみる
+- public メソッドの buildTree() は何度呼ばれても同じ結果を返すために初期化処理を入れた
+- 【🚨ご意見ください】ここでメンバー変数を使うことについて、ネガティブな意見があれば教えてもらえますと嬉しいです
+    - メンバー変数はクラスから生成されるオブジェクトが保持する状態のようなものだと認識している
+    - しかしここはあくまで buildTree() の実装を見やすくする用途で用いられているのが懸念
+    - 賛否両論ありそうなので意見を聞いてみたい
+
+```java
+// 時間計算量: O(n):
+//     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
+//     - O(n): inorder の値とインデックスのマップを作成
+//     - O(1): イテレーションごとに実行されるマップへのアクセス
+// 空間計算量: O(n):
+//     - O(n): 引数に渡される配列の合計要素と同じ数のツリーを生成
+//     - O(n): inorder の値とインデックスのマップを作成
+class Solution {
+    private int preorderIndex;
+    private Map<Integer, Integer> valToInorderIndex;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        this.preorderIndex = 0;
+        this.valToInorderIndex = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            this.valToInorderIndex.put(inorder[i], i);
+        }
+        return buildTreeRecursively(preorder, 0, inorder.length);
+    }
+    
+    private TreeNode buildTreeRecursively(int[] preorder, int left, int right) {
+        if (left == right) {
+            return null;
+        }
+        
+        int val = preorder[this.preorderIndex];
+        TreeNode node = new TreeNode(val);
+        int inorderIndex = this.valToInorderIndex.get(val);
+
+        this.preorderIndex++;
+
+        node.left = buildTreeRecursively(preorder, left, inorderIndex);
+        node.right = buildTreeRecursively(preorder, inorderIndex + 1, right);
+        return node;
+    }
+}
+```
+
+### スタックを用いた実装
+
+TODO
+
+### その他気になったコメントなど
+
+- > 「自分で手作業でできる」ようにして「人に手作業でできるように説明をする」というプロセスを踏むと、明らかに無駄なところは気がつくように思うんですよね: https://github.com/goto-untrapped/Arai60/pull/53/files#r1780608187
+    - なるほどたしかに
