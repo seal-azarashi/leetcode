@@ -218,3 +218,36 @@ TODO: 放送大学では見なかったが、レビュー見る限り常識範�
 ### セグメントツリー
 
 エンジニア常識範囲外の解法とのことなので一旦保留: https://github.com/shining-ai/leetcode/pull/31#discussion_r1536794621
+
+## Step 3
+
+配列の末尾からある要素以降のシーケンス長を算出する方法で解いています。5分ぐらいで書けるようになっていました。  
+Step 2 で変数名 sequenceLengthCache としてたものを、タイピングするのがしんどいしそんなに意味も変わらないだろうと思って sequenceLengths に修正していました。
+
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int[] sequenceLengths = new int[nums.length];
+        Arrays.fill(sequenceLengths, 1);
+        for (int currentIndex = nums.length - 1; currentIndex >= 0; currentIndex--) {
+            for (int subsequentIndex = currentIndex + 1; subsequentIndex < nums.length; subsequentIndex++) {
+                if (nums[currentIndex] < nums[subsequentIndex]) {
+                    sequenceLengths[currentIndex] = Math.max(
+                        sequenceLengths[currentIndex],
+                        1 + sequenceLengths[subsequentIndex]
+                    );
+                }
+            }
+        }
+        int longestIncreasingSubsequence = 0;
+        for (int sequenceLength : sequenceLengths) {
+            longestIncreasingSubsequence = Math.max(longestIncreasingSubsequence, sequenceLength);
+        }
+        return longestIncreasingSubsequence;
+    }
+}
+```
