@@ -99,11 +99,62 @@ class Solution {
 }
 ```
 
-### インデックスで走査範囲を指定
+### インデックスで走査範囲を指定する preorder traversal
 
 - 配列のコピーを作成する代わりにインデックスを使うことで計算量を削減する
 - イテレーションごとに inorder の要素を線形探索せずに済むように map を使っている
-- preorderIndex は 1 ずつ increment すればいいことが分かってれば理解しやすい印象
+- 可読性向上のためにメンバー変数を使って書いている
+- public メソッドの buildTree() は何度呼ばれても同じ結果を返すために初期化処理を入れた
+- 【🚨ご意見ください】ここでメンバー変数を使うことについて、ネガティブな意見があれば教えてもらえますと嬉しいです
+    - メンバー変数はクラスから生成されるオブジェクトが保持する状態のようなものだと認識している
+    - しかしここではあくまで buildTree() の実装を見やすくする用途で用いられているのが懸念
+    - 賛否両論ありそうなので意見を聞いてみたい
+- あまり素直じゃない実装になってしまった印象で、配列の部分コピーを使用するパターンの方が読みやすい気がする
+    - Leetcode 上の計測では処理速度の差は10倍に満たなかったので、この書き方にするメリットは薄い印象
+    - 
+
+```java
+// 時間計算量: O(n):
+//     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
+//     - O(n): inorder の値とインデックスのマップを作成
+//     - O(1): イテレーションごとに実行されるマップへのアクセス
+// 空間計算量: O(n):
+//     - O(n): 引数に渡される配列の合計要素と同じ数のツリーを生成
+//     - O(n): inorder の値とインデックスのマップを作成
+class Solution {
+    private int preorderIndex;
+    private Map<Integer, Integer> valToInorderIndex;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        this.preorderIndex = 0;
+        this.valToInorderIndex = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            this.valToInorderIndex.put(inorder[i], i);
+        }
+        return buildTreeWithPreorderTraversal(preorder, 0, inorder.length);
+    }
+    
+    private TreeNode buildTreeWithPreorderTraversal(int[] preorder, int left, int right) {
+        if (left == right) {
+            return null;
+        }
+        
+        // In preorder traversal, the head node is always the root in each iteration
+        int val = preorder[this.preorderIndex++];
+
+        TreeNode node = new TreeNode(val);
+        int inorderIndex = this.valToInorderIndex.get(val);
+
+        // The order must be left -> right for preorder traversal
+        node.left = buildTreeWithPreorderTraversal(preorder, left, inorderIndex);
+        node.right = buildTreeWithPreorderTraversal(preorder, inorderIndex + 1, right);
+
+        return node;
+    }
+}
+```
+
+以下、メンバー変数を使わないで書いたものです
 
 ```java
 // 時間計算量: O(n):
@@ -142,52 +193,6 @@ class Solution {
 }
 ```
 
-- 可読性向上のためにメンバー変数を使ったパターンも書いてみる
-- public メソッドの buildTree() は何度呼ばれても同じ結果を返すために初期化処理を入れた
-- 【🚨ご意見ください】ここでメンバー変数を使うことについて、ネガティブな意見があれば教えてもらえますと嬉しいです
-    - メンバー変数はクラスから生成されるオブジェクトが保持する状態のようなものだと認識している
-    - しかしここではあくまで buildTree() の実装を見やすくする用途で用いられているのが懸念
-    - 賛否両論ありそうなので意見を聞いてみたい
-
-```java
-// 時間計算量: O(n):
-//     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
-//     - O(n): inorder の値とインデックスのマップを作成
-//     - O(1): イテレーションごとに実行されるマップへのアクセス
-// 空間計算量: O(n):
-//     - O(n): 引数に渡される配列の合計要素と同じ数のツリーを生成
-//     - O(n): inorder の値とインデックスのマップを作成
-class Solution {
-    private int preorderIndex;
-    private Map<Integer, Integer> valToInorderIndex;
-
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        this.preorderIndex = 0;
-        this.valToInorderIndex = new HashMap<>();
-        for (int i = 0; i < inorder.length; i++) {
-            this.valToInorderIndex.put(inorder[i], i);
-        }
-        return buildTreeRecursively(preorder, 0, inorder.length);
-    }
-    
-    private TreeNode buildTreeRecursively(int[] preorder, int left, int right) {
-        if (left == right) {
-            return null;
-        }
-        
-        int val = preorder[this.preorderIndex];
-        TreeNode node = new TreeNode(val);
-        int inorderIndex = this.valToInorderIndex.get(val);
-
-        this.preorderIndex++;
-
-        node.left = buildTreeRecursively(preorder, left, inorderIndex);
-        node.right = buildTreeRecursively(preorder, inorderIndex + 1, right);
-        return node;
-    }
-}
-```
-
 ### スタックを用いた実装
 
 TODO
@@ -199,4 +204,32 @@ TODO
 
 ## Step 3
 
+配列の部分コピーを使用するパターンを選びました。
 
+```java
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder.length == 0) {
+            return null;
+        }
+
+        TreeNode node = new TreeNode(preorder[0]);
+        int inorderMiddleIndex = 0;
+        for (int i = 0; i < inorder.length; i++) {
+            if (inorder[i] == preorder[0]) {
+                inorderMiddleIndex = i;
+                break;
+            }
+        }
+        node.left = buildTree(
+            Arrays.copyOfRange(preorder, 1, inorderMiddleIndex + 1),
+            Arrays.copyOfRange(inorder, 0, inorderMiddleIndex)
+        );
+        node.right = buildTree(
+            Arrays.copyOfRange(preorder, inorderMiddleIndex + 1, preorder.length),
+            Arrays.copyOfRange(inorder, inorderMiddleIndex + 1, inorder.length)
+        );
+        return node;
+    }
+}
+```
