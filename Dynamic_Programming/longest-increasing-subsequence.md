@@ -145,9 +145,11 @@ class Solution {
 
 ### 二分探査を用いた O(n log n) の解法
 
+Java の標準ライブラリの二分探索メソッド、返り値がどうなるか理解するのがしんどかった... 要素が見つからなかったことを示すために負の値にするのはいいんだけど、なんで挿入位置を 1-indexed の値で返すようにしたんだろう🤔
+
 ```java
 /**
- * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) のバイナリーサーチ
+ * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) の二分探索
  * 空間計算量: O(n): 引数 nums と同じサイズの配列
  */
 class Solution {
@@ -179,7 +181,7 @@ class Solution {
 
 ```java
 /**
- * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) のバイナリーサーチ
+ * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) の二分探索
  * 空間計算量: O(n): 最大で引数 nums と同じサイズになる可変長配列
  */
 class Solution {
