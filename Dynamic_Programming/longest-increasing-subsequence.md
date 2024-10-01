@@ -54,6 +54,7 @@ class Solution {
 - 二重 for loop 内のインデックス名を修正: i -> currentIndex, j -> subsequentIndex
     - それぞれ何を指すインデックスなのか、ループの内容を把握しないと理解出来なく読みづらいため
     - nodchip さんのレビューを参考にしました: https://github.com/shining-ai/leetcode/pull/31#discussion_r1536792178
+- Arrays に fill() というメソッドがあったので使ってみる
 
 ```java
 /**
@@ -66,10 +67,12 @@ class Solution {
  */
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        int[] sequenceLengthCache = new int[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            sequenceLengthCache[i] = 1;
+        if (nums == null || nums.length == 0) {
+            return 0;
         }
+
+        int[] sequenceLengthCache = new int[nums.length];
+        Arrays.fill(sequenceLengthCache, 1);
         for (int currentIndex = sequenceLengthCache.length - 1; currentIndex >= 0; currentIndex--) {
             for (int subsequentIndex = currentIndex + 1; subsequentIndex < sequenceLengthCache.length; subsequentIndex++) {
                 if (nums[currentIndex] < nums[subsequentIndex]) {
@@ -92,6 +95,114 @@ class Solution {
 }
 ```
 
+### 対応するインデックスの要素で終わる最長増加部分列の長さを配列に入れる
+
+他の方も悩まれてましたが、配列と関数の命名が難しいですね... これも直感的かどうかあんまり自信ないので、ご意見頂けますと嬉しいです。
+
+```java
+/**
+ * 時間計算量: O(n^2):
+ *     - O(n): キャッシュ用配列の作成
+ *     - O(n^2): 各要素とそれ以降の特定要素までの最長増加部分列算出処理
+ *     - O(n): キャッシュから longestIncreasingSubsequence を探す処理
+ * 空間計算量: O(n)
+ *     - O(n): 引数 nums と同じサイズのキャッシュ用配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int[] maxLengthAsTail = new int[nums.length];
+        Arrays.fill(maxLengthAsTail, 1);
+        for (int i = 1; i < nums.length; i++) {
+            maxLengthAsTail[i] = findMaxLengthWithNewTail(nums, maxLengthAsTail, i);
+        }
+
+        int longestIncreasingSubsequence = 1;
+        for (int i = 0; i < maxLengthAsTail.length; i++) {
+            longestIncreasingSubsequence = Math.max(longestIncreasingSubsequence, maxLengthAsTail[i]);
+        }
+        return longestIncreasingSubsequence;
+    }
+
+    private int findMaxLengthWithNewTail(int[] nums, int[] maxLengthAsTail, int tailIndex) {
+        int maxLength = 1;
+        for (int i = 0; i < tailIndex; i++) {
+            if (nums[i] < nums[tailIndex]) {
+                maxLength = Math.max(maxLength, maxLengthAsTail[i] + 1);
+            }
+        }
+        return maxLength;
+    }
+}
+```
+
 ### セグメントツリー
 
 エンジニア常識範囲外の解法とのことなので一旦保留: https://github.com/shining-ai/leetcode/pull/31#discussion_r1536794621
+
+### 二分探査を用いた O(n log n) の解法
+
+```java
+/**
+ * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) のバイナリーサーチ
+ * 空間計算量: O(n): 引数 nums と同じサイズの配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int[] minLISTailValues = new int[nums.length];
+        int lisLength = 0;
+        for (int num : nums) {
+            int insertPosition = Arrays.binarySearch(minLISTailValues, 0, lisLength, num);
+            if (insertPosition < 0) {
+                // 要素が見つからない場合、挿入位置を計算
+                // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#binarySearch-int:A-int-int-int-
+                insertPosition = -(insertPosition + 1);
+            }
+            minLISTailValues[insertPosition] = num;
+            if (insertPosition == lisLength) {
+                lisLength++;
+            }
+        }
+        return lisLength;
+    }
+}
+```
+
+可変長配列使ったほうが直感的ですね
+
+```java
+/**
+ * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) のバイナリーサーチ
+ * 空間計算量: O(n): 最大で引数 nums と同じサイズになる可変長配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        ArrayList<Integer> minLISTailValues = new ArrayList<>();
+        for (int num : nums) {
+            int insertPosition = Collections.binarySearch(minLISTailValues, num);
+            if (insertPosition < 0) {
+                // 要素が見つからない場合、挿入位置を計算
+                // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-
+                insertPosition = -(insertPosition + 1);
+            }
+            if (insertPosition == minLISTailValues.size()) {
+                minLISTailValues.add(num);
+            } else {
+                minLISTailValues.set(insertPosition, num);
+            }
+        }
+        return minLISTailValues.size();
+    }
+}
+```
