@@ -43,7 +43,7 @@ class Solution {
 
 ## Step 2
 
-### DP (Step 1 のブラッシュアップ)
+### 配列の末尾からある要素以降のシーケンス長を算出する (Step 1 のブラッシュアップ)
 
 - 変数名 lis -> sequenceLengthCache に変更
     - 入っているものは sequence の length なのでそれがわかるようにした
@@ -177,7 +177,8 @@ class Solution {
 }
 ```
 
-可変長配列使ったほうが直感的ですね。 Leetcode 上では処理時間が2倍ほどになってましたが、桁が違うわけではないのでよっぽどシビアなパフォーマンス要件がない限りはこっちを選びたいです (というかそれだけシビアにするなら言語を変えるところから検討した方がよさそう)。
+可変長配列使ったほうが直感的ですね。 Leetcode 上では処理時間が2倍ほどになってましたが、桁が違うわけではないのでよっぽどシビアなパフォーマンス要件がない限りはこっちを選びたいです (というかそれだけシビアにするなら言語を変えるところから検討した方がよさそう)。  
+こちらも命名が難しいですが、こちらの議論を参考に実施してみました: https://github.com/Yoshiki-Iwasa/Arai60/pull/46/files/56e8cf4d4efc42c5784108191d1e5fc615de9206#r1716128766
 
 ```java
 /**
@@ -190,21 +191,26 @@ class Solution {
             return 0;
         }
 
-        ArrayList<Integer> minLISTailValues = new ArrayList<>();
+        // is: increasing subsequence
+        ArrayList<Integer> isMinTailValues = new ArrayList<>();
         for (int num : nums) {
-            int insertPosition = Collections.binarySearch(minLISTailValues, num);
+            int insertPosition = Collections.binarySearch(minISTailValues, num);
             if (insertPosition < 0) {
                 // 要素が見つからない場合、挿入位置を計算
                 // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-
                 insertPosition = -(insertPosition + 1);
             }
-            if (insertPosition == minLISTailValues.size()) {
-                minLISTailValues.add(num);
+            if (insertPosition == minISTailValues.size()) {
+                minISTailValues.add(num);
             } else {
-                minLISTailValues.set(insertPosition, num);
+                minISTailValues.set(insertPosition, num);
             }
         }
-        return minLISTailValues.size();
+        return minISTailValues.size();
     }
 }
 ```
+
+### 自分で二分探索ロジックを書く
+
+TODO: Arai60 一通り終えたら実装 (その頃には別の問題を通して書けるようになっているはず...?)
