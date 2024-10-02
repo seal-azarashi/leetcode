@@ -99,6 +99,40 @@ class Solution {
 }
 ```
 
+### スタックを用いた実装
+
+```java
+// 時間計算量: O(n): ノードの個数と同じ回数、所定の定数時間で行われる一連の処理 (変数宣言やスタックの操作) を実行
+// 空間計算量: O(n): 最大でツリーの全ノードをスタックに格納
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder == null || preorder.length == 0) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(preorder[0]);
+        Deque<TreeNode> nodeStack = new ArrayDeque();
+        nodeStack.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            TreeNode node = nodeStack.peek();
+            if (node.val != inorder[inorderIndex]) {
+                node.left = new TreeNode(preorder[i]);
+                nodeStack.push(node.left);
+                continue;
+            }
+            while (!nodeStack.isEmpty() && nodeStack.peek().val == inorder[inorderIndex]) {
+                node = nodeStack.pop();
+                inorderIndex++;
+            }
+            node.right = new TreeNode(preorder[i]);
+            nodeStack.push(node.right);
+        }
+        return root;
+    }
+}
+```
+
 ### インデックスで走査範囲を指定する preorder traversal
 
 - 配列のコピーを作成する代わりにインデックスを使うことで計算量を削減する
@@ -111,7 +145,6 @@ class Solution {
     - 賛否両論ありそうなので意見を聞いてみたい
 - あまり素直じゃない実装になってしまった印象で、配列の部分コピーを使用するパターンの方が読みやすい気がする
     - Leetcode 上の計測では処理速度の差は10倍に満たなかったので、この書き方にするメリットは薄い印象
-    - 
 
 ```java
 // 時間計算量: O(n):
@@ -193,10 +226,6 @@ class Solution {
 }
 ```
 
-### スタックを用いた実装
-
-TODO
-
 ### その他気になったコメントなど
 
 - > 「自分で手作業でできる」ようにして「人に手作業でできるように説明をする」というプロセスを踏むと、明らかに無駄なところは気がつくように思うんですよね: https://github.com/goto-untrapped/Arai60/pull/53/files#r1780608187
@@ -204,32 +233,39 @@ TODO
 
 ## Step 3
 
-配列の部分コピーを使用するパターンを選びました。
+配列の部分コピーを使用するパターンが最も直感的で書きやすくパフォーマンスも問題無い印象でしたが、使う側からすると要素数が多い場合でもスタックオーバーフローになって欲しくないかなと考え、スタックを用いた実装を選びました。  
+少し実装も修正されており、イテレーション内で扱う後続ノードの値 (preorder[i]) について、書いていて役割を明示したくなったので、変数 subsequentNodeVal に代入するようになりました。
 
 ```java
+// 約5分で解答
+// 時間計算量: O(n): ノードの個数と同じ回数、所定の定数時間で行われる一連の処理 (変数宣言やスタックの操作) を実行
+// 空間計算量: O(n): 最大でツリーの全ノードをスタックに格納
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        if (preorder.length == 0) {
+        if (preorder == null || preorder.length == 0) {
             return null;
         }
 
-        TreeNode node = new TreeNode(preorder[0]);
-        int inorderMiddleIndex = 0;
-        for (int i = 0; i < inorder.length; i++) {
-            if (inorder[i] == preorder[0]) {
-                inorderMiddleIndex = i;
-                break;
+        TreeNode root = new TreeNode(preorder[0]);
+        Deque<TreeNode> nodeStack = new ArrayDeque();
+        nodeStack.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            TreeNode node = nodeStack.peek();
+            int subsequentNodeVal = preorder[i];
+            if (node.val != inorder[inorderIndex]) {
+                node.left = new TreeNode(subsequentNodeVal);
+                nodeStack.push(node.left);
+                continue;
             }
+            while (!nodeStack.isEmpty() && nodeStack.peek().val == inorder[inorderIndex]) {
+                node = nodeStack.pop();
+                inorderIndex++;
+            }
+            node.right = new TreeNode(subsequentNodeVal);
+            nodeStack.push(node.right);
         }
-        node.left = buildTree(
-            Arrays.copyOfRange(preorder, 1, inorderMiddleIndex + 1),
-            Arrays.copyOfRange(inorder, 0, inorderMiddleIndex)
-        );
-        node.right = buildTree(
-            Arrays.copyOfRange(preorder, inorderMiddleIndex + 1, preorder.length),
-            Arrays.copyOfRange(inorder, inorderMiddleIndex + 1, inorder.length)
-        );
-        return node;
+        return root;
     }
 }
 ```
