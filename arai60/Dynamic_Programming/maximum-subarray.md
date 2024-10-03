@@ -103,3 +103,13 @@ class Solution {
     }
 }
 ```
+
+### Divide and conquer
+
+Leetcode に follow up として "try coding another solution using the divide and conquer approach" とあったので、分割統治法でも書いてみた。
+
+```java
+TODO
+```
+
+### みんなのプルリク見た結果
