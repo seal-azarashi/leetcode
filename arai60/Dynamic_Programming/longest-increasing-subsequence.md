@@ -256,7 +256,10 @@ class Solution {
 
 ### 対応するインデックスの要素で終わる最長増加部分列の長さを配列に入れる
 
-- 変数名を修正しコメントを残す: https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1785535521
+以下のレビューに対応しました:
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1785535521
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784434067
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784476006
 
 ```java
 /**
