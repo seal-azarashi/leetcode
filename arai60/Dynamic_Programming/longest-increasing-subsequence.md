@@ -292,3 +292,67 @@ class Solution {
     }
 }
 ```
+
+### 二分探索を用いた O(n log n) の解法
+
+固定長配列を使った実装。
+
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        // lis: longest increasing subsequence
+        int[] lis = new int[nums.length];
+        int lisLength = 0;
+        for (int num : nums) {
+            int insertPosition = Arrays.binarySearch(lis, 0, lisLength, num);
+            if (insertPosition < 0) {
+                // 要素が見つからない場合、挿入位置を計算
+                // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#binarySearch-int:A-int-int-int-
+                insertPosition = -(insertPosition + 1);
+            }
+            lis[insertPosition] = num;
+            if (insertPosition == lisLength) {
+                lisLength++;
+            }
+        }
+        return lisLength;
+    }
+}
+```
+
+可変長配列使った実装。
+
+```java
+/**
+ * 時間計算量: O(n log n): nums の要素それぞれに対して最大 (log nums.length) の二分探索
+ * 空間計算量: O(n): 最大で引数 nums と同じサイズになる可変長配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        // lis: longest increasing subsequence
+        ArrayList<Integer> lis = new ArrayList<>();
+        for (int num : nums) {
+            int insertPosition = Collections.binarySearch(lis, num);
+            if (insertPosition < 0) {
+                // 要素が見つからない場合、挿入位置を計算
+                // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-
+                insertPosition = -(insertPosition + 1);
+            }
+            if (insertPosition == lis.size()) {
+                lis.add(num);
+            } else {
+                lis.set(insertPosition, num);
+            }
+        }
+        return lis.size();
+    }
+}
+```
