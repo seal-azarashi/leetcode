@@ -273,26 +273,20 @@ class Solution {
             return 0;
         }
 
-        // 各インデックスで終わる単調増加する部分列の中で最大の長さを格納
+        // 対応するインデックスの要素で終わる最長増加部分列の長さ
         int[] sequenceLengths = new int[nums.length];
         Arrays.fill(sequenceLengths, 1);
         for (int i = 1; i < nums.length; i++) {
-            sequenceLengths[i] = findMaxLengthWithNewTail(nums, sequenceLengths, i);
-        }
-
-        int longestIncreasingSubsequence = 1;
-        for (int i = 0; i < sequenceLengths.length; i++) {
-            longestIncreasingSubsequence = Math.max(longestIncreasingSubsequence, sequenceLengths[i]);
-        }
-        return longestIncreasingSubsequence;
-    }
-
-    private int findMaxLengthWithNewTail(int[] nums, int[] sequenceLengths, int tailIndex) {
-        int maxLength = 1;
-        for (int i = 0; i < tailIndex; i++) {
-            if (nums[i] < nums[tailIndex]) {
-                maxLength = Math.max(maxLength, sequenceLengths[i] + 1);
+            for (int j = 0; j < i; j++) {
+                if (nums[j] < nums[i]) {
+                    sequenceLengths[i] = Math.max(sequenceLengths[i], sequenceLengths[j] + 1);
+                }
             }
+        }
+
+        int maxLength = 1;
+        for (int i = 0; i < sequenceLengths.length; i++) {
+            maxLength = Math.max(maxLength, sequenceLengths[i]);
         }
         return maxLength;
     }
