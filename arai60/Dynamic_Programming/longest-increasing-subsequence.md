@@ -190,19 +190,19 @@ class Solution {
         // is: increasing subsequence
         ArrayList<Integer> isMinTailValues = new ArrayList<>();
         for (int num : nums) {
-            int insertPosition = Collections.binarySearch(minISTailValues, num);
+            int insertPosition = Collections.binarySearch(isMinTailValues, num);
             if (insertPosition < 0) {
                 // 要素が見つからない場合、挿入位置を計算
                 // 参考: https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-
                 insertPosition = -(insertPosition + 1);
             }
-            if (insertPosition == minISTailValues.size()) {
-                minISTailValues.add(num);
+            if (insertPosition == isMinTailValues.size()) {
+                isMinTailValues.add(num);
             } else {
-                minISTailValues.set(insertPosition, num);
+                isMinTailValues.set(insertPosition, num);
             }
         }
-        return minISTailValues.size();
+        return isMinTailValues.size();
     }
 }
 ```
