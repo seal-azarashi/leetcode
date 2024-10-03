@@ -254,6 +254,51 @@ class Solution {
 
 ## Step 4
 
+### 配列の末尾からある要素以降のシーケンス長を算出する (Step 1 のブラッシュアップ)
+
+以下のレビューに対応しました:
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784050312
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784434067
+
+```java
+/**
+ * 時間計算量: O(n^2):
+ *     - O(n): キャッシュ用配列の作成
+ *     - O(n^2): 各要素とそれ以降のキャッシュすべてを利用した sequence 算出処理
+ *     - O(n): キャッシュから longestIncreasingSubsequence を探す処理
+ * 空間計算量: O(n)
+ *     - O(n): 引数 nums と同じサイズのキャッシュ用配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int[] maxLengths = new int[nums.length];
+        Arrays.fill(maxLengths, 1);
+        for (int currentIndex = maxLengths.length - 1; currentIndex >= 0; currentIndex--) {
+            for (int subsequentIndex = currentIndex + 1; subsequentIndex < maxLengths.length; subsequentIndex++) {
+                if (nums[currentIndex] < nums[subsequentIndex]) {
+                    maxLengths[currentIndex] = Math.max(
+                        maxLengths[currentIndex],
+                        1 + maxLengths[subsequentIndex]
+                    );
+                }
+            }
+        }
+        int maxLength = 1;
+        for (int i = 0; i < maxLengths.length; i++) {
+            maxLength = Math.max(
+                maxLength,
+                maxLengths[i]
+            );
+        }
+        return maxLength;
+    }
+}
+```
+
 ### 対応するインデックスの要素で終わる最長増加部分列の長さを配列に入れる
 
 以下のレビューに対応しました:
