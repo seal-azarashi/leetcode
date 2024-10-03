@@ -295,7 +295,11 @@ class Solution {
 
 ### 二分探索を用いた O(n log n) の解法
 
-固定長配列を使った実装。
+以下のレビューに対応しました:
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784055221
+- https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1784056519
+
+こちらは固定長配列を使った実装:
 
 ```java
 class Solution {
@@ -324,7 +328,7 @@ class Solution {
 }
 ```
 
-可変長配列使った実装。
+可変長配列使った実装:
 
 ```java
 /**
