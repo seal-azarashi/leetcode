@@ -251,3 +251,50 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### 対応するインデックスの要素で終わる最長増加部分列の長さを配列に入れる
+
+- 変数名を修正しコメントを残す: https://github.com/seal-azarashi/leetcode/pull/28#discussion_r1785535521
+
+```java
+/**
+ * 時間計算量: O(n^2):
+ *     - O(n): キャッシュ用配列の作成
+ *     - O(n^2): 各要素とそれ以降の特定要素までの最長増加部分列算出処理
+ *     - O(n): キャッシュから longestIncreasingSubsequence を探す処理
+ * 空間計算量: O(n)
+ *     - O(n): 引数 nums と同じサイズのキャッシュ用配列
+ */
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        // 各インデックスで終わる単調増加する部分列の中で最大の長さを格納
+        int[] sequenceLengths = new int[nums.length];
+        Arrays.fill(sequenceLengths, 1);
+        for (int i = 1; i < nums.length; i++) {
+            sequenceLengths[i] = findMaxLengthWithNewTail(nums, sequenceLengths, i);
+        }
+
+        int longestIncreasingSubsequence = 1;
+        for (int i = 0; i < sequenceLengths.length; i++) {
+            longestIncreasingSubsequence = Math.max(longestIncreasingSubsequence, sequenceLengths[i]);
+        }
+        return longestIncreasingSubsequence;
+    }
+
+    private int findMaxLengthWithNewTail(int[] nums, int[] sequenceLengths, int tailIndex) {
+        int maxLength = 1;
+        for (int i = 0; i < tailIndex; i++) {
+            if (nums[i] < nums[tailIndex]) {
+                maxLength = Math.max(maxLength, sequenceLengths[i] + 1);
+            }
+        }
+        return maxLength;
+    }
+}
+```
