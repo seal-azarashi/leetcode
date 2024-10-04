@@ -16,7 +16,7 @@ LeetCode URL: https://leetcode.com/problems/maximum-subarray/description/
  */
 class Solution {
     public int maxSubArray(int[] nums) {
-        int maxSubArray = nums[0];
+        int maxSubArray = Integer.MIN_VALUE;
         int sumInWindow = 0;
         for (int num : nums) {
             if (sumInWindow < 0) {
@@ -49,7 +49,7 @@ class Solution {
             return 0;
         }
 
-        int maxSubArraySum = nums[0];
+        int maxSubArraySum = Integer.MIN_VALUE;
         int currentSum = 0;
         for (int num : nums) {
             currentSum = Math.max(num, num + currentSum);
@@ -78,7 +78,7 @@ class Solution {
             return 0;
         }
 
-        int maxSubArraySum = nums[0];
+        int maxSubArraySum = Integer.MIN_VALUE;
         for (int i = 0; i < nums.length; i++) {
             for (int j = i; j < nums.length; j++) {
                 int subArraySum = 0;
@@ -95,7 +95,7 @@ class Solution {
 
 ### Squared な解法
 
-Cubic な解法と同様のモチベーションで書きました。 TLE。
+Cubic な解法と同様のモチベーションで書きました。 TLE。  
 
 ```java
 /**
@@ -110,7 +110,7 @@ class Solution {
             return 0;
         }
 
-        int maxSubArraySum = nums[0];
+        int maxSubArraySum = Integer.MIN_VALUE;
         for (int i = 0; i < nums.length; i++) {
             int currentSum = 0;
             for (int j = i; j < nums.length; j++) {
@@ -122,6 +122,33 @@ class Solution {
     }
 }
 ```
+
+Kadane's Algorithm はエンジニアの常識でもないし、問題見ただけで一発で思いつくのはあまりにも天才的すぎると [Discord でコメント](https://discord.com/channels/1084280443945353267/1206101582861697046/1207405733667410051)がありましたが、自分もこんなのは思いつかないので、暗記しておかない限りは面接で出せるとしたらこの解答になるだろうなという印象です。  
+
+また上記のコメントを一通り読んで、思いついた解法があるのなら、それをベストなものでないと切り捨ていきなり解答を見るようなことはせず、書いてみてブラッシュアップさせていくような作業をしないとなと思いました。  
+
+> 15分の使い方として、「かっこいい公式を連想してみせよう」とかやっているのは、あまり意味がなくて、とりあえず、いいから手を動かしてくれと思っています。  
+> かっこいい公式を思いついたからそれをどうやって振り回すかを考えている15分もあんまり意味がないという感覚です。  
+> [-2,1,-3,4,-1,2,1,-5,4]を例に取れば、100回ちょっとも足し算すれば、全通り出せるわけで、とりあえずそれをやってから考えたらどうでしょう。  
+> from: https://discord.com/channels/1084280443945353267/1206101582861697046/1207949240316338176
+
+> (Kadane's Algorithm のような解法を思いつく過程の例を示した上で)
+> 
+> 東京から新宿まで移動してくれと言われたら、中央線もあれば、丸ノ内線もあれば、タクシーを拾ってもいいし、自分で運転してもいいし、歩いていってもいいじゃないですか。これくらいの幅を持って見ていて、その中には愚直なのもあれば、短いのもあれば、速いのもあれば、遅いのもあり、色々なバランスを見て、今日はこれくらいにしておくかな、くらいの感覚で選んでいます。  
+> 上で並べたのは、「下に行けば行くほど洗練されていて無条件に良い」などではなくて、だいたいこれくらいの幅を持って見ているということを伝えたかったからです。  
+> どうせ、1番上は思いついたけれども、価値のないものだと思って捨てたでしょう。そこがいかんのですよ。  
+> 時間あるし運動もしたいから2時間くらい歩くか、という選択肢を持っているかどうかで、対応がだいぶ違います。都内の地理に詳しい人から聞いた結論だけ暗記してもあんまり意味はないのです。  
+> from: https://discord.com/channels/1084280443945353267/1206101582861697046/1208473290881110117
+
+> (上記コメントの補足として)
+>
+> - 大事なのは、見たときに大局的に色々な手段が見えていること。  
+> - その中には遅いものも速いものもあり、色々な良し悪しで評価できること。例えば速度の見積もりとかもそれ。  
+> - それぞれの手段の間の移り変わりの関係性が見えていること。  
+> - 局所的に変更して、見やすくしたり、整理したりすることができること。  
+> 
+> だいたい、この辺です。移り変わり、みたいなものを上で特に表現してみました。  
+> from: https://discord.com/channels/1084280443945353267/1206101582861697046/1209027377397506109
 
 ### Divide and conquer
 
@@ -177,5 +204,3 @@ class Solution {
     }
 }
 ```
-
-### みんなのプルリク見た結果
