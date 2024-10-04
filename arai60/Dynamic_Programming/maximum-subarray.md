@@ -204,3 +204,28 @@ class Solution {
     }
 }
 ```
+
+## Step 3
+
+```java
+/**
+ * 解いた時間: 2~3分
+ * 時間計算量: O(n): 引数 nums の要素すべて走査する
+ * 空間計算量: O(1): 固定サイズの変数が決まった個数宣言される
+ */
+class Solution {
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int maxSubArraySum = Integer.MIN_VALUE;
+        int currentSum = 0;
+        for (int num : nums) {
+            currentSum = Math.max(num, num + currentSum);
+            maxSubArraySum = Math.max(maxSubArraySum, currentSum);
+        }
+        return maxSubArraySum;
+    }
+}
+```
