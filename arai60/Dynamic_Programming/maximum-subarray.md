@@ -10,8 +10,10 @@ LeetCode URL: https://leetcode.com/problems/maximum-subarray/description/
 前に解いていたが解答を忘れてたので、当時見ていたであろうビデオを見て復習しながら書きました: https://www.youtube.com/watch?v=5WZl3MMT0Eg
 
 ```java
-// 時間計算量: O(n): 引数 nums の要素すべて走査する
-// 空間計算量: O(1): 固定サイズの変数が決まった個数宣言される
+/**
+ * 時間計算量: O(n): 引数 nums の要素すべて走査する
+ * 空間計算量: O(1): 固定サイズの変数が決まった個数宣言される
+ */
 class Solution {
     public int maxSubArray(int[] nums) {
         int maxSubArray = nums[0];
@@ -37,6 +39,10 @@ class Solution {
 - 変数名が適当でないと気づいたので修正しました: maxSubArray -> maxSubArraySum
 
 ```java
+/**
+ * 時間計算量: O(n): 引数 nums の要素すべて走査する
+ * 空間計算量: O(1): 固定サイズの変数が決まった個数宣言される
+ */
 class Solution {
     public int maxSubArray(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -59,6 +65,13 @@ class Solution {
 タイムアウトするようなコードも書けるようになっておけばそこからより良い解法を考えられるようになる、とどこかで oda さんが仰ってたのを思い出して書いてみました。予想通り TLE。
 
 ```java
+/**
+ * 時間計算量: O(n^3):
+ *     - O(n): 配列の全要素を走査
+ *         - O(n): 操作中の要素以降の全要素を走査
+ *             - O(n): 最大で配列と同じ数の要素の合計を算出
+ * 空間計算量: O(1): 計算に必要ないくつかの変数を宣言
+ */
 class Solution {
     public int maxSubArray(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -85,6 +98,12 @@ class Solution {
 Cubic な解法と同様のモチベーションで書きました。 TLE。
 
 ```java
+/**
+ * 時間計算量: O(n^2):
+ *     - O(n): 配列の全要素を走査
+ *         - O(n): 操作中の要素以降の全要素を走査して最大値を更新
+ * 空間計算量: O(1): 計算に必要ないくつかの変数を宣言
+ */
 class Solution {
     public int maxSubArray(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -109,7 +128,54 @@ class Solution {
 Leetcode に follow up として "try coding another solution using the divide and conquer approach" とあったので、分割統治法でも書いてみた。
 
 ```java
-TODO
+/**
+ * 時間計算量: O(n log n):
+ *     - O(1): 配列の分割
+ *     - O(log n): 再帰の深さ (配列を半分ずつ分割するため)
+ *         - O(n): 各再帰処理における計算量 (中央を跨ぐ maxCrossingSubArray() の計算)
+ *         - O(1): 結合処理 (leftMax, rightMax, crossMax の最大値の算出)
+ * 空間計算量: O(log n):
+ *     - O(log n): スタックフレームの数 (再帰の深さ)
+ *     - O(1): 計算に用いる変数
+ */ 
+class Solution {
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        return maxSubArrayHelper(nums, 0, nums.length - 1);
+    }
+
+    private int maxSubArrayHelper(int[] nums, int left, int right) {
+        if (left == right) {
+            return nums[left];
+        }
+
+        int mid = left + (right - left) / 2;
+        int leftMax = maxSubArrayHelper(nums, left, mid);
+        int rightMax = maxSubArrayHelper(nums, mid + 1, right);
+        int crossMax = maxCrossingSubArray(nums, left, mid, right);
+        return Math.max(Math.max(leftMax, rightMax), crossMax);
+    }
+
+    private int maxCrossingSubArray(int[] nums, int left, int mid, int right) {
+        int leftSum = Integer.MIN_VALUE;
+        int currentLeftSum = 0;
+        for (int i = mid; i >= left; i--) {
+            currentLeftSum += nums[i];
+            leftSum = Math.max(leftSum, currentLeftSum);
+        }
+
+        int rightSum = Integer.MIN_VALUE;
+        int currentRightSum = 0;
+        for (int i = mid + 1; i <= right; i++) {
+            currentRightSum += nums[i];
+            rightSum = Math.max(rightSum, currentRightSum);
+        }
+
+        return leftSum + rightSum;
+    }
+}
 ```
 
 ### みんなのプルリク見た結果
