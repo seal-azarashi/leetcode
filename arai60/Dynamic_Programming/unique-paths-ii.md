@@ -7,7 +7,7 @@ LeetCode URL: https://leetcode.com/problems/unique-paths-ii/description/
 
 ## Step 1
 
-まずは愚直な再帰の実装をする。
+最初に思いついた愚直な再帰の実装。
 
 ```java
 /**
@@ -53,7 +53,7 @@ class Solution {
 }
 ```
 
-二次元配列のキャッシュを使う。
+上記書いていて自然と思いつく、二次元配列のキャッシュを使った解法。
 
 ```java
 /**
@@ -96,7 +96,7 @@ class Solution {
 }
 ```
 
-一次元配列のキャッシュ + 左端列の最初の obstacle 出現位置を用いる
+さらに空間計算量を減らすため、一次元配列のキャッシュ + 左端列の最初の obstacle 出現位置を用いたキャッシュを行う。
 
 ```java
 /**
