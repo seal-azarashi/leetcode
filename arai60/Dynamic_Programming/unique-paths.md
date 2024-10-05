@@ -83,7 +83,7 @@ class Solution {
 ```
 
 ゴールからの走査なら、移動対象になる2つの走査済のマスからの unique path の合算値がそのマスからの unique path になると気づき、 memoization のための二次元配列を使うようにした。テストケースを全てパス。  
-(💭 後で気付きましたが、スタートからの走査でも unique path のキャッシュは可能ですね)  
+(💭 後で気付きましたが、スタートからの走査でも unique path のキャッシュは可能ですね。 Step 2 でそちらの実装もしてみます。)  
 エッジケースの考慮に苦労した。 Leetcode のテストケースが用意されていないとここまで作り込めなかった気がする... 採点ツールを使わない、ホワイトボードに書くような形式の面接だと不合格となってしまうだろうか？
 
 ```java
@@ -187,7 +187,39 @@ class Solution {
 }
 ```
 
+夜中にダラダラやってたのでかかった時間は15分を全然超えてますが、意外と出来るものですね。  
+ちゃんと考えを整理しながら解法を段階的にアップデートしていって理解が深まったので、今後も長い間覚えていられそうです。  
+
 ## Step 2
+
+### スタート地点から走査する
+
+Step 1 の解法の走査を、スタート地点から行うように書き直してみる。
+
+```java
+class Solution {
+    public int uniquePaths(int m, int n) {
+        if (m <= 0 || n <= 0) {
+            return 0;
+        }
+
+        int[][] pathCountCache = new int[m][n];
+        for (int i = 0; i < n; i++) {
+            pathCountCache[0][i] = 1;
+        }
+        for (int i = 0; i < m; i++) {
+            pathCountCache[i][0] = 1;
+        }
+
+        for (int y = 1; y < m; y++) {
+            for (int x = 1; x < n; x++) {
+                pathCountCache[y][x] = pathCountCache[y - 1][x] + pathCountCache[y][x - 1];
+            }
+        }
+        return pathCountCache[m - 1][n - 1];
+    }
+}
+```
 
 ### 1次元配列にキャッシュする
 
@@ -223,6 +255,10 @@ step 1 では次のような2次元配列を使っていたが、まず右端の
  */
 class Solution {
     public int uniquePaths(int m, int n) {
+        if (m <= 0 || n <= 0) {
+            return 0;
+        }
+
         int[] uniquePathCache = new int[n];
         Arrays.fill(uniquePathCache, 1);
         for (int y = m - 2; y >= 0; y--)  {
@@ -248,16 +284,68 @@ m, n の小さい方を配列のサイズに指定すれば、配列の初期化
  */
 class Solution {
     public int uniquePaths(int m, int n) {
-        int big = m < n ? n : m;
-        int small = m < n ? m : n;
-        int[] uniquePathCache = new int[small];
+        if (m <= 0 || n <= 0) {
+            return 0;
+        }
+
+        // Make Space Complexity O(min(m, n)) from O(n)
+        if (m < n) {
+            return uniquePaths(n, m);
+        }
+
+        int[] uniquePathCache = new int[n];
         Arrays.fill(uniquePathCache, 1);
-        for (int i = big - 2; i >= 0; i--)  {
-            for (int j = small - 2; j >= 0; j--) {
-                uniquePathCache[j] += uniquePathCache[j + 1];
+        for (int y = m - 2; y >= 0; y--)  {
+            for (int x = n - 2; x >= 0; x--) {
+                uniquePathCache[x] += uniquePathCache[x + 1];
             }
         }
         return uniquePathCache[0];
     }
 }
 ```
+
+## Step 3
+
+一次元配列にキャッシュする案を採用。加えてスタート地点から操作する方が直感的に感じたのでそのようにした。  
+尚、 m, n からより小さい値を選んで計算量を最適化するのは、次の考えから、与えられた問題に対してはやり過ぎだと判断している:  
+
+- ユースケースは、二次元のグリッドでなにかをするボードゲームか何かで、移動パターンの数を算出する処理か何かと考えられる
+- この最適化の恩恵が受けられるほどの大きさのグリッド内での移動をする場合、そのパターン数を算出したくなることは無いのではないかと考えた (💭 全然ゲーム詳しくないので、間違っていたらご指摘ください)
+
+なので上記については、面接官との会話を通して、必要だと判断したら実装に加えたい。
+
+```java
+/**
+ * 解いた時間: 約3分
+ * 時間計算量: O(m * n):
+ *     - O(1): 配列の宣言 (一次元配列のためのメモリ確保処理が最適化されている想定)
+ *     - O(n): 配列の要素を全て 1 にする
+ *     - O(m * n): unique path の算出を実施
+ *         - O(1): 各イテレーションでの処理
+ * 空間計算量: O(n): キャッシュ用の一次元配列
+ */
+class Solution {
+    public int uniquePaths(int m, int n) {
+        if (m <= 0 || n <= 0) {
+            return 0;
+        }
+
+        int[] uniquePathCache = new int[n];
+        Arrays.fill(uniquePathCache, 1);
+        for (int y = 1; y < m; y++) {
+            for (int x = 1; x < n; x++) {
+                uniquePathCache[x] += uniquePathCache[x - 1];
+            }
+        }
+        return uniquePathCache[n - 1];
+    }
+}
+```
+
+oda さんが言うところの[知ってたとみなしての採点対象外](https://discord.com/channels/1084280443945353267/1206101582861697046/1207405733667410051)とならないよう、面接では、しっかりとどうやってたどり着いたのかは説明しながら書いていきたいと思った。  
+
+> いや、私、何を言っているかというと、これ、Kadane's algorithm といって、名前がついている上に常識に入っていない程度のものなので、いきなりこれを書いたら、Kadane 程度の天才か、知っていたんだろうなって思って、この問題は採点外にして、次の問題を出します。  
+> from: https://discord.com/channels/1084280443945353267/1206101582861697046/1207405733667410051
+
+(💭 この問題ではそんなに難しいことしてないのでそうはならないかもしれませんが、今後の心構えとして。)  
