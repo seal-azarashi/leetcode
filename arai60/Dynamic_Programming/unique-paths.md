@@ -83,6 +83,7 @@ class Solution {
 ```
 
 ゴールからの走査なら、移動対象になる2つの走査済のマスからの unique path の合算値がそのマスからの unique path になると気づき、 memoization のための二次元配列を使うようにした。テストケースを全てパス。  
+(💭 後で気付きましたが、スタートからの走査でも unique path のキャッシュは可能ですね)  
 エッジケースの考慮に苦労した。 Leetcode のテストケースが用意されていないとここまで作り込めなかった気がする... 採点ツールを使わない、ホワイトボードに書くような形式の面接だと不合格となってしまうだろうか？
 
 ```java
@@ -182,6 +183,81 @@ class Solution {
             }
         }
         return pathCountCache[0][0];
+    }
+}
+```
+
+## Step 2
+
+### 1次元配列にキャッシュする
+
+解答を見てみると、一次元の配列をキャッシュに使うものがあったので、これを踏まえて step 1 のコードを改良する。  
+step 1 では次のような2次元配列を使っていたが、まず右端の列については全て 1 であることがキャッシュに残っていれば良いので、1列分の情報量は必要ない。
+
+```
+        ┌ この要素たちはひとつで充分
+0, 0, 1 ┤
+3, 2, 1 ┤
+1, 1, 1 ┘
+```
+
+他の列の情報も全行分保持する必要はなく、イテレーションごとに最新の (一番下の行の) 値さえあればいい。
+
+```
+0, 0, 1
+3, 2, 1
+1, 1, 1 <- 次に計算する行 (一番上の行) の計算にはもうこの行の情報は必要ない
+```
+
+上記の例だと、 [3, 2, 1] の一次元配列があれば、この右端以外 (この場合 0-1) の要素をアップデートしていくことで step 1 と同等の処理が実現できる。  
+これを踏まえて以下のように書き直した。
+
+```java
+/**
+ * 時間計算量: O(m * n):
+ *     - O(1): 配列の宣言 (一次元配列のためのメモリ確保処理が最適化されている想定)
+ *     - O(n): 配列の要素を全て 1 にする
+ *     - O(m * n): unique path の算出を実施
+ *         - O(1): 各イテレーションでの処理
+ * 空間計算量: O(n): キャッシュ用の一次元配列
+ */
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] uniquePathCache = new int[n];
+        Arrays.fill(uniquePathCache, 1);
+        for (int y = m - 2; y >= 0; y--)  {
+            for (int x = n - 2; x >= 0; x--) {
+                uniquePathCache[x] += uniquePathCache[x + 1];
+            }
+        }
+        return uniquePathCache[0];
+    }
+}
+```
+
+m, n の小さい方を配列のサイズに指定すれば、配列の初期化処理と空間計算量が O(n) から O(min(m, n)) になる。 
+
+```java
+/**
+ * 時間計算量: O(m * n):
+ *     - O(1): 配列の宣言 (一次元配列のためのメモリ確保処理が最適化されている想定)
+ *     - O(min(m, n)): 配列の要素を全て 1 にする
+ *     - O(m * n): unique path の算出を実施
+ *         - O(1): 各イテレーションでの処理
+ * 空間計算量: O(min(m, n)): キャッシュ用の一次元配列
+ */
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int big = m < n ? n : m;
+        int small = m < n ? m : n;
+        int[] uniquePathCache = new int[small];
+        Arrays.fill(uniquePathCache, 1);
+        for (int i = big - 2; i >= 0; i--)  {
+            for (int j = small - 2; j >= 0; j--) {
+                uniquePathCache[j] += uniquePathCache[j + 1];
+            }
+        }
+        return uniquePathCache[0];
     }
 }
 ```
