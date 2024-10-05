@@ -187,8 +187,7 @@ class Solution {
 }
 ```
 
-夜中にダラダラやってたのでかかった時間は15分を全然超えてますが、意外と出来るものですね。  
-ちゃんと考えを整理しながら解法を段階的にアップデートしていって理解が深まったので、今後も長い間覚えていられそうです。  
+(💭 夜中にダラダラやってたのでかかった時間は15分を全然超えてますが、意外と出来るものですね。ちゃんと考えを整理しながら解法を段階的にアップデートしていって理解が深まったので、今後も長い間覚えていられそうです。)  
 
 ## Step 2
 
@@ -301,6 +300,34 @@ class Solution {
             }
         }
         return uniquePathCache[0];
+    }
+}
+```
+
+### 数学的の組み合わせの問題として計算
+
+[組み合わせの公式](https://manabitimes.jp/math/1352#4)を使って解く。 Constraints の範囲内でも最大で 198! を扱うことになり、その結果は int の最大値 2^31 - 1 を簡単に超えてしまう (int が扱えるのは 12! まで)。そのため java.math パッケージの BigInteger を使う。  
+(💭 [Math クラス](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Math.html) や [math パッケージ](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/package-summary.html) を眺めてみましたが、意外と factorial や combination 算出用の関数はないんですね)  
+(💭 util や lang 以外のパッケージを使うのは久々です。これら以外は LeetCode では明示的にインポートする必要があるので import 文も久々に書きました。)  
+
+```java
+import java.math.BigInteger;
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        return combination(m + n - 2, n - 1).intValue();
+    }
+
+    private BigInteger combination(int m, int n) {
+        return factorial(m).divide(factorial(n).multiply(factorial(m - n)));
+    }
+
+    private BigInteger factorial(int m) {
+        BigInteger result = BigInteger.ONE;
+        for (int i = 2; i <= m; i++) {
+            result = result.multiply(BigInteger.valueOf(i));
+        }
+        return result;
     }
 }
 ```
