@@ -133,6 +133,31 @@ class Solution {
 }
 ```
 
+配列の長さが1のときの考慮をしなくていいと気づいて修正。
+
+```java
+/**
+ * 時間計算量: O(n): 配列の各要素に対しての一連の定数時間で行われる処理
+ * 空間計算量: O(1): ひとつ前、ふたつ前の時点での盗めるお金の最大値を格納する2つの変数
+ */
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int twoBackMaxCount = 0, oneBackMaxCount = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int maxCount = Math.max(twoBackMaxCount + nums[i], oneBackMaxCount);
+
+            twoBackMaxCount = oneBackMaxCount;
+            oneBackMaxCount = maxCount;
+        }
+        return oneBackMaxCount;
+    }
+}
+```
+
 ### トップダウンアプローチ
 
 他の方の解法にあったので書いてみた。スタックオーバーフローのリスクがあるので注意。
@@ -187,18 +212,15 @@ class Solution {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-        if (nums.length == 1) {
-            return nums[0];
-        }
 
-        int twoBackMaxAmount = 0, oneBackMaxAmount = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            int maxAmount = Math.max(twoBackMaxAmount + nums[i], oneBackMaxAmount);
+        int twoBackMaxCount = 0, oneBackMaxCount = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int maxCount = Math.max(twoBackMaxCount + nums[i], oneBackMaxCount);
 
-            twoBackMaxAmount = oneBackMaxAmount;
-            oneBackMaxAmount = maxAmount;
+            twoBackMaxCount = oneBackMaxCount;
+            oneBackMaxCount = maxCount;
         }
-        return oneBackMaxAmount;
+        return oneBackMaxCount;
     }
 }
 ```
