@@ -7,6 +7,10 @@ LeetCode URL: https://leetcode.com/problems/house-robber-ii/description/
 
 ## Step 1
 
+House Robber の拡張版のような問題。今回は家が円状に並んでおり、最初と最後の家が隣接する。  
+隣接する最初と最後の家は同時に盗みに入れないため、配列から最初 or 最後の家を除いた計2つの配列を作り、それぞれで盗めるお金の最大値から、より大きいものが答えになる。  
+(💭 ヘルパーメソッドの中身をどうするかについては [House Robber のプルリクエスト](https://github.com/seal-azarashi/leetcode/pull/33)で議論がされていますので、そちらも合わせてご覧いただけますと嬉しいです)  
+
 ```java
 /**
  * 時間計算量: O(n):
@@ -41,3 +45,7 @@ class Solution {
     }
 }
 ```
+
+## Step 2
+
+他の方のプルリクエストに目を通したが、注目すべき事項はほぼ [House Robber の方](https://github.com/seal-azarashi/leetcode/pull/33)を解く際に把握出来ていたようなので、今回は割愛。
