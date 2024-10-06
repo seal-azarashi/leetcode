@@ -49,3 +49,41 @@ class Solution {
 ## Step 2
 
 他の方のプルリクエストに目を通したが、注目すべき事項はほぼ [House Robber の方](https://github.com/seal-azarashi/leetcode/pull/33)を解く際に把握出来ていたようなので、今回は割愛。
+
+## Step 3
+
+```java
+/**
+ * 解いた時間: 約4分
+ * 時間計算量: O(n):
+ *     - O(n): 配列の先頭から末尾の要素を除いた全ての要素を対象に robHelper() を実行
+ *     - O(n): 配列2つ目の要素から末尾まで全ての要素を対象に robHelper() を実行
+ * 空間計算量: O(1): 各走査で必要な変数等定数量の追加空間
+ */
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+
+        return Math.max(
+            robHelper(0, nums.length - 1, nums),
+            robHelper(1, nums.length, nums)
+        );
+    }
+
+    private int robHelper(int start, int end, int[] nums) {
+        int twoBackMaxAmount = 0, oneBackMaxAmount = 0;
+        for (int i = start; i < end; i++) {
+            int maxAmount = Math.max(twoBackMaxAmount + nums[i], oneBackMaxAmount);
+
+            twoBackMaxAmount = oneBackMaxAmount;
+            oneBackMaxAmount = maxAmount;
+        }
+        return oneBackMaxAmount;
+    }
+}
+```
