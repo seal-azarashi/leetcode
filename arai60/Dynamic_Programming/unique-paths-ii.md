@@ -148,3 +148,79 @@ class Solution {
     }
 }
 ```
+
+## Step 2
+
+### 二次元配列を用いたキャッシュ (ループをひとつにする)
+
+他の方が書いており、こちらの方が綺麗になりそうだったので書いてみる。ついでに Obstacle を表す値 1 がマジックナンバーとなっていたので定数化。
+
+```java
+/**
+ * かかった時間: 約21分
+ * 時間計算量: O(m * n):
+ *     - O(m * n): 配列の宣言
+ *     - O(m * n): unique path の算出を各マスで実施
+ *         - O(1): 各イテレーションでの計算処理
+ * 空間計算量: O(m * n): キャッシュ用の二次元配列
+ */
+class Solution {
+    private static final int OBSTACLE = 1;
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int rowCount = obstacleGrid.length, columnCount = obstacleGrid[0].length;
+        int[][] uniquePathCache = new int[rowCount][columnCount];
+        uniquePathCache[0][0] = 1;
+        for (int y = 0; y < rowCount; y++) {
+            for (int x = 0; x < columnCount; x++) {
+                if (obstacleGrid[y][x] == OBSTACLE) {
+                    uniquePathCache[y][x] = 0;
+                    continue;
+                }
+
+                if (1 <= y) {
+                    uniquePathCache[y][x] += uniquePathCache[y - 1][x];
+                }
+                if (1 <= x) {
+                    uniquePathCache[y][x] += uniquePathCache[y][x - 1];
+                }
+            }
+        }
+        return uniquePathCache[rowCount - 1][columnCount - 1];
+    }
+}
+```
+
+### 一次元配列を用いたキャッシュ
+
+```java
+/**
+ * 時間計算量: O(m * n):
+ *     - O(1): 一次元配列の宣言
+ *     - O(m * n): unique path の算出を各マスで実施
+ *         - O(1): 各イテレーションでの計算処理
+ * 空間計算量: O(n): キャッシュ用の一次元配列
+ */
+class Solution {
+    private static final int OBSTACLE = 1;
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int rowCount = obstacleGrid.length, columnCount = obstacleGrid[0].length;
+        int[] uniquePathCache = new int[columnCount];
+        uniquePathCache[0] = 1;
+        for (int y = 0; y < rowCount; y++) {
+            for (int x = 0; x < columnCount; x++) {
+                if (obstacleGrid[y][x] == OBSTACLE) {
+                    uniquePathCache[x] = 0;
+                    continue;
+                }
+
+                if (1 <= x) {
+                    uniquePathCache[x] += uniquePathCache[x - 1];
+                }
+            }
+        }
+        return uniquePathCache[columnCount - 1];
+    }
+}
+```
