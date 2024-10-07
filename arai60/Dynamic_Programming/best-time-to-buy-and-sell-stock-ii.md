@@ -12,6 +12,7 @@ LeetCode URL: https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
 ```java
 /**
+ * 解いた時間: 不明 (解法はご飯食べながら考えてて思いつきました)
  * 時間計算量: O(n): 配列の全ての要素を走査し、利益が出せる場合に最大利益に加算していく
  * 空間計算量: O(1): 最大利益とイテレーションごとに算出した利益を格納する変数
  */
@@ -55,6 +56,32 @@ class Solution {
             withoutStockProfit = Math.max(withoutStockProfit, holdingStockProfit + prices[i]);
         }
         return withoutStockProfit;
+    }
+}
+```
+
+## Step 3
+
+```java
+/**
+ * 解いた時間: 約2分
+ * 時間計算量: O(n): 配列の全ての要素を走査し、利益が出せる場合に最大利益に加算していく
+ * 空間計算量: O(1): 最大利益とイテレーションごとに算出した利益を格納する変数
+ */
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null) {
+            return 0;
+        }
+
+        int maxProfit = 0;
+        for (int i = 0; i < prices.length - 1; i++) {
+            int profit = prices[i + 1] - prices[i];
+            if (profit > 0) {
+                maxProfit += profit;
+            }
+        }
+        return maxProfit;
     }
 }
 ```
