@@ -117,6 +117,12 @@ class Solution {
 上記とは違う考え方で解かれた [hayashi-ay さんの解答](https://github.com/hayashi-ay/leetcode/pull/52/files)を参考に書いてみる。
 
 ```java
+/**
+ * 時間計算量: O(n): 配列の先頭以外全ての要素を走査
+ *     - O(1): 最大利益の更新
+ *     - O(1): 最低価格の更新
+ * 空間計算量: O(1): ある時点での最大利益と最低価格を格納する変数
+ */
 class Solution {
     public int maxProfit(int[] prices) {
         if (prices == null || prices.length == 0) {
@@ -137,3 +143,31 @@ class Solution {
 ### その他気になったコメントなど
 
 - scanl という考え方: https://github.com/goto-untrapped/Arai60/pull/58/files#r1782742318
+
+## Step 3
+
+i 日目の価格 - (i - 1) 日目までの最小の価格を計算して最大利益を出す方法が最も素直でエレガントに思えたので採用した。
+
+```java
+/**
+ * 時間計算量: O(n): 配列の先頭以外全ての要素を走査
+ *     - O(1): 最大利益の更新
+ *     - O(1): 最低価格の更新
+ * 空間計算量: O(1): ある時点での最大利益と最低価格を格納する変数
+ */
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+
+        int maxProfit = 0;
+        int minPriceSoFar = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            maxProfit = Math.max(maxProfit, prices[i] - minPriceSoFar);
+            minPriceSoFar = Math.min(minPriceSoFar, prices[i]);
+        }
+        return maxProfit;
+    }
+}
+```
