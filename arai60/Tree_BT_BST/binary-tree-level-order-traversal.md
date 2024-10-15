@@ -147,7 +147,7 @@ class Solution {
     }
 
     private void findValuesInEachLevel(TreeNode node, int level, List<List<Integer>> valsInEachLevel) {
-        while (valsInEachLevel.size() <= level) {
+        if (valsInEachLevel.size() <= level) {
             valsInEachLevel.add(new LinkedList<>());
         }
 
