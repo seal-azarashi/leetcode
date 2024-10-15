@@ -141,8 +141,7 @@ class Solution {
             TreeNode node = nodeWithPathSum.node;
             int currentPathSum = node.val + nodeWithPathSum.pathSum;
 
-            boolean isLeafNode = node.left == null && node.right == null;
-            if (isLeafNode) {
+            if (node.left == null && node.right == null) {
                 if (currentPathSum == targetSum) {
                     return true;
                 }
@@ -157,7 +156,6 @@ class Solution {
                 nodeStack.push(new NodeWithPathSum(node.left, currentPathSum));
             }
         }
-
         return false;
     }
 }
@@ -173,9 +171,8 @@ class Solution {
         if (root == null) {
             return false;
         }
-        boolean isLeafNode = root.left == null && root.right == null;
-        if (isLeafNode) {
-            return  root.val == targetSum;
+        if (root.left == null && root.right == null) {
+            return root.val == targetSum;
         }
         return
             hasPathSum(root.left, targetSum - root.val) ||
