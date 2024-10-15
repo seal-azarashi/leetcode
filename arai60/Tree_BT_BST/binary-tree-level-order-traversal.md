@@ -94,6 +94,40 @@ class Solution {
 }
 ```
 
+### スタックを用いた DFS アプローチ
+
+```java
+class Solution {
+    private record NodeLevel(TreeNode node, int level) {};
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList();
+        }
+
+        List<List<Integer>> valsInEachLevel = new ArrayList();
+        Deque<NodeLevel> nodeLevelStack = new ArrayDeque();
+        nodeLevelStack.push(new NodeLevel(root, 0));
+        while (!nodeLevelStack.isEmpty()) {
+            NodeLevel nodeLevel = nodeLevelStack.pop();
+            if (valsInEachLevel.size() <= nodeLevel.level) {
+                valsInEachLevel.add(new ArrayList());
+            }
+            valsInEachLevel.get(nodeLevel.level).add(nodeLevel.node.val);
+
+            int nextLevel = nodeLevel.level + 1;
+            if (nodeLevel.node.right != null) {
+                nodeLevelStack.push(new NodeLevel(nodeLevel.node.right, nextLevel));
+            }
+            if (nodeLevel.node.left != null) {
+                nodeLevelStack.push(new NodeLevel(nodeLevel.node.left, nextLevel));
+            }
+        }
+        return valsInEachLevel;
+    }
+}
+```
+
 ### 再帰関数を用いた DFS アプローチ
 
 スタックオーバーフローのリスクはありますが、練習で書いてみました。
