@@ -102,16 +102,16 @@ class Solution {
 
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
 
-        List<List<Integer>> valsInEachLevel = new ArrayList();
+        List<List<Integer>> valsInEachLevel = new ArrayList<>();
         Deque<NodeLevel> nodeLevelStack = new ArrayDeque();
         nodeLevelStack.push(new NodeLevel(root, 0));
         while (!nodeLevelStack.isEmpty()) {
             NodeLevel nodeLevel = nodeLevelStack.pop();
             if (valsInEachLevel.size() <= nodeLevel.level) {
-                valsInEachLevel.add(new ArrayList());
+                valsInEachLevel.add(new ArrayList<>());
             }
             valsInEachLevel.get(nodeLevel.level).add(nodeLevel.node.val);
 
@@ -147,7 +147,7 @@ class Solution {
     }
 
     private void findValuesInEachLevel(TreeNode node, int level, List<List<Integer>> valsInEachLevel) {
-        if (valsInEachLevel.size() == level) {
+        while (valsInEachLevel.size() <= level) {
             valsInEachLevel.add(new LinkedList<>());
         }
 
