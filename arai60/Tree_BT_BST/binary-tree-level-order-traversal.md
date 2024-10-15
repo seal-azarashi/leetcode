@@ -238,3 +238,41 @@ class Solution {
     }
 }
 ```
+
+### 再帰関数を用いた DFS アプローチ
+
+次の指摘に対応:
+
+- https://github.com/seal-azarashi/leetcode/pull/25#discussion_r1779583128
+- https://github.com/seal-azarashi/leetcode/pull/25#discussion_r1779668376
+
+```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、最大でノードの数だけスタックが生成される
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new LinkedList<>();
+        }
+
+        List<List<Integer>> valsInEachLevel = new ArrayList<>();
+        fillValuesInEachLevel(root, 0, valsInEachLevel);
+        return valsInEachLevel;
+    }
+
+    private void fillValuesInEachLevel(TreeNode node, int level, List<List<Integer>> valsInEachLevel) {
+        while (valsInEachLevel.size() <= level) {
+            valsInEachLevel.add(new LinkedList<>());
+        }
+
+        valsInEachLevel.get(level).add(node.val);
+        int nextLevel = level + 1;
+        if (node.left != null) {
+            fillValuesInEachLevel(node.left, nextLevel, valsInEachLevel);
+        }
+        if (node.right != null) {
+            fillValuesInEachLevel(node.right, nextLevel, valsInEachLevel);
+        }
+    }
+}
+```
