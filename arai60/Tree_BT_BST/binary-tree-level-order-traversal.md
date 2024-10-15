@@ -110,7 +110,7 @@ class Solution {
         nodeLevelStack.push(new NodeLevel(root, 0));
         while (!nodeLevelStack.isEmpty()) {
             NodeLevel nodeLevel = nodeLevelStack.pop();
-            if (valsInEachLevel.size() <= nodeLevel.level) {
+            while (valsInEachLevel.size() <= nodeLevel.level) {
                 valsInEachLevel.add(new ArrayList<>());
             }
             valsInEachLevel.get(nodeLevel.level).add(nodeLevel.node.val);
