@@ -164,3 +164,43 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### キューを用いた BFS アプローチ
+
+次のレビューに対応しました:
+- https://github.com/seal-azarashi/leetcode/pull/25#discussion_r1768932526
+
+```java
+// 時間計算量: O(n): 全部のノードを一度走査する
+// 空間計算量: O(n): 全部のノードが入ったリストを作成するのに加え、キューが必要
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new LinkedList<>();
+        }
+
+        List<List<Integer>> valsInEachLevel = new LinkedList<>();
+        Queue<TreeNode> nodes = new ArrayDeque<>();
+        nodes.offer(root);
+        while (!nodes.isEmpty()) {
+            Queue<TreeNode> newNodes = new ArrayDeque<>();
+            List<Integer> valsInCurrentLevel = new LinkedList<>();
+            while (!nodes.isEmpty()) {
+                TreeNode node = nodes.poll();
+                valsInCurrentLevel.add(node.val);
+                if (node.left != null) {
+                    newNodes.offer(node.left);
+                }
+                if (node.right != null) {
+                    newNodes.offer(node.right);
+                }
+            }
+            valsInEachLevel.add(valsInCurrentLevel);
+            nodes = newNodes;
+        }
+        return valsInEachLevel;
+    }
+}
+```
