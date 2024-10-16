@@ -274,6 +274,8 @@ class Solution {
 
 ## Step 4
 
+### 配列の部分コピーを使用
+
 次の指摘に対応:
 
 - https://github.com/seal-azarashi/leetcode/pull/29#discussion_r1788801750
@@ -307,6 +309,46 @@ class Solution {
             Arrays.copyOfRange(preorder, inorderMiddle + 1, preorder.length),
             Arrays.copyOfRange(inorder, inorderMiddle + 1, inorder.length)
         );
+        return node;
+    }
+}
+```
+
+### インデックスで走査範囲を指定する preorder traversal
+
+preorder と preorderIndex でクラスにしてしまう (つまり、preorder 順に一要素ずつ出てくる箱のようなものだと思って実装する) パターン (参考: https://github.com/seal-azarashi/leetcode/pull/29#discussion_r1785486205)
+
+```java
+class Solution {
+    private static class PreorderWithCursor {
+        private final int[] preorder;
+        private int cursor;
+
+        PreorderWithCursor(int[] preorder) {
+            this.preorder = preorder;
+            this.cursor = 0;
+        }
+    }
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> valToInorderIndex = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            valToInorderIndex.put(inorder[i], i);
+        }
+        PreorderWithCursor preorderWithCursor = new PreorderWithCursor(preorder);
+        return buildTreeHelper(preorderWithCursor, 0, inorder.length, valToInorderIndex);
+    }
+    
+    private TreeNode buildTreeHelper(PreorderWithCursor preorderWithCursor, int left, int right, Map<Integer, Integer> valToInorderIndex) {
+        if (left == right) {
+            return null;
+        }
+
+        int val = preorderWithCursor.preorder[preorderWithCursor.cursor++];
+        int inorderIndex = valToInorderIndex.get(val);
+        TreeNode node = new TreeNode(val);
+        node.left = buildTreeHelper(preorderWithCursor, left, inorderIndex, valToInorderIndex);
+        node.right = buildTreeHelper(preorderWithCursor, inorderIndex + 1, right, valToInorderIndex);
         return node;
     }
 }
