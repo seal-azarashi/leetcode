@@ -319,6 +319,13 @@ class Solution {
 preorder と preorderIndex でクラスにしてしまう (つまり、preorder 順に一要素ずつ出てくる箱のようなものだと思って実装する) パターン (参考: https://github.com/seal-azarashi/leetcode/pull/29#discussion_r1785486205)
 
 ```java
+// 時間計算量: O(n):
+//     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
+//     - O(n): inorder の値とインデックスのマップを作成
+//     - O(1): イテレーションごとに実行されるマップへのアクセス
+// 空間計算量: O(n):
+//     - O(n): 引数に渡される配列の合計要素と同じ数のツリーを生成
+//     - O(n): inorder の値とインデックスのマップを作成
 class Solution {
     private static class PreorderWithCursor {
         private final int[] preorder;
