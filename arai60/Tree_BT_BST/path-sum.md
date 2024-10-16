@@ -123,6 +123,10 @@ class Solution {
 
 ### イテレーティブな DFS
 
+次の指摘に対応:
+
+- https://github.com/seal-azarashi/leetcode/pull/24#discussion_r1781228402
+
 ```java
 // 時間計算量: O(n): 最大で全ノードを走査する
 // 空間計算量: O(n): 最大で全ノードがスタックに入る
@@ -155,6 +159,45 @@ class Solution {
             if (node.left != null) {
                 nodeStack.push(new NodeWithPathSum(node.left, currentPathSum));
             }
+        }
+        return false;
+    }
+}
+```
+
+スタックには null も入るようにして、チェックを pop してから行うパターン (参考: https://github.com/seal-azarashi/leetcode/pull/24#discussion_r1781230995)
+
+```java
+// 時間計算量: O(n): 最大で全ノードを走査する
+// 空間計算量: O(n): 最大で全ノードがスタックに入る
+class Solution {
+    private record NodeWithPathSum(TreeNode node, int pathSum) {};
+
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+
+        Deque<NodeWithPathSum> nodeStack = new ArrayDeque<>();
+        nodeStack.push(new NodeWithPathSum(root, 0));
+        while (!nodeStack.isEmpty()) {
+            NodeWithPathSum nodeWithPathSum = nodeStack.pop();
+            TreeNode node = nodeWithPathSum.node;
+
+            if (node == null) {
+                continue;
+            }
+
+            int currentPathSum = node.val + nodeWithPathSum.pathSum;
+            if (node.left == null && node.right == null) {
+                if (currentPathSum == targetSum) {
+                    return true;
+                }
+                
+                continue;
+            }
+            nodeStack.push(new NodeWithPathSum(node.right, currentPathSum));
+            nodeStack.push(new NodeWithPathSum(node.left, currentPathSum));
         }
         return false;
     }
