@@ -271,3 +271,43 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+次の指摘に対応:
+
+- https://github.com/seal-azarashi/leetcode/pull/29#discussion_r1788801750
+- https://github.com/seal-azarashi/leetcode/pull/29#discussion_r1788803156
+
+```java
+// 時間計算量: O(n^2):
+//     - O(n): ノード生成処理を引数に渡される配列の要素数と同じ回数実行
+//     - O(n^2): 各イテレーションで、新規配列を作成するため、引数に渡された配列の合計要素数 (配列の要素数 - 1) * 2 と同じ回数のコピー処理を行う
+// 空間計算量: O(n): 配列が複数作成され、それら要素数の合計は引数に渡される配列たちの合計要素数より少ない
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        // The length of preorder and inorder should be the same
+        if (preorder.length == 0) {
+            return null;
+        }
+
+        TreeNode node = new TreeNode(preorder[0]);
+        int inorderMiddle = 0;
+        for (int i = 0; i < inorder.length; i++) {
+            if (preorder[0] == inorder[i]) {
+                inorderMiddle = i;
+                break;
+            }
+        }
+        node.left = buildTree(
+            Arrays.copyOfRange(preorder, 1, inorderMiddle + 1),
+            Arrays.copyOfRange(inorder, 0, inorderMiddle)
+        );
+        node.right = buildTree(
+            Arrays.copyOfRange(preorder, inorderMiddle + 1, preorder.length),
+            Arrays.copyOfRange(inorder, inorderMiddle + 1, inorder.length)
+        );
+        return node;
+    }
+}
+```
