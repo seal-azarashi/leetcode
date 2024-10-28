@@ -241,6 +241,8 @@ class Solution {
 
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
         int rowCount = obstacleGrid.length, columnCount = obstacleGrid[0].length;
+
+        // スタート地点から [i] に到達するまでのステップ数をキャッシュ
         int[] uniquePathCache = new int[columnCount];
         uniquePathCache[0] = 1;
         for (int y = 0; y < rowCount; y++) {
