@@ -174,10 +174,17 @@ class Solution {
     }
 
     private int maxSubArrayHelper(int[] nums, int left, int right) {
+        if (left > right) {
+            throw new IllegalArgumentException(
+                String.format("不正な範囲指定: left=%d > right=%d", left, right)
+            );
+        }
+
         if (left == right) {
             return nums[left];
         }
 
+        // left < right のとき、必ず left <= mid < right
         int mid = left + (right - left) / 2;
         int leftMax = maxSubArrayHelper(nums, left, mid);
         int rightMax = maxSubArrayHelper(nums, mid + 1, right);
@@ -186,6 +193,13 @@ class Solution {
     }
 
     private int maxCrossingSubArray(int[] nums, int left, int mid, int right) {
+        if (left > mid || mid >= right) {
+            throw new IllegalArgumentException(
+                String.format("不正な範囲指定: 条件 left <= mid < right を満たしていません: left=%d, mid=%d, right=%d",
+                    left, mid, right)
+            );
+        }
+
         int leftSum = Integer.MIN_VALUE;
         int currentLeftSum = 0;
         for (int i = mid; i >= left; i--) {
