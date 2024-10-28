@@ -319,7 +319,9 @@ class Solution {
     }
 
     private BigInteger combination(int m, int n) {
-        return factorial(m).divide(factorial(n).multiply(factorial(m - n)));
+        BigInteger numerator = factorial(m);
+        BigInteger denominator = factorial(n).multiply(factorial(m - n));
+        return numerator.divide(denominator);
     }
 
     private BigInteger factorial(int m) {
