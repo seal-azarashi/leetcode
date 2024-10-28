@@ -31,7 +31,7 @@ class Solution {
     }
 
     private void findUniquePathRecursively(int x, int y) {
-        if (x == n - 1 && y == m - 1) {
+        if (x == this.n - 1 && y == this.m - 1) {
             this.uniquePathCount++;
             return;
         }
