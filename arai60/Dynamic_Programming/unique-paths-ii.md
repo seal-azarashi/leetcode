@@ -261,3 +261,44 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### 最初に思いついた愚直な再帰の実装
+
+[nittoco さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/32#discussion_r1791907020) を受けてリファクタリングした。
+
+```java
+class Solution {
+    int[][] obstacleGrid;
+    int uniquePathCount;
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        this.obstacleGrid = obstacleGrid;
+        this.uniquePathCount = 0;
+        findPathToGoalRecursively(0, 0);
+        return this.uniquePathCount;
+    }
+
+    private void findPathToGoalRecursively(int y, int x) {
+        if(this.obstacleGrid[y][x] == 1){
+            return;
+        }
+
+        int rowCount = this.obstacleGrid.length;
+        int columnCount = this.obstacleGrid[0].length;
+        if (y == rowCount - 1 && x == columnCount - 1) {
+            this.uniquePathCount++;
+        }
+
+        int nextColumn = x + 1;
+        if (nextColumn < columnCount) {
+            findPathToGoalRecursively(y, nextColumn);
+        }
+        int nextRow = y + 1;
+        if (nextRow < rowCount) {
+            findPathToGoalRecursively(nextRow, x);
+        }
+    }
+}
+```
