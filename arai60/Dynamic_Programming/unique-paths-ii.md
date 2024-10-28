@@ -178,10 +178,10 @@ class Solution {
                     continue;
                 }
 
-                if (1 <= y) {
+                if (0 < y) {
                     uniquePathCache[y][x] += uniquePathCache[y - 1][x];
                 }
-                if (1 <= x) {
+                if (0 < x) {
                     uniquePathCache[y][x] += uniquePathCache[y][x - 1];
                 }
             }
@@ -215,7 +215,7 @@ class Solution {
                     continue;
                 }
 
-                if (1 <= x) {
+                if (0 < x) {
                     uniquePathCache[x] += uniquePathCache[x - 1];
                 }
             }
@@ -250,7 +250,7 @@ class Solution {
                     continue;
                 }
 
-                if (1 <= x) {
+                if (0 < x) {
                     uniquePathCache[x] += uniquePathCache[x - 1];
                 }
             }
