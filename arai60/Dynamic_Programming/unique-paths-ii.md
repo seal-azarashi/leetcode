@@ -302,3 +302,41 @@ class Solution {
     }
 }
 ```
+
+### 一次元配列を用いたキャッシュ
+
+[fhiyo さんの指摘](https://github.com/seal-azarashi/leetcode/pull/32#discussion_r1789132262)を受け、ステップ数を格納する配列の名前を修正。
+
+```java
+/**
+ * 時間計算量: O(m * n):
+ *     - O(1): 一次元配列の宣言
+ *     - O(m * n): unique path の算出を各マスで実施
+ *         - O(1): 各イテレーションでの計算処理
+ * 空間計算量: O(n): キャッシュ用の一次元配列
+ */
+class Solution {
+    private static final int OBSTACLE = 1;
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int rowCount = obstacleGrid.length, columnCount = obstacleGrid[0].length;
+
+        // スタート地点から [i] に到達するまでのステップ数をキャッシュ
+        int[] uniquePathCounts = new int[columnCount];
+        uniquePathCounts[0] = 1;
+        for (int y = 0; y < rowCount; y++) {
+            for (int x = 0; x < columnCount; x++) {
+                if (obstacleGrid[y][x] == OBSTACLE) {
+                    uniquePathCounts[x] = 0;
+                    continue;
+                }
+
+                if (0 < x) {
+                    uniquePathCounts[x] += uniquePathCounts[x - 1];
+                }
+            }
+        }
+        return uniquePathCounts[columnCount - 1];
+    }
+}
+```
