@@ -224,3 +224,31 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### 2つの変数を用いたキャッシュ
+
+[goto-untrapped さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/33#discussion_r1797601072)に対応して変数名を修正。
+
+```java
+/**
+ * 時間計算量: O(n): 配列の各要素に対しての一連の定数時間で行われる処理
+ * 空間計算量: O(1): ひとつ前、ふたつ前の時点での盗めるお金の最大値を格納する2つの変数
+ */
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int twoBackMaxAmount = 0, oneBackMaxAmount = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int maxCount = Math.max(twoBackMaxAmount + nums[i], oneBackMaxAmount);
+            twoBackMaxAmount = oneBackMaxAmount;
+            oneBackMaxAmount = maxCount;
+        }
+        return oneBackMaxAmount;
+    }
+}
+```
