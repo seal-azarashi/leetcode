@@ -157,6 +157,7 @@ i 日目の価格 - (i - 1) 日目までの最小の価格を計算して最大�
  */
 class Solution {
     public int maxProfit(int[] prices) {
+        // 問題文に指定はないが、買いや売りをする日がそもそもなければ利益は生み出しようがないので 0 を返すこととする
         if (prices == null || prices.length == 0) {
             return 0;
         }
