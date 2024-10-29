@@ -243,3 +243,29 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+[こちらの指摘](https://github.com/seal-azarashi/leetcode/pull/30/files/286d89eec55442db67a108dd6622799403618234#r1789292251)に対応。複数該当箇所があるが、代表して step 3 の実装の修正版を書く。
+
+```java
+/**
+ * 時間計算量: O(n): 引数 nums の要素すべて走査する
+ * 空間計算量: O(1): 固定サイズの変数が決まった個数宣言される
+ */
+class Solution {
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        int maxSubArraySum = Integer.MIN_VALUE;
+        int subArraySumSoFar = 0;
+        for (int num : nums) {
+            subArraySumSoFar = Math.max(num, num + subArraySumSoFar);
+            maxSubArraySum = Math.max(maxSubArraySum, subArraySumSoFar);
+        }
+        return maxSubArraySum;
+    }
+}
+```
