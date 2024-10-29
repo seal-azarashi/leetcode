@@ -87,3 +87,36 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+[oda さんのレビュー](https://github.com/seal-azarashi/leetcode/pull/34#discussion_r1791578173)を踏まえ関数名を修正。
+
+```java
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+
+        return Math.max(
+            maxRobbableAmountInRange(0, nums.length - 1, nums),
+            maxRobbableAmountInRange(1, nums.length, nums)
+        );
+    }
+
+    private int maxRobbableAmountInRange(int start, int end, int[] nums) {
+        int twoBackMaxAmount = 0, oneBackMaxAmount = 0;
+        for (int i = start; i < end; i++) {
+            int maxAmount = Math.max(twoBackMaxAmount + nums[i], oneBackMaxAmount);
+
+            twoBackMaxAmount = oneBackMaxAmount;
+            oneBackMaxAmount = maxAmount;
+        }
+        return oneBackMaxAmount;
+    }
+}
+```
