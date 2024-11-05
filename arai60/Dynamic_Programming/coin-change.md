@@ -59,7 +59,7 @@ class Solution {
 
 ## Step 2
 
-### 1 から amount まで、それぞれ何枚のコインで作れるかをキャッシュする (Step 1 と同じ)
+### 1 から amount まで、それぞれ何枚のコインで作れるかをキャッシュする DP (Step 1 と同じ)
 
 - ちょっとパズル感がある (下の方まで処理を読まないと各要素が何を表すのか想像しづらい) 印象があったので、キャッシュ用配列の宣言時にいくつか処理を寄せ、コードコメントを追加した。コードコメントの一部は javadoc に書いてもいいかもしれない。
 - 変数名もいくつかより理解しやすそうなものに修正している。
@@ -116,10 +116,72 @@ class Solution {
 }
 ```
 
+### BFS
+
+他の方の解法にあったので書いてみる。TLE。  
+DP の解法より遅い理由は、record オブジェクトの作成やスタックの操作にメモリのランダムアクセスが行われるからだろうか。まだ改善は出来そうだが一旦ここまで。
+
+```java
+/**
+* 時間計算量: O(n * m): 
+*     - 入力コインの前処理: O(m)
+*     - キャッシュ用配列の作成: O(n)
+*     - キューを使用した探索: O(n * m)
+*         - 最悪の場合、各 amount に対して全てのコインを試す
+* 空間計算量: O(n * m):
+*     - キャッシュ用配列: O(n)
+*     - キュー: 最悪の場合 O(n * m)
+*     - その他定数計算量の変数等: O(1)
+* 
+* ※ n = amount, m = coins.length
+*/
+class Solution {
+    private final int NO_COMBINATION = -1;
+
+    private record CoinState(int numCoins, int currentAmount) {}
+
+    public int coinChange(int[] coins, int amount) {
+        Objects.requireNonNull(coins, "Argument coins must not be null");
+        
+        int[] filteredCoins = Arrays.stream(coins)
+                .filter(coin -> coin <= amount)
+                .toArray();
+
+        int[] makeUpAmountToCoinCount = new int[amount + 1];
+        Arrays.fill(makeUpAmountToCoinCount, Integer.MAX_VALUE);
+        
+        Queue<CoinState> coinStateQueue = new ArrayDeque<>();
+        coinStateQueue.offer(new CoinState(0, 0));
+        
+        while (!coinStateQueue.isEmpty()) {
+            CoinState coinState = coinStateQueue.poll();
+            makeUpAmountToCoinCount[coinState.currentAmount()] = Math.min(
+                makeUpAmountToCoinCount[coinState.currentAmount()],
+                coinState.numCoins()
+            );
+            
+            for (int coin : filteredCoins) {
+                int nextAmount = coinState.currentAmount() + coin;
+                if (nextAmount > amount) {
+                    continue;
+                }
+                if (makeUpAmountToCoinCount[nextAmount] <= coinState.numCoins() + 1) {
+                    continue;
+                }
+                coinStateQueue.offer(new CoinState(coinState.numCoins() + 1, nextAmount));
+            }
+        }
+        
+        return makeUpAmountToCoinCount[amount] == Integer.MAX_VALUE 
+            ? NO_COMBINATION 
+            : makeUpAmountToCoinCount[amount];
+    }
+}
+```
+
 ### 非再帰の DFS
 
-他の方の解法にあったので書いてみる。  
-実行時間が上の解法より10倍以上長いのが気になる。Record オブジェクトの作成やスタックの操作にメモリのランダムアクセスが行われるからだろうか。まだ改善は出来そうだが一旦ここまで。
+他の方の解法にあったので書いてみる。実行時間が上の解法より10倍以上長いが TLE にはならなかった。BFS の方が効率は良さそうに思えたが、テストケースとの相性がたまたまよかったのだろうか。
 
 ```java
 /**
@@ -127,8 +189,7 @@ class Solution {
 *     - 入力コインの前処理: O(m)
 *     - キャッシュ用配列の作成: O(n)
 *     - スタックを使用した探索: O(n * m)
-*         - 最悪の場合、各金額(n)に対して全てのコイン(m)を試す
-*         - ただし枝刈りにより実際の計算回数は減少する可能性あり
+*         - 最悪の場合、各 amount に対して全てのコインを試す
 * 空間計算量: O(n * m):
 *     - キャッシュ用配列: O(n)
 *     - スタック: 最悪の場合 O(n * m)
@@ -189,8 +250,7 @@ class Solution {
 *     - 入力コインの前処理: O(m)
 *     - キャッシュ用配列の作成: O(n)
 *     - 再帰的な探索: O(n * m)
-*         - 最悪の場合、各金額(n)に対して全てのコイン(m)を試す
-*         - ただし枝刈りにより実際の計算回数は減少する可能性あり
+*         - 最悪の場合、各 amount に対して全てのコインを試す
 * 空間計算量: O(n):
 *     - キャッシュ用配列: O(n)
 *     - 再帰スタック: 最悪の場合 O(n)
