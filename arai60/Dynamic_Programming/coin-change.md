@@ -185,18 +185,18 @@ class Solution {
 
 ```java
 /**
-* 時間計算量: O(n * m): 
-*     - 入力コインの前処理: O(m)
-*     - キャッシュ用配列の作成: O(n)
-*     - スタックを使用した探索: O(n * m)
-*         - 最悪の場合、各 amount に対して全てのコインを試す
-* 空間計算量: O(n * m):
-*     - キャッシュ用配列: O(n)
-*     - スタック: 最悪の場合 O(n * m)
-*     - その他定数計算量の変数等: O(1)
-* 
-* ※ n = amount, m = coins.length
-*/
+ * 時間計算量: O(n * m): 
+ *     - 入力コインの前処理: O(m)
+ *     - キャッシュ用配列の作成: O(n)
+ *     - スタックを使用した探索: O(n * m)
+ *         - 最悪の場合、各 amount に対して全てのコインを試す
+ * 空間計算量: O(n * m):
+ *     - キャッシュ用配列: O(n)
+ *     - スタック: 最悪の場合 O(n * m)
+ *     - その他定数計算量の変数等: O(1)
+ * 
+ * ※ n = amount, m = coins.length
+ */
 class Solution {
     private final int NO_COMBINATION = -1;
 
@@ -246,18 +246,18 @@ class Solution {
 
 ```java
 /**
-* 時間計算量: O(n * m): 
-*     - 入力コインの前処理: O(m)
-*     - キャッシュ用配列の作成: O(n)
-*     - 再帰的な探索: O(n * m)
-*         - 最悪の場合、各 amount に対して全てのコインを試す
-* 空間計算量: O(n):
-*     - キャッシュ用配列: O(n)
-*     - 再帰スタック: 最悪の場合 O(n)
-*     - その他定数計算量の変数等: O(1)
-* 
-* ※ n = amount, m = coins.length
-*/
+ * 時間計算量: O(n * m): 
+ *     - 入力コインの前処理: O(m)
+ *     - キャッシュ用配列の作成: O(n)
+ *     - 再帰的な探索: O(n * m)
+ *         - 最悪の場合、各 amount に対して全てのコインを試す
+ * 空間計算量: O(n):
+ *     - キャッシュ用配列: O(n)
+ *     - 再帰スタック: 最悪の場合 O(n)
+ *     - その他定数計算量の変数等: O(1)
+ * 
+ * ※ n = amount, m  = coins.length
+ */
 class Solution {
     private final int NO_COMBINATION = -1;
 
@@ -298,6 +298,54 @@ class Solution {
             }
             updateMinCoinCountsRecursively(coins, targetAmount, nextAmount, numCoins + 1, makeUpAmountToCoinCount);
         }
+    }
+}
+```
+
+## Step 3
+
+実装のシンプルさと処理効率から Step 2 に書いた DP の解法を選びました。このステップでは5分以内に書くことを目指すのでコメントや引数の null チェックは省略していますが、実際の面接ではそういったものが必要であることをしっかり補足したいところです。
+
+```java
+/**
+ * 解いた時間: 約5分
+ * 時間計算量: O(n * m): 
+ *     - 入力コインの前処理: O(m)
+ *     - キャッシュ用配列の作成: O(n)
+ *     - キューを使用した探索: O(n * m)
+ *         - 最悪の場合、各 amount に対して全てのコインを試す
+ * 空間計算量: O(n * m):
+ *     - キャッシュ用配列: O(n)
+ *     - キュー: 最悪の場合 O(n * m)
+ *     - その他定数計算量の変数等: O(1)
+ * 
+ * ※ n = amount, m = coins.length
+ */
+class Solution {
+    private final int NO_COMBINATION = -1;
+
+    public int coinChange(int[] coins, int amount) {
+        int[] amountToMinCoinCount = new int[amount + 1];
+        Arrays.fill(amountToMinCoinCount, NO_COMBINATION);
+        amountToMinCoinCount[0] = 0;
+
+        for (int currentAmount = 1; currentAmount <= amount; currentAmount++) {
+            int minCoinCount = Integer.MAX_VALUE;
+            boolean isAnyCombinationFound = false;
+            for (int coin : coins) {
+                int remainder = currentAmount - coin;
+                if (remainder < 0 || amountToMinCoinCount[remainder] == NO_COMBINATION) {
+                    continue;
+                }
+
+                minCoinCount = Math.min(minCoinCount, amountToMinCoinCount[remainder] + 1);
+                isAnyCombinationFound = true;
+            }
+            if (isAnyCombinationFound) {
+                amountToMinCoinCount[currentAmount] = minCoinCount;
+            }
+        }
+        return amountToMinCoinCount[amount];
     }
 }
 ```
