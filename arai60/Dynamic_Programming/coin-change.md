@@ -411,3 +411,65 @@ class Solution {
     }
 }
 ```
+
+### 非再帰の DFS
+
+[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830471177)から、より早く少ない枚数の組み合わせが見つかるよう、大きい額のコインからチェックされるように修正。処理時間が 1/6 ほどに減少。
+
+```java
+/**
+ * 時間計算量: O(n * m): 
+ *     - 入力コインの前処理: O(m)
+ *     - キャッシュ用配列の作成: O(n)
+ *     - スタックを使用した探索: O(n * m)
+ *         - 最悪の場合、各 amount に対して全てのコインを試す
+ * 空間計算量: O(n * m):
+ *     - キャッシュ用配列: O(n)
+ *     - スタック: 最悪の場合 O(n * m)
+ *     - その他定数計算量の変数等: O(1)
+ * 
+ * ※ n = amount, m = coins.length
+ */
+class Solution {
+    private final int NO_COMBINATION = -1;
+
+    private record CoinState(int numCoins, int currentAmount) {}
+
+    public int coinChange(int[] coins, int amount) {
+        Objects.requireNonNull(coins, "Argument coins must not be null");
+
+        int[] filteredCoins = Arrays.stream(coins)
+                .filter(coin -> coin <= amount)
+                .sorted()
+                .toArray();
+
+        int[] makeUpAmountToCoinCount = new int[amount + 1];
+        Arrays.fill(makeUpAmountToCoinCount, Integer.MAX_VALUE);
+        
+        Stack<CoinState> coinStateStack = new Stack<>();
+        coinStateStack.push(new CoinState(0, 0));
+        
+        while (!coinStateStack.isEmpty()) {
+            CoinState coinState = coinStateStack.pop();
+            makeUpAmountToCoinCount[coinState.currentAmount()] = Math.min(
+                makeUpAmountToCoinCount[coinState.currentAmount()],
+                coinState.numCoins()
+            );
+            for (int coin : filteredCoins) {
+                int nextAmount = coinState.currentAmount() + coin;
+                if (nextAmount > amount) {
+                    continue;
+                }
+                if (makeUpAmountToCoinCount[nextAmount] <= coinState.numCoins() + 1) {
+                    continue;
+                }
+                coinStateStack.push(new CoinState(coinState.numCoins() + 1, nextAmount));
+            }
+        }
+        
+        return makeUpAmountToCoinCount[amount] == Integer.MAX_VALUE 
+            ? NO_COMBINATION 
+            : makeUpAmountToCoinCount[amount];
+    }
+}
+```
