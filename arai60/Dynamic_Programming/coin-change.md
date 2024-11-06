@@ -349,3 +349,65 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830469401)から、処理の切り上げが上手くいっていなかったことが理解できたので修正した。  
+
+### BFS
+
+```java
+/**
+* 時間計算量: O(n * m): 
+*     - 入力コインの前処理: O(m)
+*     - キャッシュ用配列の作成: O(n)
+*     - キューを使用した探索: O(n * m)
+*         - 最悪の場合、各 amount に対して全てのコインを試す
+* 空間計算量: O(n * m):
+*     - キャッシュ用配列: O(n)
+*     - キュー: 最悪の場合 O(n * m)
+*     - その他定数計算量の変数等: O(1)
+* 
+* ※ n = amount, m = coins.length
+*/
+class Solution {
+    private final int NO_COMBINATION = -1;
+
+    private record CoinState(int numCoins, int currentAmount) {}
+
+    public int coinChange(int[] coins, int amount) {
+        Objects.requireNonNull(coins, "Argument coins must not be null");
+        
+        int[] filteredAndSortedCoins = Arrays.stream(coins)
+                .filter(coin -> coin <= amount)
+                .toArray();
+
+        int[] makeUpAmountToCoinCount = new int[amount + 1];
+        Arrays.fill(makeUpAmountToCoinCount, Integer.MAX_VALUE);
+        
+        Queue<CoinState> coinStateQueue = new ArrayDeque<>();
+        coinStateQueue.offer(new CoinState(0, 0));
+        
+        while (!coinStateQueue.isEmpty()) {
+            CoinState coinState = coinStateQueue.poll();
+            if (makeUpAmountToCoinCount[coinState.currentAmount()] <= coinState.numCoins()) {
+                continue;
+            }
+            
+            makeUpAmountToCoinCount[coinState.currentAmount()] = coinState.numCoins();
+            for (int coin : filteredAndSortedCoins) {
+                int nextAmount = coinState.currentAmount() + coin;
+                if (nextAmount > amount) {
+                    continue;
+                }
+
+                coinStateQueue.offer(new CoinState(coinState.numCoins() + 1, nextAmount));
+            }
+        }
+        
+        return makeUpAmountToCoinCount[amount] == Integer.MAX_VALUE 
+            ? NO_COMBINATION 
+            : makeUpAmountToCoinCount[amount];
+    }
+}
+```
