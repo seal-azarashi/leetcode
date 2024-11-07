@@ -352,6 +352,43 @@ class Solution {
 
 ## Step 4
 
+### 1 から amount まで、それぞれ何枚のコインで作れるかをキャッシュする DP
+
+次の nodchip さんの案を踏まえて修正した:
+
+- https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1832794636
+- https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1832796152
+
+```java
+class Solution {
+    private final int CANNOT_BE_MADE_UP = Integer.MAX_VALUE;
+    private final int NO_COMBINATION = -1;
+
+    public int coinChange(int[] coins, int amount) {
+        int[] amountToMinCoins = new int[amount + 1];
+        Arrays.fill(amountToMinCoins, CANNOT_BE_MADE_UP);
+        amountToMinCoins[0] = 0;
+
+        for (int currentAmount = 1; currentAmount <= amount; currentAmount++) {
+            for (int coin : coins) {
+                int remainder = currentAmount - coin;
+                if (remainder < 0 || amountToMinCoins[remainder] == CANNOT_BE_MADE_UP) {
+                    continue;
+                }
+
+                amountToMinCoins[currentAmount] = Math.min(
+                    amountToMinCoins[currentAmount],
+                    amountToMinCoins[remainder] + 1
+                );
+            }
+        }
+        return amountToMinCoins[amount] == CANNOT_BE_MADE_UP
+            ? NO_COMBINATION
+            : amountToMinCoins[amount];
+    }
+}
+```
+
 ### BFS
 
 [oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830469401)から、処理の切り上げが上手くいっていなかったことが理解できたので修正した。  
