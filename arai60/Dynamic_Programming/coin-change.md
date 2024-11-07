@@ -473,3 +473,68 @@ class Solution {
     }
 }
 ```
+
+### 再帰の DFS
+
+[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830471177)から、より早く少ない枚数の組み合わせが見つかるよう、大きい額のコインからチェックされるように修正。処理時間が 1/15 ほどに減少。
+
+```java
+/**
+ * 時間計算量: O(n * m): 
+ *     - 入力コインの前処理: O(m)
+ *     - キャッシュ用配列の作成: O(n)
+ *     - 再帰的な探索: O(n * m)
+ *         - 最悪の場合、各 amount に対して全てのコインを試す
+ * 空間計算量: O(n):
+ *     - キャッシュ用配列: O(n)
+ *     - 再帰スタック: 最悪の場合 O(n)
+ *     - その他定数計算量の変数等: O(1)
+ * 
+ * ※ n = amount, m  = coins.length
+ */
+class Solution {
+    private final int NO_COMBINATION = -1;
+
+    public int coinChange(int[] coins, int amount) {
+        Objects.requireNonNull(coins, "Argument coins must not be null");
+        
+        int[] filteredCoins = Arrays.stream(coins)
+                .filter(coin -> coin <= amount)
+                .boxed()
+                .sorted(Collections.reverseOrder())
+                .mapToInt(Integer::intValue)
+                .toArray();
+
+        int[] makeUpAmountToCoinCount = new int[amount + 1];
+        Arrays.fill(makeUpAmountToCoinCount, Integer.MAX_VALUE);
+        makeUpAmountToCoinCount[0] = 0;
+        
+        updateMinCoinCountsRecursively(filteredCoins, amount, 0, 0, makeUpAmountToCoinCount);
+        
+        return makeUpAmountToCoinCount[amount] == Integer.MAX_VALUE 
+            ? NO_COMBINATION 
+            : makeUpAmountToCoinCount[amount];
+    }
+    
+    private void updateMinCoinCountsRecursively(
+            int[] coins,
+            int targetAmount,
+            int currentAmount,
+            int numCoins,
+            int[] makeUpAmountToCoinCount
+    ) {
+        makeUpAmountToCoinCount[currentAmount] = Math.min(makeUpAmountToCoinCount[currentAmount], numCoins);
+            
+        for (int coin : coins) {
+            int nextAmount = currentAmount + coin;
+            if (nextAmount > targetAmount) {
+                continue;
+            }
+            if (makeUpAmountToCoinCount[nextAmount] <= numCoins + 1) {
+                continue;
+            }
+            updateMinCoinCountsRecursively(coins, targetAmount, nextAmount, numCoins + 1, makeUpAmountToCoinCount);
+        }
+    }
+}
+```
