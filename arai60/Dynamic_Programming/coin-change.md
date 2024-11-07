@@ -352,9 +352,9 @@ class Solution {
 
 ## Step 4
 
-[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830469401)から、処理の切り上げが上手くいっていなかったことが理解できたので修正した。  
-
 ### BFS
+
+[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/37#discussion_r1830469401)から、処理の切り上げが上手くいっていなかったことが理解できたので修正した。  
 
 ```java
 /**
