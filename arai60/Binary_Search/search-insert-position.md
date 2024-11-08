@@ -117,3 +117,26 @@ class Solution {
     }
 }
 ```
+
+## Step 4
+
+### Arrays クラスを用いる解法
+
+ahayashi さんの指摘で Arrays.binarySearch() があったことを思い出したので加筆。
+
+```java
+/**
+ * 時間計算量: O(log n)
+ * 空間計算量: O(1)
+ */
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int foundIndex = Arrays.binarySearch(nums, target);
+        if (0 < foundIndex) {
+            return foundIndex;
+        }
+
+        return -(foundIndex + 1);
+    }
+}
+```
