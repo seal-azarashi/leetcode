@@ -132,11 +132,22 @@ ahayashi さんの指摘で Arrays.binarySearch() があったことを思い出
 class Solution {
     public int searchInsert(int[] nums, int target) {
         int foundIndex = Arrays.binarySearch(nums, target);
-        if (0 < foundIndex) {
+        if (0 <= foundIndex) {
             return foundIndex;
         }
 
         return -(foundIndex + 1);
+    }
+}
+```
+
+その後 [oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/38#discussion_r1834834703)を受けビット反転するよう修正。
+
+```java
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int foundIndex = Arrays.binarySearch(nums, target);
+        return 0 <= foundIndex ? foundIndex : ~foundIndex;
     }
 }
 ```
