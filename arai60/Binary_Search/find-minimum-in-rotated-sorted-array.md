@@ -45,3 +45,38 @@ left, right は配列内での位置関係に合わせて命名しているが�
     - left: rotationBoundary
     - right: minValueExplorer
 - 最初に変数名だけ見てもわからなさそうなので、やはり left, right ぐらいにしておくのがいいか
+
+## Step 2
+
+### 最小の値を左端に持つ範囲を探索するアプローチ
+
+最小の値そのものでなく、それを左端に持つ範囲を探索する。
+
+各イテレーションでは left を最大位置と最小位置の境目に移動させることを目的とした処理が行われる。right はその際行われる二分探索処理に必要。
+
+While 文の中で範囲が見つかったかどうか判定させた方がコードの見通しが良くなると考え、引数が valid であればこれの外の範囲には出ないことを前提に実装した。
+
+```java
+/**
+ * 時間計算量: O(log n)
+ * 空間計算量: O(1)
+ */
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            if (nums[left] <= nums[right]) {
+                return nums[left];
+            }
+
+            int middle = left + (right - left) / 2;
+            if (nums[left] <= nums[middle]) {
+                left = middle + 1;
+            } else {
+                right = middle;
+            }
+        }
+        throw new IllegalArgumentException("Unreachable if the argument is valid");
+    }
+}
+```
