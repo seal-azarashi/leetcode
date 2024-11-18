@@ -76,7 +76,6 @@ class Solution {
     public int findMin(int[] nums) {
         int left = 0, right = nums.length - 1;
         while (left < right) {
-            // 左端に最小の値がある範囲が探索対象になったかどうかを確認する
             if (nums[left] <= nums[right]) {
                 return nums[left];
             }
