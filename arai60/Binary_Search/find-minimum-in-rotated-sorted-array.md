@@ -14,6 +14,9 @@ LeetCode URL: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array
 - 各イテレーションで探索範囲の中央にある値 (以下 middle) を確認し、次のどちらかの処理を行う:
     - middle の位置にある値が right の位置にある値よりも小さい場合、最小の値はそこかそれよりも左の位置にあるため、right を middle の位置に移動させる
     - 上の条件に当てはまらない場合、最小の値はそれよりも右の位置にあるため、middle のひとつ右の位置に left を移動させる
+- 各ポインタは以下示しているため、同じ位置を指したら即ちその位置に存在する値が最小の値であると判断する:
+    - left: これが指す位置よりも左には最小の値が存在しないことを示す
+    - right: これが指す位置にある値が、最小の値かそれよりも右に存在するものであることを示す
 
 ```java
 /**
@@ -25,20 +28,20 @@ class Solution {
         int left = 0, right = nums.length - 1;
         while (left < right) {
             int middle = left + (right - left) / 2;
-            if (nums[middle] < nums[right]) {
+            if (nums[middle] <= nums[right]) {
                 right = middle;
             } else {
                 left = middle + 1;
             }
         }
-        return nums[right];
+        return nums[left];
     }
 }
 ```
 
 ## Step 2
 
-### 右端の値を用いて比較を行うパターン (半開区間)
+### 右端の値を用いて比較を行うパターン
 
 何人か他の方が書かれていたので書いてみました。  
 右端の値が、最小の値かそれよりも右にあるいずれかの値であることを利用した条件判定により二分探索を行います。
@@ -46,7 +49,7 @@ class Solution {
 ```java
 class Solution {
     public int findMin(int[] nums) {
-        int left = 0, right = nums.length;
+        int left = 0, right = nums.length - 1;
         while (left < right) {
             int middle = left + (right - left) / 2;
             if (nums[middle] <= nums[nums.length - 1]) {
@@ -92,7 +95,7 @@ class Solution {
 ## Step 3
 
 処理効率の良さでこちらを選びました。  
-好みかもしれませんが、右端の値を用いて比較を行うパターン (半開区間) よりも直感的にも思えます。
+好みかもしれませんが、右端の値を用いて比較を行うパターンよりも直感的にも思えます。
 
 ```java
 /**
