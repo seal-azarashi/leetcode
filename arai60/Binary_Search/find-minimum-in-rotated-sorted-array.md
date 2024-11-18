@@ -62,8 +62,7 @@ class Solution {
 
 ### While 文終了前に return させるパターン
 
-Step 1 の解法の処理効率向上のため、最小の値が存在する位置が見つかったらその時点で return させるよう修正します。  
-While 文の外の範囲には出ないことを前提に実装してますが、仕事では Javadoc か何かに問題の constraints にあたるものを仕様として記載しておきたい気持ちがあります。
+Step 1 の解法の処理効率向上のため、最小の値が存在する位置が見つかったらその時点で return させるよう修正します。
 
 ```java
 /**
@@ -73,19 +72,49 @@ While 文の外の範囲には出ないことを前提に実装してますが�
 class Solution {
     public int findMin(int[] nums) {
         int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            if (nums[left] <= nums[right]) {
+        while (left < right) {
+            if (nums[left] < nums[right]) {
                 return nums[left];
             }
 
             int middle = left + (right - left) / 2;
-            if (nums[left] <= nums[middle]) {
-                left = middle + 1;
-            } else {
+            if (nums[middle] <= nums[right]) {
                 right = middle;
+            } else {
+                left = middle + 1;
             }
         }
-        throw new IllegalArgumentException("Unreachable if the argument is valid");
+        return nums[left];
+    }
+}
+```
+
+## Step 3
+
+処理効率の良さでこちらを選びました。  
+好みかもしれませんが、右端の値を用いて比較を行うパターン (半開区間) よりも直感的にも思えます。
+
+```java
+/**
+ * 時間計算量: O(log n)
+ * 空間計算量: O(1)
+ */
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            if (nums[left] < nums[right]) {
+                return nums[left];
+            }
+
+            int middle = left + (right - left) / 2;
+            if (nums[middle] <= nums[right]) {
+                right = middle;
+            } else {
+                left = middle + 1;
+            }
+        }
+        return nums[left];
     }
 }
 ```
