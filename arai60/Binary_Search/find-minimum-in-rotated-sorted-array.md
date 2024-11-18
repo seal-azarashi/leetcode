@@ -76,7 +76,8 @@ class Solution {
     public int findMin(int[] nums) {
         int left = 0, right = nums.length - 1;
         while (left < right) {
-            if (nums[left] < nums[right]) {
+            // 左端に最小の値がある範囲が探索対象になったかどうかを確認する
+            if (nums[left] <= nums[right]) {
                 return nums[left];
             }
 
@@ -110,6 +111,40 @@ class Solution {
                 return nums[left];
             }
 
+            int middle = left + (right - left) / 2;
+            if (nums[middle] <= nums[right]) {
+                right = middle;
+            } else {
+                left = middle + 1;
+            }
+        }
+        return nums[left];
+    }
+}
+```
+
+## Step 4
+
+### 引数のチェックを行う
+
+[oda さんの指摘](https://github.com/seal-azarashi/leetcode/pull/39/files#r1846154143)を受けて不正な引数が渡されることを考慮した実装を用意しました。  
+Leetcode では使えないですが、The Apache Commons Lang 3 library の [ArrayUtils.isEmpty()](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/index.html?org/apache/commons/lang3/ArrayUtils.html) を使って配列が null ないし空でないかチェックしています。加えて、ソートされていなければ返す値が正しい保証もないことをコメントに追記しました。
+
+```java
+import org.apache.commons.lang3.ArrayUtils;
+
+class Solution {
+    /**
+     * Find minimum value in rotated sorted array.
+     * If the array is not sorted, the results are undefined.
+     */
+    public int findMin(int[] nums) {
+        if (ArrayUtils.isEmpty(nums)) {
+            throw new IllegalArgumentException("Argument nums must not be empty");
+        }
+
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
             int middle = left + (right - left) / 2;
             if (nums[middle] <= nums[right]) {
                 right = middle;
