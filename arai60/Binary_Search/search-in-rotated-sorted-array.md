@@ -174,7 +174,7 @@ int[][] testCases = {
 ### 最小値を見つけてそこで左右に分割して考えるパターン
 
 [他の方が書かれていた](https://discord.com/channels/1084280443945353267/1196472827457589338/1196472926862577745)のを参考に書いてみました。  
-こちらだけ思いつくこともありそうなのでスラスラ書けるようにしておきたいです。
+こちらもスラスラ書けるようにしておきたいです。
 
 ```java
 class Solution {
@@ -205,6 +205,39 @@ class Solution {
             }
         }
         return right;
+    }
+}
+```
+
+## Step 3
+
+```java
+class Solution {
+    private final int NOT_FOUND = -1;
+
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int middle = left + (right - left) / 2;
+            if (nums[middle] == target) {
+                return middle;
+            }
+
+            if (nums[left] <= nums[middle]) { // middle から左の区間がソートされている場合
+                if (nums[left] <= target && target < nums[middle]) { // middle から左の区間に target があると思われる場合
+                    right = middle;
+                } else {
+                    left = middle + 1;
+                }
+            } else {
+                if (nums[middle] <= target && target <= nums[right]) {
+                    left = middle;
+                } else {
+                    right = middle - 1;
+                }
+            }
+        }
+        return NOT_FOUND;
     }
 }
 ```
