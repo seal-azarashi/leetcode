@@ -17,7 +17,7 @@ LeetCode URL: https://leetcode.com/problems/search-in-rotated-sorted-array/descr
         - 一日で運び切るのに必要な最小値とも言える
         - もっと絞り込むことも出来そうだが、処理全体のオーダーには影響しないので一旦このまま進める
 - これらの間のどこかに答えがある
-- これ以上範囲を絞り込む要素はなさそうなので、二分探索で検索をする
+- これ以上範囲を絞り込む要素はなさそうなので、二分探索で答えを探す
 
 ```java
 class Solution {
@@ -63,6 +63,59 @@ class Solution {
         }
         daysSpent++;
         return daysSpent <= days;
+    }
+}
+```
+
+## Step 2
+
+### Step 1 変数名の修正
+
+- 変数名 maxCapacity を high に修正。これは二分探索をする上で区間を指定するために使うもので、capacity の上限値ではないため。
+    - 合わせて middleCapacity を targetCapacity に修正。
+
+```java
+class Solution {
+    public int shipWithinDays(int[] weights, int days) {
+        int minCapacity = findMaxPackageWeight(weights);
+        int high = calculateTotalPackageWeight(weights);
+        while (minCapacity < high) {
+            int targetCapacity = minCapacity + (high - minCapacity) / 2;
+            if (isAbleToShip(weights, days, targetCapacity)) {
+                high = targetCapacity;
+            } else {
+                minCapacity = targetCapacity + 1;
+            }
+        }
+        return minCapacity;
+    }
+
+    // 省略
+}
+```
+
+### Step 1 isAbleToShip() の修正
+
+- 制限日数内で荷物を運びきれるかを判定する処理に関して、他の方が書いてた実装の考え方が自分と違っていた
+    - 必要な日数は最低でも一日であり、一度に運べる上限を超えた時点でかかる日数が加算されるというような考え
+- 自分の実装にもそれを当てはめてみた
+- こちらの方が分かりやすい
+
+```java
+class Solution {
+    // 省略
+
+    private boolean isAbleToShip(int[] weights, int days, int capacity) {
+        int currentTotalAmount = 0;
+        int daysNeeded = 1;
+        for (int weight : weights) {
+            currentTotalAmount += weight;
+            if (currentTotalAmount > capacity) {
+                daysNeeded++;
+                currentTotalAmount = weight;
+            }
+        }
+        return daysNeeded <= days;
     }
 }
 ```
